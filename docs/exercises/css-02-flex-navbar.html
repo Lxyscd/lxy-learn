@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>练习5：Flex 导航栏</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* 导航栏：Flex 布局 */
+    .navbar {
+      display: flex;
+      justify-content: space-between;  /* 两端对齐 */
+      align-items: center;             /* 垂直居中 */
+      height: 60px;
+      background: #4fc08d;
+      padding: 0 20px;
+    }
+
+    /* 内容居中限制 */
+    .navbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Logo */
+    .logo {
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    /* 菜单 */
+    .menu {
+      display: flex;
+      list-style: none;
+      gap: 8px;
+    }
+
+    .menu a {
+      display: block;
+      padding: 8px 16px;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    /* 鼠标悬停效果 */
+    .menu a:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <div class="logo">小象超市</div>
+      <ul class="menu">
+        <li><a href="#">首页</a></li>
+        <li><a href="#">门店</a></li>
+        <li><a href="#">关于</a></li>
+      </ul>
+    </div>
+  </nav>
+
+</body>
+</html>

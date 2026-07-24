@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>练习9：异步请求模拟</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; max-width: 600px; margin: 0 auto; }
+    #result { padding: 20px; background: #f9f9f9; border-radius: 8px; margin-top: 20px; min-height: 60px; }
+    .loading { color: #999; }
+    .success { color: #2e7d32; }
+    .error { color: #c62828; }
+    button { padding: 10px 20px; background: #4fc08d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; }
+    button:hover { background: #42b983; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <h1>练习9：异步请求模拟</h1>
+  <p>点击按钮模拟加载门店数据，观察异步流程</p>
+
+  <button id="loadBtn" onclick="loadAll()">加载数据</button>
+  <div id="result">点击按钮开始加载</div>
+
+  <script>
+    // ============================================================
+    // 1. mockRequest：模拟网络请求
+    // ============================================================
+    // 返回一个 Promise，delay 毫秒后 resolve 数据
+    function mockRequest(data, delay = 1000) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(data);
+        }, delay);
+      });
+    }
+
+    // 模拟门店详情数据
+    const mockStoreDetail = {
+      storeId: 1001,
+      storeName: '小象超市·朝阳店',
+      address: '北京市朝阳区建国路88号',
+      monthlySales: 158000
+    };
+
+    // 模拟订单数据
+    const mockOrders = [
+      { orderId: 'ORD001', amount: 299, time: '2025-07-09 10:30' },
+      { orderId: 'ORD002', amount: 158, time: '2025-07-09 11:15' },
+      { orderId: 'ORD003', amount: 520, time: '2025-07-09 14:20' }
+    ];
+
+    // ============================================================
+    // 2. async/await 加载单个数据
+    // ============================================================
+    async function loadStoreDetail() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.className = 'loading';
+      resultDiv.innerHTML = '🔄 正在加载门店详情...';
+
+      // await 等待 Promise 完成
+      const detail = await mockRequest(mockStoreDetail, 1000);
+      return detail;
+    }
+
+    // ============================================================
+    // 3. Promise.all 并发加载多个数据
+    // ============================================================
+    async function loadAll() {
+      const btn = document.getElementById('loadBtn');
+      const resultDiv = document.getElementById('result');
+
+      btn.disabled = true;
+      resultDiv.className = 'loading';
+      resultDiv.innerHTML = '🔄 同时加载门店详情和订单数据...';
+
+      try {
+        // Promise.all：两个请求同时发出，等全部完成
+        // 串行需要 2 秒，并发只需 1 秒
+        const [detail, orders] = await Promise.all([
+          mockRequest(mockStoreDetail, 1000),
+          mockRequest(mockOrders, 1000)
+        ]);
+
+        // 显示结果
+        resultDiv.className = 'success';
+        resultDiv.innerHTML = `
+          <h3>✅ 加载成功！</h3>
+          <p><strong>门店：</strong>${detail.storeName}</p>
+          <p><strong>地址：</strong>${detail.address}</p>
+          <p><strong>月销售额：</strong>¥${detail.monthlySales.toLocaleString()}</p>
+          <hr>
+          <h4>最近订单（${orders.length} 笔）</h4>
+          <ul>
+            ${orders.map(o => `<li>${o.orderId} - ¥${o.amount} - ${o.time}</li>`).join('')}
+          </ul>
+        `;
+
+      } catch (err) {
+        // 错误处理
+        resultDiv.className = 'error';
+        resultDiv.innerHTML = `❌ 加载失败：${err.message}`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ============================================================
+    // 附加：串行 vs 并发对比
+    // ============================================================
+    async function serialLoad() {
+      console.time('串行');
+      const detail = await mockRequest(mockStoreDetail, 1000);
+      const orders = await mockRequest(mockOrders, 1000);
+      console.timeEnd('串行');  // 约 2000ms
+    }
+
+    async function parallelLoad() {
+      console.time('并发');
+      const [detail, orders] = await Promise.all([
+        mockRequest(mockStoreDetail, 1000),
+        mockRequest(mockOrders, 1000)
+      ]);
+      console.timeEnd('并发');  // 约 1000ms
+    }
+
+    // 打开控制台，调用 serialLoad() 和 parallelLoad() 对比耗时
+    console.log('提示：在控制台输入 serialLoad() 或 parallelLoad() 对比串行和并发耗时');
+  </script>
+</body>
+</html>

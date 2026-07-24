@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>练习7：数组操作</title>
+</head>
+<body>
+  <h1>练习7：数组操作</h1>
+  <p>打开浏览器控制台（F12 → Console）查看输出结果</p>
+
+  <script>
+    // ============================================================
+    // 原始数据
+    // ============================================================
+    const stores = [
+      { id: 1, name: '门店A', sales: 12000, city: '北京', status: '营业中' },
+      { id: 2, name: '门店B', sales: 8000, city: '上海', status: '休息中' },
+      { id: 3, name: '门店C', sales: 15000, city: '北京', status: '营业中' },
+      { id: 4, name: '门店D', sales: 5000, city: '广州', status: '营业中' },
+      { id: 5, name: '门店E', sales: 20000, city: '上海', status: '休息中' }
+    ];
+
+    console.log('========== 原始数据 ==========');
+    console.table(stores);
+
+    // ============================================================
+    // 1. filter：找出所有"营业中"的门店
+    // ============================================================
+    const openStores = stores.filter(s => s.status === '营业中');
+    console.log('\n========== 1. 营业中的门店（filter） ==========');
+    console.table(openStores);
+
+    // ============================================================
+    // 2. map：提取所有门店的名称数组
+    // ============================================================
+    const storeNames = stores.map(s => s.name);
+    console.log('\n========== 2. 门店名称数组（map） ==========');
+    console.log(storeNames);  // ['门店A', '门店B', '门店C', '门店D', '门店E']
+
+    // ============================================================
+    // 3. find：找出销售额最高的门店
+    // ============================================================
+    // 方法一：先找最大值，再 find
+    const maxSales = Math.max(...stores.map(s => s.sales));
+    const topStore = stores.find(s => s.sales === maxSales);
+    console.log('\n========== 3. 销售额最高的门店（find） ==========');
+    console.log(topStore);  // { id: 5, name: '门店E', sales: 20000, ... }
+
+    // 方法二：用 reduce 找最大值（更优雅）
+    const topStore2 = stores.reduce((max, current) =>
+      current.sales > max.sales ? current : max
+    );
+    console.log('（reduce 方式）', topStore2.name);
+
+    // ============================================================
+    // 4. reduce：计算总销售额
+    // ============================================================
+    const totalSales = stores.reduce((sum, s) => sum + s.sales, 0);
+    console.log('\n========== 4. 总销售额（reduce） ==========');
+    console.log(`总销售额：¥${totalSales.toLocaleString()}`);  // ¥60,000
+
+    // ============================================================
+    // 5. sort：按销售额降序排序
+    // ============================================================
+    // 注意：sort 会改变原数组，所以先复制 [...stores]
+    const sortedStores = [...stores].sort((a, b) => b.sales - a.sales);
+    console.log('\n========== 5. 按销售额降序（sort） ==========');
+    console.table(sortedStores);
+
+    // ============================================================
+    // 6. filter + map：找出北京所有营业中的门店名称
+    // ============================================================
+    const beijingOpenNames = stores
+      .filter(s => s.city === '北京' && s.status === '营业中')
+      .map(s => s.name);
+    console.log('\n========== 6. 北京营业中的门店名称（filter + map） ==========');
+    console.log(beijingOpenNames);  // ['门店A', '门店C']
+
+    // ============================================================
+    // 附加练习：自己试试以下操作
+    // ============================================================
+    // 7. 用 some 判断是否有广州的门店
+    // 8. 用 every 判断是否所有门店销售额都大于 3000
+    // 9. 用 findIndex 找到"门店D"的索引
+    // 10. 用 join 把门店名称用逗号拼接成字符串
+
+    // 7.
+    const hasGuangzhou = stores.some(s => s.city === '广州');
+    console.log('\n========== 附加 7. 是否有广州门店（some） ==========');
+    console.log(hasGuangzhou);  // true
+
+    // 8.
+    const allAbove3000 = stores.every(s => s.sales > 3000);
+    console.log('\n========== 附加 8. 是否所有销售额 > 3000（every） ==========');
+    console.log(allAbove3000);  // true
+
+    // 9.
+    const indexD = stores.findIndex(s => s.name === '门店D');
+    console.log('\n========== 附加 9. 门店D的索引（findIndex） ==========');
+    console.log(indexD);  // 3
+
+    // 10.
+    const namesString = storeNames.join(', ');
+    console.log('\n========== 附加 10. 门店名称拼接（join） ==========');
+    console.log(namesString);  // '门店A, 门店B, 门店C, 门店D, 门店E'
+  </script>
+</body>
+</html>

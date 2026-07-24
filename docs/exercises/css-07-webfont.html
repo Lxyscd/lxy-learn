@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Web 字体详解 - 学习笔记</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Microsoft YaHei', sans-serif; background: #F7F7F7; padding-bottom: 50px; }
+    .wrapper { width: 1024px; margin: 0 auto; }
+    .wrapper > header { text-align: center; padding: 30px; font-size: 32px; color: #333; }
+    .section { min-height: 200px; margin-bottom: 30px; box-shadow: 1px 1px 4px #DDD; background: #FFF; border-radius: 4px; }
+    .section > header { padding: 15px 20px; font-size: 20px; color: #333; background: #EEE; border-radius: 4px 4px 0 0; }
+    .section > header code { background: #333; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 16px; }
+    .wrap-box { padding: 20px; }
+    .desc { color: #666; margin-bottom: 15px; font-size: 14px; }
+    .code-block { background: #282c34; color: #abb2bf; padding: 15px 20px; border-radius: 6px; margin: 15px 0; overflow-x: auto; }
+    .code-block pre { margin: 0; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.6; }
+    .code-block .selector { color: #e06c75; } .code-block .property { color: #d19a66; }
+    .code-block .value { color: #98c379; } .code-block .punct { color: #abb2bf; }
+    .code-block .comment { color: #5c6370; font-style: italic; }
+    .result-label { font-size: 12px; color: #999; margin: 10px 0 5px; border-top: 1px dashed #ddd; padding-top: 10px; }
+    .demo-box { padding: 15px; margin: 10px 0; background: #f9f9f9; border-radius: 6px; border: 1px solid #eee; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #f0f0f0; }
+    .format-tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 12px; margin-right: 5px; }
+    .tag-ttf { background: #e3f2fd; color: #1976d2; }
+    .tag-otf { background: #f3e5f5; color: #7b1fa2; }
+    .tag-woff { background: #e8f5e9; color: #388e3c; }
+    .tag-eot { background: #fff3e0; color: #f57c00; }
+    .tag-svg { background: #fce4ec; color: #c2185b; }
+
+    /* @font-face demo */
+    @font-face {
+      font-family: 'DemoWebFont';
+      src: local('Georgia');
+    }
+    .webfont-demo { font-family: 'DemoWebFont', 'Georgia', serif; font-size: 24px; color: #e74c3c; }
+
+    /* iconfont demo */
+    @font-face {
+      font-family: 'iconfont';
+      src: url('//at.alicdn.com/t/font_860969_1b5y9nd3v6y.woff2') format('woff2');
+    }
+    .iconfont { font-family: 'iconfont'; font-size: 30px; color: #e74c3c; }
+    .icon-demo { margin: 10px; }
+
+    .step-box { display: flex; margin: 15px 0; }
+    .step { flex: 1; padding: 15px; margin: 5px; background: #f0f8ff; border-radius: 6px; border-left: 4px solid #3498db; }
+    .step h4 { margin-bottom: 8px; color: #3498db; }
+
+    .anchor-nav { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .anchor-nav h4 { margin-bottom: 10px; font-size: 14px; }
+    .anchor-nav a { display: block; padding: 4px 0; font-size: 13px; color: #666; text-decoration: none; }
+    .anchor-nav a:hover { color: #3498db; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>Web 字体详解 - 学习笔记</header>
+
+    <!-- ========== 一、字体格式 ========== -->
+    <div class="section" id="format">
+      <header>一、常见字体格式</header>
+      <div class="wrap-box">
+        <p class="desc">不同浏览器支持的字体格式不同，通常需要准备多种格式</p>
+        <table>
+          <tr>
+            <th>格式</th>
+            <th>扩展名</th>
+            <th>说明</th>
+            <th>浏览器支持</th>
+          </tr>
+          <tr>
+            <td><span class="format-tag tag-ttf">TTF</span></td>
+            <td>.ttf</td>
+            <td>Windows 和 Mac 最常见字体格式</td>
+            <td>IE9+、Firefox3.5+、Chrome4+、Safari3+</td>
+          </tr>
+          <tr>
+            <td><span class="format-tag tag-otf">OTF</span></td>
+            <td>.otf</td>
+            <td>基于 TTF 的原始字体格式</td>
+            <td>Firefox3.5+、Chrome4+、Safari3.1+</td>
+          </tr>
+          <tr>
+            <td><span class="format-tag tag-woff">WOFF</span></td>
+            <td>.woff</td>
+            <td><strong>Web 字体最佳格式</strong>，TrueType/OpenType 的压缩版</td>
+            <td>IE9+、Firefox3.5+、Chrome6+、Safari3.6+</td>
+          </tr>
+          <tr>
+            <td><span class="format-tag tag-eot">EOT</span></td>
+            <td>.eot</td>
+            <td>IE 专用字体格式</td>
+            <td>IE4+</td>
+          </tr>
+          <tr>
+            <td><span class="format-tag tag-svg">SVG</span></td>
+            <td>.svg</td>
+            <td>基于 SVG 渲染的字体格式</td>
+            <td>Chrome4+、Safari3.1+、iOS Mobile</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== 二、@font-face 使用步骤 ========== -->
+    <div class="section" id="fontface">
+      <header>二、<code>@font-face</code> 使用步骤</header>
+      <div class="wrap-box">
+        <div class="step-box">
+          <div class="step">
+            <h4>Step 1</h4>
+            <p>下载字体文件（推荐 iconfont.cn）</p>
+          </div>
+          <div class="step">
+            <h4>Step 2</h4>
+            <p>用 @font-face 声明字体</p>
+          </div>
+          <div class="step">
+            <h4>Step 3</h4>
+            <p>给元素设置 font-family 使用</p>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>完整代码示例</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="comment">/* ===== 第一步：声明字体 ===== */</span>
+<span class="selector">@font-face</span> <span class="punct">{</span>
+  <span class="property">font-family</span><span class="punct">:</span> <span class="value">'my-web-font'</span><span class="punct">;</span>
+  <span class="property">src</span><span class="punct">:</span> <span class="value">url('font/webfont.eot')</span><span class="punct">;</span>                           <span class="comment">/* IE9 */</span>
+  <span class="property">src</span><span class="punct">:</span> <span class="value">url('font/webfont.eot?#iefix') format('embedded-opentype')</span><span class="punct">,</span>  <span class="comment">/* IE6-IE8 */</span>
+       <span class="value">url('font/webfont.woff') format('woff')</span><span class="punct">,</span>              <span class="comment">/* Chrome、Firefox */</span>
+       <span class="value">url('font/webfont.ttf') format('truetype')</span><span class="punct">,</span>         <span class="comment">/* Safari、Android */</span>
+       <span class="value">url('font/webfont.svg#webfont') format('svg')</span><span class="punct">;</span>      <span class="comment">/* iOS 4.1- */</span>
+<span class="punct">}</span>
+
+<span class="comment">/* ===== 第二步：定义使用样式 ===== */</span>
+<span class="selector">.webfont</span> <span class="punct">{</span>
+  <span class="property">font-family</span><span class="punct">:</span> <span class="value">'my-web-font'</span><span class="punct">;</span>
+  <span class="property">-webkit-font-smoothing</span><span class="punct">:</span> <span class="value">antialiased</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <div class="code-block">
+              <pre><span class="comment">/* ===== 第三步：HTML中使用 ===== */</span>
+<span class="punct">&lt;</span><span class="selector">p</span> <span class="property">class</span><span class="punct">=</span><span class="value">"webfont"</span><span class="punct">&gt;</span>生命壹号，永不止步<span class="punct">&lt;/</span><span class="selector">p</span><span class="punct">&gt;</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 三、字体图标 ========== -->
+    <div class="section" id="iconfont">
+      <header>三、字体图标（Iconfont）</header>
+      <div class="wrap-box">
+        <p class="desc">把图标做成字体，可以像文字一样设置大小、颜色，且具有矢量清晰、减少请求等优点</p>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>方式一：Unicode 编码引用</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">@font-face</span> <span class="punct">{</span>
+  <span class="property">font-family</span><span class="punct">:</span> <span class="value">'iconfont'</span><span class="punct">;</span>
+  <span class="property">src</span><span class="punct">:</span> <span class="value">url('font/iconfont.woff') format('woff')</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.iconfont</span> <span class="punct">{</span>
+  <span class="property">font-family</span><span class="punct">:</span> <span class="value">'iconfont'</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <div class="code-block">
+              <pre><span class="comment">&lt;!-- 编码代表图标 --&gt;</span>
+<span class="punct">&lt;</span><span class="selector">span</span> <span class="property">class</span><span class="punct">=</span><span class="value">"iconfont"</span><span class="punct">&gt;</span><span class="value">&amp;#xe628;</span><span class="punct">&lt;/</span><span class="selector">span</span><span class="punct">&gt;</span> 扫码付款</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>方式二：伪元素引用（推荐）</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">.icon-scan::before</span> <span class="punct">{</span>
+  <span class="property">content</span><span class="punct">:</span> <span class="value">"\e628"</span><span class="punct">;</span>       <span class="comment">/* 注意：这里用反斜杠 */</span>
+  <span class="property">font-family</span><span class="punct">:</span> <span class="value">'iconfont'</span><span class="punct">;</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <div class="code-block">
+              <pre><span class="punct">&lt;</span><span class="selector">p</span> <span class="property">class</span><span class="punct">=</span><span class="value">"icon-scan"</span><span class="punct">&gt;</span>扫码付款<span class="punct">&lt;/</span><span class="selector">p</span><span class="punct">&gt;</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>常用图标库推荐</header>
+          <div class="wrap-box">
+            <table>
+              <tr>
+                <th>平台</th>
+                <th>网址</th>
+                <th>特点</th>
+              </tr>
+              <tr>
+                <td>阿里 Iconfont</td>
+                <td>iconfont.cn</td>
+                <td>国内最常用，图标丰富，支持在线管理项目</td>
+              </tr>
+              <tr>
+                <td>Font Awesome</td>
+                <td>fontawesome.com</td>
+                <td>国际知名，有免费版和 Pro 版</td>
+              </tr>
+              <tr>
+                <td>IcoMoon</td>
+                <td>icomoon.io</td>
+                <td>支持上传 SVG 生成自定义字体</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 四、Font Awesome 使用 ========== -->
+    <div class="section" id="fontawesome">
+      <header>四、Font Awesome 快速使用</header>
+      <div class="wrap-box">
+        <div class="code-block">
+          <pre><span class="comment">&lt;!-- 1. 引入 CSS --&gt;</span>
+<span class="punct">&lt;</span><span class="selector">link</span> <span class="property">rel</span><span class="punct">=</span><span class="value">"stylesheet"</span> <span class="property">href</span><span class="punct">=</span><span class="value">"css/font-awesome.min.css"</span><span class="punct">&gt;</span>
+
+<span class="comment">&lt;!-- 2. 使用类名 --&gt;</span>
+<span class="punct">&lt;</span><span class="selector">i</span> <span class="property">class</span><span class="punct">=</span><span class="value">"fa fa-play"</span><span class="punct">&gt;&lt;/</span><span class="selector">i</span><span class="punct">&gt;</span>   <span class="comment">&lt;!-- 播放图标 --&gt;</span>
+<span class="punct">&lt;</span><span class="selector">i</span> <span class="property">class</span><span class="punct">=</span><span class="value">"fa fa-user"</span><span class="punct">&gt;&lt;/</span><span class="selector">i</span><span class="punct">&gt;</span>   <span class="comment">&lt;!-- 用户图标 --&gt;</span>
+<span class="punct">&lt;</span><span class="selector">i</span> <span class="property">class</span><span class="punct">=</span><span class="value">"fa fa-heart"</span><span class="punct">&gt;&lt;/</span><span class="selector">i</span><span class="punct">&gt;</span>  <span class="comment">&lt;!-- 爱心图标 --&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="anchor-nav">
+    <h4>快速导航</h4>
+    <a href="#format">一、字体格式</a>
+    <a href="#fontface">二、@font-face</a>
+    <a href="#iconfont">三、字体图标</a>
+    <a href="#fontawesome">四、Font Awesome</a>
+  </nav>
+</body>
+</html>

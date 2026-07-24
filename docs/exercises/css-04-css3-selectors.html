@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>CSS3 选择器详解 - 学习笔记</title>
+  <style>
+    /* ========== 基础重置 ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Microsoft YaHei', 'SimSun', sans-serif;
+      background-color: #F7F7F7;
+      padding-bottom: 50px;
+    }
+
+    /* ========== 版心容器 ========== */
+    .wrapper {
+      width: 1024px;
+      margin: 0 auto;
+    }
+    .wrapper > header {
+      text-align: center;
+      padding: 30px;
+      font-size: 32px;
+      color: #333;
+    }
+    .section {
+      min-height: 200px;
+      margin-bottom: 30px;
+      box-shadow: 1px 1px 4px #DDD;
+      background-color: #FFF;
+      border-radius: 4px;
+    }
+    .section > header {
+      padding: 15px 20px;
+      font-size: 20px;
+      color: #333;
+      background-color: #EEE;
+      border-radius: 4px 4px 0 0;
+    }
+    .section > header code {
+      background: #333;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 16px;
+    }
+    .wrap-box {
+      padding: 20px;
+    }
+    .desc {
+      color: #666;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    /* ========== 代码展示区 ========== */
+    .code-block {
+      background: #282c34;
+      color: #abb2bf;
+      padding: 15px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      margin: 0;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .code-block .selector { color: #e06c75; }
+    .code-block .property { color: #d19a66; }
+    .code-block .value { color: #98c379; }
+    .code-block .punct { color: #abb2bf; }
+    .code-block .comment { color: #5c6370; font-style: italic; }
+
+    /* ========== 一、属性选择器 ========== */
+
+    /* E[attr] - 只要有 href 属性的 a 标签 */
+    .section-attr1 a[href] {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    /* E[attr="val"] - href 完全等于 ./a.rmvb */
+    .section-attr2 a[href="./a.rmvb"] {
+      color: #e74c3c;
+    }
+
+    /* E[attr~=val] - class 包含 download 这个词（空格分隔） */
+    .section-attr3 a[class~="download"] {
+      color: #e74c3c;
+    }
+
+    /* E[attr|=val] - class 等于 download 或以 download- 开头 */
+    .section-attr4 a[class|="download"] {
+      color: #e74c3c;
+    }
+
+    /* E[attr^=val] - class 以 download 开头 */
+    .section-attr5 a[class^="download"] {
+      color: #e74c3c;
+    }
+
+    /* E[attr$=val] - class 以 download 结尾 */
+    .section-attr6 a[class$="download"] {
+      color: #e74c3c;
+    }
+
+    /* E[attr*=val] - class 任意位置包含 download */
+    .section-attr7 a[class*="download"] {
+      color: #e74c3c;
+    }
+
+    /* 表单属性选择器示例 */
+    .section-attr8 input[type="text"] {
+      border: 2px solid #3498db;
+      padding: 5px 10px;
+    }
+    .section-attr8 input[type="password"] {
+      border: 2px solid #e74c3c;
+      padding: 5px 10px;
+    }
+    .section-attr8 input[type="submit"] {
+      background: #2ecc71;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      cursor: pointer;
+    }
+
+    /* ========== 二、结构伪类选择器 ========== */
+
+    /* :first-child - 第一个子元素 */
+    .section-struct1 li:first-child {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    /* :last-child - 最后一个子元素 */
+    .section-struct2 li:last-child {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    /* :nth-child(n) - 第 n 个子元素 */
+    .section-struct3 li:nth-child(3) {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    /* :nth-child(odd) - 奇数项 */
+    .section-struct4 li:nth-child(odd) {
+      background-color: #ecf0f1;
+    }
+
+    /* :nth-child(even) - 偶数项 */
+    .section-struct5 li:nth-child(even) {
+      background-color: #ecf0f1;
+    }
+
+    /* :nth-child(2n) - 2的倍数 */
+    .section-struct6 li:nth-child(2n) {
+      color: #e74c3c;
+    }
+
+    /* :nth-child(2n+1) - 奇数项 */
+    .section-struct7 li:nth-child(2n+1) {
+      color: #3498db;
+    }
+
+    /* :nth-child(-n+3) - 前3个 */
+    .section-struct8 li:nth-child(-n+3) {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    /* :nth-last-child(-n+3) - 最后3个 */
+    .section-struct9 li:nth-last-child(-n+3) {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    /* :first-of-type - 同类型中的第一个 */
+    .section-struct10 p:first-of-type {
+      color: #e74c3c;
+    }
+
+    /* :last-of-type - 同类型中的最后一个 */
+    .section-struct11 p:last-of-type {
+      color: #e74c3c;
+    }
+
+    /* :nth-of-type(2) - 同类型中的第2个 */
+    .section-struct12 p:nth-of-type(2) {
+      color: #e74c3c;
+    }
+
+    /* :empty - 空元素 */
+    .section-struct13 div:empty {
+      width: 100px;
+      height: 30px;
+      background-color: #e74c3c;
+      display: inline-block;
+    }
+
+    /* :target - 锚点目标 */
+    .section-struct14 div:target {
+      background-color: #fff3cd;
+      padding: 10px;
+      border: 2px solid #ffc107;
+    }
+
+    /* ========== 三、伪元素选择器 ========== */
+
+    /* ::before - 在元素前插入内容 */
+    .section-pseudo1 .tag::before {
+      content: "【前缀】";
+      color: #e74c3c;
+      margin-right: 5px;
+    }
+
+    /* ::after - 在元素后插入内容 */
+    .section-pseudo2 .tag::after {
+      content: "【后缀】";
+      color: #3498db;
+      margin-left: 5px;
+    }
+
+    /* ::before + ::after 组合使用 - 引号效果 */
+    .section-pseudo3 .quote::before {
+      content: '"';
+      font-size: 24px;
+      color: #e74c3c;
+    }
+    .section-pseudo3 .quote::after {
+      content: '"';
+      font-size: 24px;
+      color: #e74c3c;
+    }
+
+    /* ::before 做图标 */
+    .section-pseudo4 .tip::before {
+      content: "💡";
+      margin-right: 5px;
+    }
+    .section-pseudo4 .warn::before {
+      content: "⚠️";
+      margin-right: 5px;
+    }
+    .section-pseudo4 .error::before {
+      content: "❌";
+      margin-right: 5px;
+    }
+
+    /* ========== 公共样式 ========== */
+    ul.demo-list {
+      list-style: none;
+      padding: 0;
+    }
+    ul.demo-list li {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+    }
+    ul.demo-list li:last-child {
+      border-bottom: none;
+    }
+    a.demo-link {
+      display: inline-block;
+      margin: 5px 10px;
+      padding: 5px 15px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      text-decoration: none;
+      color: #333;
+    }
+    .demo-box {
+      padding: 10px;
+      margin: 5px 0;
+      background: #f9f9f9;
+      border-radius: 3px;
+    }
+    .anchor-nav {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .anchor-nav h4 {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #333;
+    }
+    .anchor-nav a {
+      display: block;
+      padding: 4px 0;
+      font-size: 13px;
+      color: #666;
+      text-decoration: none;
+    }
+    .anchor-nav a:hover {
+      color: #3498db;
+    }
+    .result-label {
+      font-size: 12px;
+      color: #999;
+      margin: 10px 0 5px;
+      border-top: 1px dashed #ddd;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>CSS3 选择器详解 - 学习笔记</header>
+
+    <!-- ========== 一、属性选择器 ========== -->
+    <div class="section" id="attr">
+      <header>一、属性选择器 <code>[]</code></header>
+      <div class="wrap-box">
+        <p class="desc">匹配含义：^ 开头 &nbsp;&nbsp; $ 结尾 &nbsp;&nbsp; * 包含</p>
+
+        <!-- E[attr] -->
+        <div class="section section-attr1" style="margin-bottom:15px">
+          <header><code>E[attr]</code> - 选中带有 attr 属性的 E 元素</header>
+          <div class="wrap-box">
+            <p class="desc">a[href] → 只要有 href 属性的 a 标签都变红</p>
+            <div class="code-block">
+              <pre><span class="selector">a[href]</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">font-weight</span><span class="punct">:</span> <span class="value">bold</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <a href="./a.rmvb" class="demo-link">链接1 (有href)</a>
+            <a class="demo-link">链接2 (无href)</a>
+            <a href="./b.rmvb" class="demo-link">链接3 (有href)</a>
+          </div>
+        </div>
+
+        <!-- E[attr="val"] -->
+        <div class="section section-attr2" style="margin-bottom:15px">
+          <header><code>E[attr="val"]</code> - 属性值完全等于 val</header>
+          <div class="wrap-box">
+            <p class="desc">a[href="./a.rmvb"] → href 完全等于 ./a.rmvb 才变红</p>
+            <div class="code-block">
+              <pre><span class="selector">a[href="./a.rmvb"]</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <a href="./a.rmvb" class="demo-link">./a.rmvb</a>
+            <a href="./b.rmvb" class="demo-link">./b.rmvb</a>
+            <a href="./a.rmvb" class="demo-link">./a.rmvb</a>
+          </div>
+        </div>
+
+        <!-- E[attr~=val] -->
+        <div class="section section-attr3" style="margin-bottom:15px">
+          <header><code>E[attr~="val"]</code> - 属性值包含 val（空格分隔的词）</header>
+          <div class="wrap-box">
+            <p class="desc">a[class~="download"] → class 包含 download 这个词（被空格分隔开才算）</p>
+            <div class="code-block">
+              <pre><span class="selector">a[class~="download"]</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <a href="#" class="demo-link download">download</a>
+            <a href="#" class="demo-link download-movie">download-movie</a>
+            <a href="#" class="demo-link moviedownload">moviedownload（不匹配）</a>
+          </div>
+        </div>
+
+        <!-- E[attr|=val] -->
+        <div class="section section-attr4" style="margin-bottom:15px">
+          <header><code>E[attr|="val"]</code> - 等于 val 或以 val- 开头</header>
+          <div class="wrap-box">
+            <p class="desc">a[class|="download"] → class 是 download 或 download-xxx</p>
+            <div class="code-block">
+              <pre><span class="selector">a[class|="download"]</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <a href="#" class="demo-link download">download ✓</a>
+            <a href="#" class="demo-link download-movie">download-movie ✓</a>
+            <a href="#" class="demo-link moviedownload">moviedownload ✗</a>
+          </div>
+        </div>
+
+        <!-- E[attr^=val] -->
+        <div class="section section-attr5" style="margin-bottom:15px">
+          <header><code>E[attr^="val"]</code> - 属性值以 val 开头</header>
+          <div class="wrap-box">
+            <p class="desc">a[class^="download"] → class 以 download 开头</p>
+            <div class="code-block">
+              <pre><span class="selector">a[class^="download"]</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <a href="#" class="demo-link download">download ✓</a>
+            <a href="#" class="demo-link download-movie">download-movie ✓</a>
+            <a href="#" class="demo-link moviedownload">moviedownload ✗</a>
+          </div>
+        </div>
+
+        <!-- E[attr$=val] -->
+        <div class="section section-attr6" style="margin-bottom:15px">
+          <header><code>E[attr$="val"]</code> - 属性值以 val 结尾</header>
+          <div class="wrap-box">
+            <p class="desc">a[class$="download"] → class 以 download 结尾</p>
+            <div class="code-block">
+              <pre><span class="selector">a[class$="download"]</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <a href="#" class="demo-link download">download ✓</a>
+            <a href="#" class="demo-link moviedownload">moviedownload ✓</a>
+            <a href="#" class="demo-link download-movie">download-movie ✗</a>
+          </div>
+        </div>
+
+        <!-- E[attr*=val] -->
+        <div class="section section-attr7" style="margin-bottom:15px">
+          <header><code>E[attr*="val"]</code> - 属性值任意位置包含 val</header>
+          <div class="wrap-box">
+            <p class="desc">a[class*="download"] → class 任意位置包含 download</p>
+            <div class="code-block">
+              <pre><span class="selector">a[class*="download"]</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <a href="#" class="demo-link download">download ✓</a>
+            <a href="#" class="demo-link moviedownload">moviedownload ✓</a>
+            <a href="#" class="demo-link download-movie">download-movie ✓</a>
+          </div>
+        </div>
+
+        <!-- 表单属性选择器 -->
+        <div class="section section-attr8" style="margin-bottom:15px">
+          <header>表单属性选择器实际应用</header>
+          <div class="wrap-box">
+            <p class="desc">根据 input 的 type 属性分别设置不同样式</p>
+            <div class="code-block">
+              <pre><span class="selector">input[type="text"]</span> <span class="punct">{</span>
+  <span class="property">border</span><span class="punct">:</span> <span class="value">2px solid #3498db</span><span class="punct">;</span>
+  <span class="property">padding</span><span class="punct">:</span> <span class="value">5px 10px</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">input[type="password"]</span> <span class="punct">{</span>
+  <span class="property">border</span><span class="punct">:</span> <span class="value">2px solid #e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">input[type="submit"]</span> <span class="punct">{</span>
+  <span class="property">background</span><span class="punct">:</span> <span class="value">#2ecc71</span><span class="punct">;</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">white</span><span class="punct">;</span>
+  <span class="property">border</span><span class="punct">:</span> <span class="value">none</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <form>
+              <p>姓名: <input type="text" placeholder="文本框蓝色边框"></p>
+              <p>密码: <input type="password" placeholder="密码框红色边框"></p>
+              <p><input type="submit" value="提交按钮"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 二、结构伪类选择器 ========== -->
+    <div class="section" id="struct">
+      <header>二、结构伪类选择器 <code>:</code></header>
+      <div class="wrap-box">
+        <p class="desc">通过元素在父元素中的位置来筛选</p>
+
+        <!-- :first-child -->
+        <div class="section section-struct1" style="margin-bottom:15px">
+          <header><code>E:first-child</code> - 第一个子元素</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">li:first-child</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">font-weight</span><span class="punct">:</span> <span class="value">bold</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项（变红）</li>
+              <li>第2项</li>
+              <li>第3项</li>
+              <li>第4项</li>
+              <li>第5项</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :last-child -->
+        <div class="section section-struct2" style="margin-bottom:15px">
+          <header><code>E:last-child</code> - 最后一个子元素</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">li:last-child</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">font-weight</span><span class="punct">:</span> <span class="value">bold</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项</li>
+              <li>第2项</li>
+              <li>第3项</li>
+              <li>第4项</li>
+              <li>第5项（变红）</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :nth-child(n) -->
+        <div class="section section-struct3" style="margin-bottom:15px">
+          <header><code>E:nth-child(n)</code> - 第 n 个子元素</header>
+          <div class="wrap-box">
+            <p class="desc">li:nth-child(3) → 第3个 li</p>
+            <div class="code-block">
+              <pre><span class="selector">li:nth-child(3)</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">font-weight</span><span class="punct">:</span> <span class="value">bold</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项</li>
+              <li>第2项</li>
+              <li>第3项（变红）</li>
+              <li>第4项</li>
+              <li>第5项</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :nth-child(odd) -->
+        <div class="section section-struct4" style="margin-bottom:15px">
+          <header><code>E:nth-child(odd)</code> - 奇数项</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">li:nth-child(odd)</span> <span class="punct">{</span>
+  <span class="property">background-color</span><span class="punct">:</span> <span class="value">#ecf0f1</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项（灰色背景）</li>
+              <li>第2项</li>
+              <li>第3项（灰色背景）</li>
+              <li>第4项</li>
+              <li>第5项（灰色背景）</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :nth-child(even) -->
+        <div class="section section-struct5" style="margin-bottom:15px">
+          <header><code>E:nth-child(even)</code> - 偶数项</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">li:nth-child(even)</span> <span class="punct">{</span>
+  <span class="property">background-color</span><span class="punct">:</span> <span class="value">#ecf0f1</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项</li>
+              <li>第2项（灰色背景）</li>
+              <li>第3项</li>
+              <li>第4项（灰色背景）</li>
+              <li>第5项</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :nth-child(2n) -->
+        <div class="section section-struct6" style="margin-bottom:15px">
+          <header><code>E:nth-child(2n)</code> - 2的倍数（偶数）</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">li:nth-child(2n)</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项</li>
+              <li>第2项（变红）</li>
+              <li>第3项</li>
+              <li>第4项（变红）</li>
+              <li>第5项</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :nth-child(2n+1) -->
+        <div class="section section-struct7" style="margin-bottom:15px">
+          <header><code>E:nth-child(2n+1)</code> - 奇数项</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">li:nth-child(2n+1)</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#3498db</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项（变蓝）</li>
+              <li>第2项</li>
+              <li>第3项（变蓝）</li>
+              <li>第4项</li>
+              <li>第5项（变蓝）</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :nth-child(-n+3) -->
+        <div class="section section-struct8" style="margin-bottom:15px">
+          <header><code>E:nth-child(-n+3)</code> - 前3个</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">li:nth-child(-n+3)</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">font-weight</span><span class="punct">:</span> <span class="value">bold</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项（变红）</li>
+              <li>第2项（变红）</li>
+              <li>第3项（变红）</li>
+              <li>第4项</li>
+              <li>第5项</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :nth-last-child(-n+3) -->
+        <div class="section section-struct9" style="margin-bottom:15px">
+          <header><code>E:nth-last-child(-n+3)</code> - 最后3个</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">li:nth-last-child(-n+3)</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">font-weight</span><span class="punct">:</span> <span class="value">bold</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <ul class="demo-list">
+              <li>第1项</li>
+              <li>第2项</li>
+              <li>第3项（变红）</li>
+              <li>第4项（变红）</li>
+              <li>第5项（变红）</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- :first-of-type -->
+        <div class="section section-struct10" style="margin-bottom:15px">
+          <header><code>E:first-of-type</code> - 同类型中的第一个</header>
+          <div class="wrap-box">
+            <p class="desc">同级元素中，第一个 p 标签</p>
+            <div class="code-block">
+              <pre><span class="selector">p:first-of-type</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <div class="demo-box">
+              <span>我是span</span>
+              <p>第1个p（变红）</p>
+              <p>第2个p</p>
+              <p>第3个p</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- :last-of-type -->
+        <div class="section section-struct11" style="margin-bottom:15px">
+          <header><code>E:last-of-type</code> - 同类型中的最后一个</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">p:last-of-type</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <div class="demo-box">
+              <span>我是span</span>
+              <p>第1个p</p>
+              <p>第2个p</p>
+              <p>第3个p（变红）</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- :nth-of-type(2) -->
+        <div class="section section-struct12" style="margin-bottom:15px">
+          <header><code>E:nth-of-type(n)</code> - 同类型中的第 n 个</header>
+          <div class="wrap-box">
+            <p class="desc">p:nth-of-type(2) → 同级中第2个 p 元素（不是第2个子元素）</p>
+            <div class="code-block">
+              <pre><span class="selector">p:nth-of-type(2)</span> <span class="punct">{</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <div class="demo-box">
+              <span>span1</span>
+              <p>第1个p</p>
+              <span>span2</span>
+              <p>第2个p（变红）</p>
+              <p>第3个p</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- :empty -->
+        <div class="section section-struct13" style="margin-bottom:15px">
+          <header><code>E:empty</code> - 没有任何子节点的元素</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">div:empty</span> <span class="punct">{</span>
+  <span class="property">width</span><span class="punct">:</span> <span class="value">100px</span><span class="punct">;</span>
+  <span class="property">height</span><span class="punct">:</span> <span class="value">30px</span><span class="punct">;</span>
+  <span class="property">background-color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">display</span><span class="punct">:</span> <span class="value">inline-block</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <div></div> ← 空元素（红色背景）<br>
+            <div>有内容</div> ← 有内容的元素不受影响
+          </div>
+        </div>
+
+        <!-- :target -->
+        <div class="section section-struct14" style="margin-bottom:15px">
+          <header><code>E:target</code> - 锚点指向的元素</header>
+          <div class="wrap-box">
+            <p class="desc">点击链接，对应 id 的段落会高亮（用于单页导航高亮）</p>
+            <div class="code-block">
+              <pre><span class="selector">div:target</span> <span class="punct">{</span>
+  <span class="property">background-color</span><span class="punct">:</span> <span class="value">#fff3cd</span><span class="punct">;</span>
+  <span class="property">padding</span><span class="punct">:</span> <span class="value">10px</span><span class="punct">;</span>
+  <span class="property">border</span><span class="punct">:</span> <span class="value">2px solid #ffc107</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（点击试试）：</p>
+            <a href="#target1">点击高亮段落1</a>
+            <a href="#target2">点击高亮段落2</a>
+            <a href="#target3">点击高亮段落3</a>
+            <div id="target1" class="demo-box">段落1：点击上方链接我会变黄</div>
+            <div id="target2" class="demo-box">段落2：点击上方链接我会变黄</div>
+            <div id="target3" class="demo-box">段落3：点击上方链接我会变黄</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 三、伪元素选择器 ========== -->
+    <div class="section" id="pseudo">
+      <header>三、伪元素选择器 <code>::</code></header>
+      <div class="wrap-box">
+        <p class="desc">通过 CSS 模拟 HTML 标签效果，必须配合 content 属性使用</p>
+
+        <!-- ::before -->
+        <div class="section section-pseudo1" style="margin-bottom:15px">
+          <header><code>E::before</code> - 在元素前面插入内容</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">span::before</span> <span class="punct">{</span>
+  <span class="property">content</span><span class="punct">:</span> <span class="value">"【前缀】"</span><span class="punct">;</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">margin-right</span><span class="punct">:</span> <span class="value">5px</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <span class="tag">这是一个 span</span>
+          </div>
+        </div>
+
+        <!-- ::after -->
+        <div class="section section-pseudo2" style="margin-bottom:15px">
+          <header><code>E::after</code> - 在元素后面插入内容</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">span::after</span> <span class="punct">{</span>
+  <span class="property">content</span><span class="punct">:</span> <span class="value">"【后缀】"</span><span class="punct">;</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#3498db</span><span class="punct">;</span>
+  <span class="property">margin-left</span><span class="punct">:</span> <span class="value">5px</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <span class="tag">这是一个 span</span>
+          </div>
+        </div>
+
+        <!-- ::before + ::after 引号效果 -->
+        <div class="section section-pseudo3" style="margin-bottom:15px">
+          <header><code>::before + ::after</code> 组合 - 引号效果</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">.quote::before</span> <span class="punct">{</span>
+  <span class="property">content</span><span class="punct">:</span> <span class="value">'"'</span><span class="punct">;</span>
+  <span class="property">font-size</span><span class="punct">:</span> <span class="value">24px</span><span class="punct">;</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.quote::after</span> <span class="punct">{</span>
+  <span class="property">content</span><span class="punct">:</span> <span class="value">'"'</span><span class="punct">;</span>
+  <span class="property">font-size</span><span class="punct">:</span> <span class="value">24px</span><span class="punct">;</span>
+  <span class="property">color</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <span class="quote">这是一句名言</span>
+          </div>
+        </div>
+
+        <!-- ::before 图标 -->
+        <div class="section section-pseudo4" style="margin-bottom:15px">
+          <header><code>::before</code> 实际应用 - 图标</header>
+          <div class="wrap-box">
+            <p class="desc">用 ::before 在文字前面加图标，不需要修改 HTML 结构</p>
+            <div class="code-block">
+              <pre><span class="selector">.tip::before</span> <span class="punct">{</span>
+  <span class="property">content</span><span class="punct">:</span> <span class="value">"💡"</span><span class="punct">;</span>
+  <span class="property">margin-right</span><span class="punct">:</span> <span class="value">5px</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.warn::before</span> <span class="punct">{</span>
+  <span class="property">content</span><span class="punct">:</span> <span class="value">"⚠️"</span><span class="punct">;</span>
+  <span class="property">margin-right</span><span class="punct">:</span> <span class="value">5px</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.error::before</span> <span class="punct">{</span>
+  <span class="property">content</span><span class="punct">:</span> <span class="value">"❌"</span><span class="punct">;</span>
+  <span class="property">margin-right</span><span class="punct">:</span> <span class="value">5px</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <div class="tip">提示信息</div>
+            <div class="warn">警告信息</div>
+            <div class="error">错误信息</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 右侧导航 -->
+  <nav class="anchor-nav">
+    <h4>快速导航</h4>
+    <a href="#attr">一、属性选择器</a>
+    <a href="#struct">二、结构伪类选择器</a>
+    <a href="#pseudo">三、伪元素选择器</a>
+  </nav>
+</body>
+</html>

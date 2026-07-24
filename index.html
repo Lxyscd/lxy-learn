@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LXY - 个人技术站</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-elevated: #111111;
+      --bg-card: #161616;
+      --bg-hover: #1a1a1a;
+      --text: #e5e5e5;
+      --text-secondary: #888888;
+      --text-muted: #555555;
+      --border: #222222;
+      --border-light: #2a2a2a;
+      --accent: #ffffff;
+      --accent-dim: #cccccc;
+      --tag-frontend: #60a5fa;
+      --tag-ai: #a78bfa;
+      --tag-backend: #34d399;
+      --tag-engineering: #fbbf24;
+      --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    }
+
+    [data-theme="light"] {
+      --bg: #fafafa;
+      --bg-elevated: #ffffff;
+      --bg-card: #ffffff;
+      --bg-hover: #f5f5f5;
+      --text: #1a1a1a;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --border: #e5e5e5;
+      --border-light: #eeeeee;
+      --accent: #000000;
+      --accent-dim: #333333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: inherit;
+    }
+
+    .nav-link:hover { color: var(--text); background: var(--bg-hover); }
+    .nav-link.active { color: var(--text); background: var(--bg-card); }
+
+    .theme-toggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover { color: var(--text); border-color: var(--text-muted); }
+
+    /* Main Content */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 2rem 0;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Hero Section */
+    .hero {
+      padding: 6rem 0 4rem;
+      max-width: 720px;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      max-width: 560px;
+    }
+
+    .hero-subtitle a {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .hero-subtitle a:hover { color: var(--accent); }
+
+    /* Section */
+    .section { padding: 3rem 0; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .section-link {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .section-link:hover { color: var(--text); }
+
+    /* Category Tags */
+    .categories {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .category-tag {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.3rem 0.75rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .category-tag:hover { border-color: var(--text-muted); color: var(--text); }
+    .category-tag.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+    /* Article Grid */
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .article-card {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .article-card:hover { background: var(--bg-hover); }
+
+    .article-card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+
+    .article-card-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .article-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .article-tag {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+    }
+
+    .article-tag.frontend { color: var(--tag-frontend); border-color: color-mix(in srgb, var(--tag-frontend) 30%, transparent); }
+    .article-tag.ai { color: var(--tag-ai); border-color: color-mix(in srgb, var(--tag-ai) 30%, transparent); }
+    .article-tag.backend { color: var(--tag-backend); border-color: color-mix(in srgb, var(--tag-backend) 30%, transparent); }
+    .article-tag.engineering { color: var(--tag-engineering); border-color: color-mix(in srgb, var(--tag-engineering) 30%, transparent); }
+
+    /* Code Library */
+    .code-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .code-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+
+    .code-card:hover {
+      border-color: var(--text-muted);
+      transform: translateY(-2px);
+    }
+
+    .code-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .code-card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .code-card-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* About Page */
+    .about-content {
+      max-width: 640px;
+      padding: 4rem 0;
+    }
+
+    .about-content h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .about-content h2:first-child { margin-top: 0; }
+
+    .about-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .tech-tag {
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-link {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .social-link:hover { color: var(--text); }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      margin-top: 4rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-inner { padding: 0 1rem; }
+      .main { padding: 56px 1rem 0; }
+      .hero { padding: 3rem 0 2rem; }
+      .article-grid { grid-template-columns: 1fr; }
+      .code-grid { grid-template-columns: 1fr; }
+      .nav-links .nav-link:not(.theme-toggle) { display: none; }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page.active { animation: fadeIn 0.3s ease; }
+  </style>
+</head>
+<body data-theme="dark">
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" data-page="home">LXY</a>
+      <div class="nav-links">
+        <button class="nav-link active" data-page="home">首页</button>
+        <button class="nav-link" data-page="articles">文章</button>
+        <button class="nav-link" data-page="code">代码</button>
+        <button class="nav-link" data-page="about">关于</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+          <span class="theme-icon">◐</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Home Page -->
+    <div class="page active" id="page-home">
+      <section class="hero">
+        <h1 class="hero-title">你好，我是 LXY 👋</h1>
+        <p class="hero-subtitle">
+          一个从 Java 后端转向前端的工程师，热爱探索技术的边界。
+          目前专注于前端开发、AI 应用和工程化实践。
+          这里记录我的学习、思考和创造。
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">最新文章</span>
+          <a href="#" class="section-link" data-page="articles">查看全部 →</a>
+        </div>
+        <div class="article-grid">
+          <a href="articles/from-java-to-frontend.html" class="article-card">
+            <div class="article-card-title">从 Java 到前端：一个后端工程师的前端之路</div>
+            <div class="article-card-desc">记录我从后端转向前端的学习历程，分享三件套（HTML/CSS/JS）的学习心得和踩坑经验。</div>
+            <div class="article-card-meta">
+              <span class="article-tag frontend">前端</span>
+              <span>2025.07.10</span>
+            </div>
+          </a>
+          <a href="#" class="article-card">
+            <div class="article-card-title">JavaScript 异步编程深度解析</div>
+            <div class="article-card-desc">从 Event Loop 到 Promise、async/await、Generator，彻底搞懂 JS 异步机制。</div>
+            <div class="article-card-meta">
+              <span class="article-tag frontend">前端</span>
+              <span>2025.07.15</span>
+            </div>
+          </a>
+          <a href="#" class="article-card">
+            <div class="article-card-title">AI 时代下的前端工程师</div>
+            <div class="article-card-desc">探讨 AI 如何改变前端开发的工作方式，以及我们应该如何适应这个变化。</div>
+            <div class="article-card-meta">
+              <span class="article-tag ai">AI</span>
+              <span>2025.07.20</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">代码库</span>
+          <a href="#" class="section-link" data-page="code">查看全部 →</a>
+        </div>
+        <div class="code-grid">
+          <a href="docs/html-all-knowledge.html" class="code-card">
+            <div class="code-card-icon">📄</div>
+            <div class="code-card-title">HTML 知识全集</div>
+            <div class="code-card-desc">完整的 HTML 学习文档，涵盖所有常用标签和属性</div>
+          </a>
+          <a href="docs/css-all-knowledge.html" class="code-card">
+            <div class="code-card-icon">🎨</div>
+            <div class="code-card-title">CSS 知识全集</div>
+            <div class="code-card-desc">从基础到进阶，包括 Flexbox、Grid、动画等</div>
+          </a>
+          <a href="docs/js-all-knowledge.html" class="code-card">
+            <div class="code-card-icon">⚡</div>
+            <div class="code-card-title">JavaScript 知识全集</div>
+            <div class="code-card-desc">JS 核心概念、DOM 操作、异步编程详解</div>
+          </a>
+          <a href="docs/js-async-explained.html" class="code-card">
+            <div class="code-card-icon">🔄</div>
+            <div class="code-card-title">JS 异步编程全解</div>
+            <div class="code-card-desc">24 章深入讲解异步机制，附执行流程图</div>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Articles Page -->
+    <div class="page" id="page-articles">
+      <section class="section" style="padding-top: 3rem;">
+        <h1 style="font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem;">文章</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">记录学习、思考和探索的过程</p>
+
+        <div class="categories">
+          <button class="category-tag active" data-cat="all">全部</button>
+          <button class="category-tag" data-cat="frontend">前端</button>
+          <button class="category-tag" data-cat="ai">AI</button>
+          <button class="category-tag" data-cat="backend">后端</button>
+          <button class="category-tag" data-cat="engineering">工程化</button>
+        </div>
+
+        <div class="article-grid" id="articleList">
+          <a href="articles/from-java-to-frontend.html" class="article-card" data-cat="frontend">
+            <div class="article-card-title">从 Java 到前端：一个后端工程师的前端之路</div>
+            <div class="article-card-desc">记录我从后端转向前端的学习历程，分享三件套（HTML/CSS/JS）的学习心得和踩坑经验。</div>
+            <div class="article-card-meta">
+              <span class="article-tag frontend">前端</span>
+              <span>2025.07.10</span>
+            </div>
+          </a>
+          <a href="docs/js-async-explained.html" class="article-card" data-cat="frontend">
+            <div class="article-card-title">JavaScript 异步编程深度解析</div>
+            <div class="article-card-desc">从 Event Loop 到 Promise、async/await、Generator，彻底搞懂 JS 异步机制。</div>
+            <div class="article-card-meta">
+              <span class="article-tag frontend">前端</span>
+              <span>2025.07.15</span>
+            </div>
+          </a>
+          <a href="docs/js-advanced-topics.html" class="article-card" data-cat="frontend">
+            <div class="article-card-title">JS 高级特性全解</div>
+            <div class="article-card-desc">ES6+ 核心特性深入讲解：解构、Symbol、Proxy、Module 等。</div>
+            <div class="article-card-meta">
+              <span class="article-tag frontend">前端</span>
+              <span>2025.07.18</span>
+            </div>
+          </a>
+          <a href="#" class="article-card" data-cat="ai">
+            <div class="article-card-title">AI 时代下的前端工程师</div>
+            <div class="article-card-desc">探讨 AI 如何改变前端开发的工作方式，以及我们应该如何适应这个变化。</div>
+            <div class="article-card-meta">
+              <span class="article-tag ai">AI</span>
+              <span>2025.07.20</span>
+            </div>
+          </a>
+          <a href="#" class="article-card" data-cat="backend">
+            <div class="article-card-title">后端工程师看前端工程化</div>
+            <div class="article-card-desc">从后端视角理解前端工程化：构建工具、CI/CD、模块化演进。</div>
+            <div class="article-card-meta">
+              <span class="article-tag backend">后端</span>
+              <span>2025.07.22</span>
+            </div>
+          </a>
+          <a href="#" class="article-card" data-cat="engineering">
+            <div class="article-card-title">从 NoCode 到 GitHub Pages：我的部署实践</div>
+            <div class="article-card-desc">将 NoCode 项目迁移到 GitHub Pages 的完整过程，包括自动化部署配置。</div>
+            <div class="article-card-meta">
+              <span class="article-tag engineering">工程化</span>
+              <span>2025.07.23</span>
+            </div>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Code Page -->
+    <div class="page" id="page-code">
+      <section class="section" style="padding-top: 3rem;">
+        <h1 style="font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem;">代码库</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">学习笔记、练习项目和知识文档</p>
+
+        <h2 style="font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 1rem;">📚 知识文档</h2>
+        <div class="code-grid" style="margin-bottom: 3rem;">
+          <a href="docs/html-all-knowledge.html" class="code-card">
+            <div class="code-card-icon">📄</div>
+            <div class="code-card-title">HTML 知识全集</div>
+            <div class="code-card-desc">完整的 HTML 学习文档，涵盖所有常用标签和属性</div>
+          </a>
+          <a href="docs/css-all-knowledge.html" class="code-card">
+            <div class="code-card-icon">🎨</div>
+            <div class="code-card-title">CSS 知识全集</div>
+            <div class="code-card-desc">从基础到进阶，包括 Flexbox、Grid、动画等</div>
+          </a>
+          <a href="docs/js-all-knowledge.html" class="code-card">
+            <div class="code-card-icon">⚡</div>
+            <div class="code-card-title">JavaScript 知识全集</div>
+            <div class="code-card-desc">JS 核心概念、DOM 操作、异步编程详解</div>
+          </a>
+          <a href="docs/js-async-explained.html" class="code-card">
+            <div class="code-card-icon">🔄</div>
+            <div class="code-card-title">JS 异步编程全解</div>
+            <div class="code-card-desc">24 章深入讲解异步机制，附执行流程图</div>
+          </a>
+          <a href="docs/js-advanced-topics.html" class="code-card">
+            <div class="code-card-icon">🚀</div>
+            <div class="code-card-title">JS 高级特性全解</div>
+            <div class="code-card-desc">ES6+ 核心特性：解构、Symbol、Proxy、Module</div>
+          </a>
+        </div>
+
+        <h2 style="font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 1rem;">💻 练习项目</h2>
+        <div class="code-grid">
+          <a href="docs/exercises/html-01-store-card.html" class="code-card">
+            <div class="code-card-icon">🏪</div>
+            <div class="code-card-title">门店信息卡片</div>
+            <div class="code-card-desc">HTML 语义化标签练习</div>
+          </a>
+          <a href="docs/exercises/css-01-card-style.html" class="code-card">
+            <div class="code-card-icon">✨</div>
+            <div class="code-card-title">卡片样式美化</div>
+            <div class="code-card-desc">CSS 盒模型与阴影练习</div>
+          </a>
+          <a href="docs/exercises/css-06-flex.html" class="code-card">
+            <div class="code-card-icon">📐</div>
+            <div class="code-card-title">Flex 布局</div>
+            <div class="code-card-desc">Flexbox 布局练习</div>
+          </a>
+          <a href="docs/exercises/js-01-array.html" class="code-card">
+            <div class="code-card-icon">📊</div>
+            <div class="code-card-title">数组操作</div>
+            <div class="code-card-desc">JS 数组方法练习</div>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- About Page -->
+    <div class="page" id="page-about">
+      <div class="about-content">
+        <h2>关于我</h2>
+        <p>你好！我是 LXY，一名从 Java 后端转向前端的软件工程师。目前就职于美团，专注于前端开发和相关技术探索。</p>
+        <p>我相信技术的本质是解决问题，而不是追逐热点。学习新技术的时侯，我习惯深挖底层原理，从"为什么"开始，再到"怎么做"。</p>
+
+        <h2>技术栈</h2>
+        <div class="tech-stack">
+          <span class="tech-tag">HTML5</span>
+          <span class="tech-tag">CSS3</span>
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">TypeScript</span>
+          <span class="tech-tag">Vue 3</span>
+          <span class="tech-tag">React</span>
+          <span class="tech-tag">Node.js</span>
+          <span class="tech-tag">Java</span>
+          <span class="tech-tag">Spring Boot</span>
+          <span class="tech-tag">Git</span>
+          <span class="tech-tag">Vite</span>
+          <span class="tech-tag">Python</span>
+        </div>
+
+        <h2>学习方向</h2>
+        <p>当前在前端领域深耕，同时关注 AI 应用开发、后端架构设计和工程化实践。相信全栈能力是成为优秀工程师的必经之路。</p>
+
+        <h2>联系方式</h2>
+        <div class="social-links">
+          <a href="https://github.com/Lxyscd" class="social-link" target="_blank" rel="noopener">GitHub →</a>
+          <a href="mailto:lvxinyu@meituan.com" class="social-link">Email →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© 2025 LXY · 用 ❤️ 和 HTML/CSS/JS 构建</p>
+    </footer>
+  </main>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const themeIcon = themeToggle.querySelector('.theme-icon');
+
+    function toggleTheme() {
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      themeIcon.textContent = next === 'dark' ? '◐' : '☀';
+      localStorage.setItem('theme', next);
+    }
+
+    // Restore theme
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') {
+      body.setAttribute('data-theme', 'light');
+      themeIcon.textContent = '☀';
+    }
+
+    themeToggle.addEventListener('click', toggleTheme);
+
+    // Tab Navigation
+    const navLinks = document.querySelectorAll('[data-page]');
+    const pages = document.querySelectorAll('.page');
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetPage = link.getAttribute('data-page');
+
+        // Update nav
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        if (link.classList.contains('nav-link')) {
+          link.classList.add('active');
+        }
+
+        // Update pages
+        pages.forEach(page => {
+          page.classList.remove('active');
+          if (page.id === `page-${targetPage}`) {
+            page.classList.add('active');
+          }
+        });
+
+        window.scrollTo(0, 0);
+      });
+    });
+
+    // Category Filter
+    const catTags = document.querySelectorAll('.category-tag');
+    const articleList = document.getElementById('articleList');
+
+    catTags.forEach(tag => {
+      tag.addEventListener('click', () => {
+        catTags.forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+
+        const cat = tag.getAttribute('data-cat');
+        const cards = articleList.querySelectorAll('.article-card');
+
+        cards.forEach(card => {
+          if (cat === 'all' || card.getAttribute('data-cat') === cat) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

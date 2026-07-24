@@ -1,0 +1,3342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS 知识大全 | 每一个属性 + 详细注释</title>
+
+  <!--
+    ============================================================
+    这份文件是什么？
+    ============================================================
+    这是一份"可以在浏览器里直接打开阅读、也可以当字典查"的 CSS 知识大全。
+    内容整理自：
+      1）本项目 docs/ 目录下已有的教学笔记和练习文件；
+      2）千古前端图文教程《02-CSS基础》系列文章，
+         网站地址：https://web.qianguyihao.com
+
+    组织方式：
+      - 每一大类知识点用一个 <section> 包裹，并配一个编号标题；
+      - 每个属性举例都写在小卡片里：左边是"效果预览"，右边是"源码 + 注释"；
+      - 所有源码用 <pre><code> 展示为纯文本（不会被浏览器当成真标签解析）；
+      - 页面本身也大量使用语义化标签和 CSS 属性，既是教程，也是活的示例。
+
+    怎么读这份文件：
+      - 可以直接拖到浏览器里打开，点左侧目录跳转到对应章节；
+      - 也可以用编辑器打开源码，几乎每一行都配了中文注释；
+      - 建议配合 docs/02-CSS基础语法.md 一起看，那份是精简版，这份是详尽版。
+    ============================================================
+  -->
+
+  <style>
+    /* ============ 全局样式：只为了让这份"字典"读起来舒服 ============ */
+    * { box-sizing: border-box; }
+
+    :root {
+      --primary: #4fc08d;
+      --primary-dark: #3aa876;
+      --text: #2c3e50;
+      --text-light: #666;
+      --border: #e6e6e6;
+      --bg-code: #282c34;
+      --bg-code-text: #abb2bf;
+      --warn: #e6a23c;
+      --danger: #f56c6c;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, "Microsoft Yahei", "PingFang SC", sans-serif;
+      color: var(--text);
+      line-height: 1.7;
+      background: #fafafa;
+    }
+
+    /* ---- 顶部页眉 ---- */
+    .site-header {
+      background: linear-gradient(120deg, #6c5ce7, #4fc08d);
+      color: #fff;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .site-header h1 { margin: 0 0 8px; font-size: 28px; }
+    .site-header p { margin: 0; opacity: .9; font-size: 14px; }
+
+    /* ---- 页面整体布局：左侧目录 + 右侧正文 ---- */
+    .layout {
+      display: flex;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 16px;
+      flex: 0 0 240px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+    }
+    .site-nav h2 { font-size: 14px; color: var(--text-light); margin: 0 0 8px; }
+    .site-nav ul { list-style: none; margin: 0; padding: 0; }
+    .site-nav li { margin: 2px 0; }
+    .site-nav a {
+      display: block;
+      padding: 6px 8px;
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .site-nav a:hover { background: #eefaf4; color: var(--primary-dark); }
+
+    main.content { flex: 1 1 auto; min-width: 0; }
+
+    /* ---- 每个大章节 section 的样式 ---- */
+    section.chapter {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      scroll-margin-top: 16px;
+    }
+    section.chapter > h2 {
+      margin-top: 0;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #6c5ce7;
+      color: #6c5ce7;
+    }
+    section.chapter h3 {
+      margin-top: 28px;
+      color: var(--text);
+      border-left: 4px solid #6c5ce7;
+      padding-left: 10px;
+    }
+    section.chapter h4 { color: var(--text-light); margin-bottom: 6px; }
+
+    /* ---- 知识点卡片：左边效果，右边源码 ---- */
+    .demo-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin: 14px 0 22px;
+      background: #fcfcfc;
+    }
+    .demo-preview, .demo-code {
+      flex: 1 1 320px;
+      min-width: 280px;
+    }
+    .demo-preview {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      background: #fff;
+    }
+    .demo-preview .demo-label,
+    .demo-code .demo-label {
+      display: block;
+      font-size: 12px;
+      color: #fff;
+      background: #6c5ce7;
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .demo-code .demo-label { background: #555; }
+
+    pre {
+      margin: 0;
+      background: var(--bg-code);
+      color: var(--bg-code-text);
+      padding: 12px 14px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    code { font-family: "Fira Code", Consolas, Monaco, monospace; }
+    .demo-preview code.inline,
+    p code, li code, td code {
+      background: #f1f1f1;
+      color: #c7254e;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 90%;
+    }
+
+    /* 代码里的注释高亮 */
+    .cm { color: #7f848e; font-style: italic; }
+    .ck { color: #c678dd; }       /* CSS 关键字 */
+    .cp { color: #e5c07b; }       /* CSS 属性名 */
+    .cv { color: #d19a66; }      /* CSS 属性值 */
+    .cs { color: #98c379; }       /* CSS 选择器 */
+    .cn { color: #61afef; }       /* 数字/单位 */
+
+    table.ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 14px;
+    }
+    table.ref-table th, table.ref-table td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.ref-table th { background: #f5f0ff; color: #6c5ce7; }
+    table.ref-table tr:nth-child(even) { background: #fafafa; }
+    table.ref-table td:first-child {
+      font-family: monospace;
+      white-space: nowrap;
+      color: #c7254e;
+    }
+
+    .tip, .warn, .danger {
+      padding: 10px 14px;
+      margin: 10px 0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .tip { background: #f0f9ff; border-left: 4px solid #409eff; color: #555; }
+    .warn { background: #fff7e6; border-left: 4px solid var(--warn); color: #555; }
+    .danger { background: #fef0f0; border-left: 4px solid var(--danger); color: #555; }
+
+    /* ---- 属性表格 ---- */
+    .attr-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    .attr-table th, .attr-table td {
+      border: 1px solid #dee2e6;
+      padding: 6px 12px;
+      text-align: left;
+    }
+    .attr-table th {
+      background: #e9ecef;
+      color: #495057;
+    }
+    .attr-table td:first-child {
+      font-family: monospace;
+      color: #e64980;
+      white-space: nowrap;
+    }
+
+    /* ---- 页脚 ---- */
+    .site-footer {
+      text-align: center;
+      padding: 32px 24px;
+      color: var(--text-light);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    .site-footer a { color: #6c5ce7; text-decoration: none; }
+
+    /* ---- 目录导航 ---- */
+    .toc {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+    .toc h2 { font-size: 18px; margin: 0 0 12px; color: #6c5ce7; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin: 4px 0; }
+    .toc a { color: var(--text); text-decoration: none; }
+    .toc a:hover { color: #6c5ce7; }
+
+    /* ============================================================
+       以下是教程正文里用到的"演示样式"
+       这些样式本身就是 CSS 的活示例——既是教程内容，也是教学工具
+       ============================================================ */
+
+    /* --- demo-box-1: 盒模型演示 --- */
+    .demo-box-model {
+      width: 200px;
+      height: 80px;
+      padding: 20px;
+      border: 4px solid #6c5ce7;
+      margin: 16px;
+      background: #eef0ff;
+      text-align: center;
+      line-height: 40px;
+    }
+
+    /* --- demo-float --- */
+    .demo-float-container { overflow: hidden; border: 1px solid #ccc; padding: 10px; }
+    .demo-float-left { float: left; width: 80px; height: 60px; background: #4fc08d; color: #fff; text-align: center; line-height: 60px; margin-right: 10px; }
+    .demo-float-right { float: right; width: 80px; height: 60px; background: #e6a23c; color: #fff; text-align: center; line-height: 60px; }
+
+    /* --- demo-position --- */
+    .demo-position-wrap { position: relative; height: 200px; border: 2px dashed #aaa; overflow: hidden; }
+    .demo-position-static { position: static; background: #d3f9d8; padding: 10px; margin: 5px; }
+    .demo-position-relative { position: relative; top: 10px; left: 20px; background: #fff3bf; padding: 10px; margin: 5px; }
+    .demo-position-absolute { position: absolute; top: 10px; right: 10px; background: #ffc9c9; padding: 10px; }
+    .demo-position-fixed { position: fixed; bottom: 10px; right: 10px; background: #d0ebff; padding: 10px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.15); z-index: 999; }
+
+    /* --- demo-flex --- */
+    .demo-flex-container { display: flex; gap: 10px; padding: 10px; background: #f0f0f0; border-radius: 6px; }
+    .demo-flex-item { background: #6c5ce7; color: #fff; padding: 16px 24px; border-radius: 4px; text-align: center; }
+
+    /* --- demo-grid --- */
+    .demo-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; background: #f0f0f0; border-radius: 6px; }
+    .demo-grid-item { background: #4fc08d; color: #fff; padding: 20px; border-radius: 4px; text-align: center; }
+
+    /* --- demo-transition --- */
+    .demo-transition-box {
+      width: 100px; height: 100px; background: #6c5ce7;
+      border-radius: 8px; transition: all 0.5s ease;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px;
+    }
+    .demo-transition-box:hover { width: 200px; background: #4fc08d; border-radius: 50%; }
+
+    /* --- demo-animation --- */
+    @keyframes demo-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .demo-anim-box {
+      width: 60px; height: 60px; background: #6c5ce7; margin: 10px auto;
+      animation: demo-spin 2s linear infinite; border-radius: 8px;
+    }
+
+    /* --- demo-transform --- */
+    .demo-transform-box {
+      width: 80px; height: 80px; background: #4fc08d; color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin: 10px; border-radius: 4px;
+    }
+    .demo-tf-rotate { transform: rotate(15deg); }
+    .demo-tf-scale { transform: scale(1.2); }
+    .demo-tf-skew { transform: skew(15deg, 5deg); }
+    .demo-tf-translate { transform: translate(20px, 10px); }
+
+    /* --- demo-overflow --- */
+    .demo-overflow-visible { width: 200px; height: 80px; overflow: visible; border: 2px solid #e6a23c; background: #fff7e6; padding: 8px; }
+    .demo-overflow-hidden { width: 200px; height: 80px; overflow: hidden; border: 2px solid #f56c6c; background: #fef0f0; padding: 8px; }
+    .demo-overflow-scroll { width: 200px; height: 80px; overflow: scroll; border: 2px solid #409eff; background: #f0f9ff; padding: 8px; }
+    .demo-overflow-auto { width: 200px; height: 80px; overflow: auto; border: 2px solid #6c5ce7; background: #f3f0ff; padding: 8px; }
+
+    /* --- demo-display --- */
+    .demo-display-block { display: block; background: #d3f9d8; padding: 6px 12px; margin: 4px 0; }
+    .demo-display-inline { display: inline; background: #fff3bf; padding: 6px 12px; margin: 0 4px; }
+    .demo-display-inline-block { display: inline-block; background: #d0ebff; padding: 6px 12px; margin: 0 4px; }
+    .demo-display-none { display: none; background: #ffc9c9; padding: 6px 12px; }
+
+    /* --- demo-bg --- */
+    .demo-bg-color { background-color: #4fc08d; color: #fff; padding: 16px; border-radius: 4px; }
+    .demo-bg-gradient { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 16px; border-radius: 4px; }
+    .demo-bg-clip { background: #6c5ce7; color: #fff; padding: 16px; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 24px; font-weight: bold; }
+
+    /* --- demo-border --- */
+    .demo-border-solid { border: 3px solid #6c5ce7; padding: 10px; margin: 5px; }
+    .demo-border-dashed { border: 3px dashed #e6a23c; padding: 10px; margin: 5px; }
+    .demo-border-dotted { border: 3px dotted #f56c6c; padding: 10px; margin: 5px; }
+    .demo-border-radius { border: 3px solid #4fc08d; border-radius: 12px; padding: 10px; margin: 5px; }
+    .demo-border-circle { width: 80px; height: 80px; border: 3px solid #6c5ce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 5px; }
+    .demo-border-image { border: 15px solid transparent; border-image: linear-gradient(#6c5ce7, #4fc08d) 1; padding: 10px; margin: 5px; }
+
+    /* --- demo-shadow --- */
+    .demo-box-shadow { box-shadow: 0 4px 12px rgba(108,92,231,0.3); padding: 16px; background: #fff; border-radius: 4px; margin: 5px; }
+    .demo-text-shadow { text-shadow: 2px 2px 4px rgba(108,92,231,0.5); font-size: 22px; font-weight: bold; color: #6c5ce7; padding: 10px; }
+
+    /* --- demo-sticky --- */
+    .demo-sticky-container { height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 0; }
+    .demo-sticky-header { position: sticky; top: 0; background: #6c5ce7; color: #fff; padding: 8px 12px; margin: 0; }
+    .demo-sticky-item { padding: 12px; border-bottom: 1px solid #eee; }
+
+    /* --- demo-variable --- */
+    .demo-var-card {
+      --card-bg: #fff;
+      --card-border: #6c5ce7;
+      --card-radius: 8px;
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: var(--card-radius);
+      padding: 16px;
+      margin: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     顶部页眉
+     ============================================================ -->
+<header class="site-header">
+  <h1>🎨 CSS 知识大全</h1>
+  <p>每一个属性 + 详细注释 | 整理自千古前端教程 + 项目实战笔记</p>
+</header>
+
+<!-- ============================================================
+     页面布局：左侧目录 + 右侧正文
+     ============================================================ -->
+<div class="layout">
+  <nav class="site-nav">
+    <h2>📖 目录导航</h2>
+    <ul>
+      <li><a href="#ch01">第1章：CSS 简介与引入方式</a></li>
+      <li><a href="#ch02">第2章：CSS 基本语法结构</a></li>
+      <li><a href="#ch03">第3章：选择器</a></li>
+      <li><a href="#ch04">第4章：CSS 优先级与层叠</a></li>
+      <li><a href="#ch05">第5章：字体属性</a></li>
+      <li><a href="#ch06">第6章：文本属性</a></li>
+      <li><a href="#ch07">第7章：列表属性</a></li>
+      <li><a href="#ch08">第8章：overflow 溢出属性</a></li>
+      <li><a href="#ch09">第9章：盒模型</a></li>
+      <li><a href="#ch10">第10章：背景属性</a></li>
+      <li><a href="#ch11">第11章：边框与圆角</a></li>
+      <li><a href="#ch12">第12章：阴影</a></li>
+      <li><a href="#ch13">第13章：display 显示属性</a></li>
+      <li><a href="#ch14">第14章：定位 position</a></li>
+      <li><a href="#ch15">第15章：浮动 float</a></li>
+      <li><a href="#ch16">第16章：Flex 弹性布局</a></li>
+      <li><a href="#ch17">第17章：Grid 网格布局</a></li>
+      <li><a href="#ch18">第18章：transition 过渡</a></li>
+      <li><a href="#ch19">第19章：animation 动画</a></li>
+      <li><a href="#ch20">第20章：transform 变换</a></li>
+      <li><a href="#ch21">第21章：CSS 变量</a></li>
+      <li><a href="#ch22">第22章：媒体查询与响应式</a></li>
+      <li><a href="#ch23">第23章：CSS 单位</a></li>
+      <li><a href="#ch24">第24章：颜色与渐变</a></li>
+      <li><a href="#ch25">第25章：CSS 常见面试题</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+
+<!-- ============================================================
+     第1章：CSS 简介与引入方式
+     ============================================================ -->
+<section id="ch01" class="chapter">
+  <h2>第1章：CSS 简介与引入方式</h2>
+
+  <p>CSS（Cascading Style Sheets，层叠样式表）控制网页的<strong>外观</strong>——颜色、大小、位置、动画等。HTML 决定"有什么内容"，CSS 决定"内容长什么样"。</p>
+
+  <h3>CSS 三种引入方式</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 1. 行内样式（内联样式）：直接写在 HTML 标签的 style 属性里 */</span>
+<span class="cm">/* 优点：优先级最高；缺点：难维护，结构和样式混在一起，不推荐 */</span>
+&lt;p <span class="cp">style</span>=<span class="cv">"color: red; font-size: 16px;"</span>&gt;红色文字&lt;/p&gt;
+
+<span class="cm">/* 2. 内部样式：写在 HTML 文件 &lt;style&gt; 标签中 */</span>
+<span class="cm">/* 适合：小页面、单页面 demo */</span>
+&lt;style&gt;
+  p { <span class="cp">color</span>: <span class="cv">red</span>; }
+&lt;/style&gt;
+
+<span class="cm">/* 3. 外部样式表（推荐！）：独立 .css 文件，用 &lt;link&gt; 引入 */</span>
+<span class="cm">/* 优点：结构和样式完全分离，多页面复用，浏览器缓存提速 */</span>
+&lt;link <span class="cp">rel</span>=<span class="cv">"stylesheet"</span> <span class="cp">href</span>=<span class="cv">"style.css"</span>&gt;
+
+<span class="cm">/* 4. @import 导入（不推荐，性能差） */</span>
+<span class="cm">/* 在 CSS 文件中引入另一个 CSS 文件 */</span>
+<span class="cp">@import</span> <span class="cv">url("reset.css")</span>;
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="color: red; font-size: 16px;">这是行内样式写的红色文字</p>
+      <p style="color: #6c5ce7; font-size: 14px;">这是行内样式写的紫色文字</p>
+      <div class="tip">💡 实际开发中，推荐使用外部样式表，将样式写在独立的 .css 文件中。在 Vue 项目中，样式写在 .vue 文件的 &lt;style&gt; 标签里。</div>
+    </div>
+  </div>
+
+  <h3>三种方式的优先级</h3>
+  <p>当同一个元素被多种方式设置样式时，优先级从高到低为：行内样式 &gt; 内部样式 / 外部样式（取决于在 HTML 中出现的顺序，后面的覆盖前面的）</p>
+
+  <table class="attr-table">
+    <tr><th>方式</th><th>写在哪</th><th>优先级</th><th>适用场景</th></tr>
+    <tr><td>行内样式</td><td>HTML 标签的 style 属性</td><td>最高</td><td>临时调试，不推荐日常使用</td></tr>
+    <tr><td>内部样式</td><td>HTML 的 &lt;style&gt; 标签</td><td>中</td><td>单页面、demo</td></tr>
+    <tr><td>外部样式</td><td>独立 .css 文件</td><td>中</td><td>正式项目（推荐）</td></tr>
+    <tr><td>@import</td><td>CSS 文件内引入另一个 CSS</td><td>最低</td><td>不推荐，影响性能</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第2章：CSS 基本语法结构
+     ============================================================ -->
+<section id="ch02" class="chapter">
+  <h2>第2章：CSS 基本语法结构</h2>
+
+  <p>CSS 的核心语法非常简单：选择器 + 大括号 + 属性:值。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* CSS 基本语法结构 */</span>
+<span class="cs">选择器</span> {
+  <span class="cp">属性名</span>: <span class="cv">属性值</span>;
+  <span class="cp">属性名</span>: <span class="cv">属性值</span>;
+}
+
+<span class="cm">/* 举例：选中所有 p 标签 */</span>
+<span class="cs">p</span> {
+  <span class="cp">color</span>: <span class="cv">#333</span>;          <span class="cm">/* 文字颜色 */</span>
+  <span class="cp">font-size</span>: <span class="cv">16px</span>;       <span class="cm">/* 字号 */</span>
+  <span class="cp">line-height</span>: <span class="cv">1.6</span>;     <span class="cm">/* 行高 */</span>
+}
+
+<span class="cm">/* 选中 class 为 card 的元素 */</span>
+<span class="cs">.card</span> {
+  <span class="cp">background</span>: <span class="cv">white</span>;       <span class="cm">/* 背景色 */</span>
+  <span class="cp">border-radius</span>: <span class="cv">12px</span>;   <span class="cm">/* 圆角 */</span>
+  <span class="cp">padding</span>: <span class="cv">20px</span>;         <span class="cm">/* 内边距 */</span>
+}
+
+<span class="cm">/* CSS 注释：用 /* ... */ 包裹，不能嵌套 */</span>
+<span class="cm">/* CSS 不区分大小写，但习惯上全小写 */</span>
+<span class="cm">/* 属性值后面的分号 ; 不能少（最后一条可以省略，但不推荐）*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0 0 12px;">
+        这是用 CSS 设置的段落文字。color 设置颜色，font-size 设置字号，line-height 设置行高。
+      </p>
+      <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #eee;">
+        <p style="margin: 0; color: #6c5ce7; font-weight: bold;">这是一个 .card 元素</p>
+        <p style="margin: 8px 0 0; color: #666; font-size: 14px;">background 设置白色背景，border-radius 设置 12px 圆角，padding 设置 20px 内边距。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>CSS 语法中的注释</h3>
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 单行注释 */</span>
+
+<span class="cm">/*
+  多行注释
+  CSS 只有这一种注释语法
+  注意：CSS 注释不能嵌套
+*/</span>
+
+<span class="cm">/* 好的注释习惯：说明"为什么"而不是"是什么" */</span>
+<span class="cs">.btn</span> {
+  <span class="cp">font-size</span>: <span class="cv">14px</span>;  <span class="cm">/* 移动端最小可读字号 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     第3章：选择器
+     ============================================================ -->
+<section id="ch03" class="chapter">
+  <h2>第3章：选择器</h2>
+  <p>选择器是 CSS 的核心——决定"样式作用在哪些元素上"。</p>
+
+  <h3>3.1 基础选择器</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 标签选择器：选中所有指定标签 */</span>
+<span class="cs">p</span> { <span class="cp">color</span>: <span class="cv">#333</span>; }
+<span class="cs">h1</span> { <span class="cp">font-size</span>: <span class="cv">28px</span>; }
+
+<span class="cm">/* 类选择器（class）：选中 class="card" 的元素，用 . 开头 */</span>
+<span class="cm">/* 一个元素可以有多个 class，空格分隔：class="card active" */</span>
+<span class="cs">.card</span> { <span class="cp">background</span>: <span class="cv">white</span>; }
+<span class="cs">.highlight</span> { <span class="cp">color</span>: <span class="cv">orange</span>; }
+
+<span class="cm">/* ID 选择器：选中 id="header" 的元素，用 # 开头 */</span>
+<span class="cm">/* ID 在页面中必须唯一，实际开发中少用 */</span>
+<span class="cs">#header</span> { <span class="cp">height</span>: <span class="cv">60px</span>; }
+
+<span class="cm">/* 通配符选择器：选中所有元素 */</span>
+<span class="cm">/* 常用于全局重置，但性能稍差 */</span>
+<span class="cs">*</span> { <span class="cp">margin</span>: <span class="cv">0</span>; <span class="cp">padding</span>: <span class="cv">0</span>; }
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="color: #333;">这是标签选择器 p 设置的灰色文字</p>
+      <div class="demo-display-block" style="background: #d3f9d8;">这是 .card 类选择器</div>
+      <div class="demo-display-inline" style="background: #fff3bf;">这是 .highlight 类选择器</div>
+    </div>
+  </div>
+
+  <h3>3.2 组合选择器</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 后代选择器：选中 .card 里面的所有 p（不管嵌套多深） */</span>
+<span class="cs">.card p</span> { <span class="cp">color</span>: <span class="cv">#666</span>; }
+
+<span class="cm">/* 子代选择器：只选中 .card 的直接子元素 p（不选孙级） */</span>
+<span class="cs">.card &gt; p</span> { <span class="cp">color</span>: <span class="cv">#666</span>; }
+
+<span class="cm">/* 并集选择器（群组）：同时选中 h1 和 h2 */</span>
+<span class="cs">h1, h2</span> { <span class="cp">font-weight</span>: <span class="cv">bold</span>; }
+
+<span class="cm">/* 交集选择器：选中同时有 class="card active" 的元素 */</span>
+<span class="cm">/* 注意：两个选择器之间没有空格 */</span>
+<span class="cs">.card.active</span> { <span class="cp">border-color</span>: <span class="cv">green</span>; }
+
+<span class="cm">/* 相邻兄弟选择器：选中紧跟在 h1 后面的第一个 p */</span>
+<span class="cs">h1 + p</span> { <span class="cp">margin-top</span>: <span class="cv">0</span>; }
+
+<span class="cm">/* 通用兄弟选择器：选中 h1 后面的所有 p（同层级） */</span>
+<span class="cs">h1 ~ p</span> { <span class="cp">color</span>: <span class="cv">blue</span>; }
+</code></pre>
+    </div>
+  </div>
+
+  <h3>3.3 伪类选择器</h3>
+  <p>伪类用单冒号 <code>:</code> 表示，用于描述元素的某种"状态"。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* :hover —— 鼠标悬停时的样式（最常用） */</span>
+<span class="cs">.btn:hover</span> { <span class="cp">background</span>: <span class="cv">darkgreen</span>; }
+
+<span class="cm">/* :focus —— 获得焦点时（输入框聚焦） */</span>
+<span class="cs">input:focus</span> { <span class="cp">border-color</span>: <span class="cv">blue</span>; }
+
+<span class="cm">/* :active —— 鼠标按下还没松开时 */</span>
+<span class="cs">.btn:active</span> { <span class="cp">transform</span>: <span class="cv">scale(0.95)</span>; }
+
+<span class="cm">/* :link —— 未访问的链接 */</span>
+<span class="cs">a:link</span> { <span class="cp">color</span>: <span class="cv">blue</span>; }
+
+<span class="cm">/* :visited —— 已访问的链接 */</span>
+<span class="cs">a:visited</span> { <span class="cp">color</span>: <span class="cv">purple</span>; }
+
+<span class="cm">/* :first-child —— 选中父元素的第一个子元素 */</span>
+<span class="cs">li:first-child</span> { <span class="cp">font-weight</span>: <span class="cv">bold</span>; }
+
+<span class="cm">/* :last-child —— 选中父元素的最后一个子元素 */</span>
+<span class="cs">li:last-child</span> { <span class="cp">border-bottom</span>: <span class="cv">none</span>; }
+
+<span class="cm">/* :nth-child(n) —— 选中第 n 个子元素 */</span>
+<span class="cm">/* :nth-child(odd) 奇数行，:nth-child(even) 偶数行 */</span>
+<span class="cs">li:nth-child(odd)</span> { <span class="cp">background</span>: <span class="cv">#f9f9f9</span>; }
+<span class="cs">li:nth-child(even)</span> { <span class="cp">background</span>: <span class="cv">#fff</span>; }
+
+<span class="cm">/* :nth-child(2n+1) 等价于 odd */</span>
+<span class="cm">/* :nth-child(3n) 每第 3 个 */</span>
+
+<span class="cm">/* :not() —— 否定伪类，选中不满足条件的元素 */</span>
+<span class="cs">.menu a:not(.active)</span> { <span class="cp">color</span>: <span class="cv">#999</span>; }
+
+<span class="cm">/* :checked —— 被选中的表单元素 */</span>
+<span class="cs">input:checked + label</span> { <span class="cp">color</span>: <span class="cv">green</span>; }
+
+<span class="cm">/* :disabled —— 禁用状态的表单元素 */</span>
+<span class="cs">input:disabled</span> { <span class="cp">background</span>: <span class="cv">#eee</span>; <span class="cp">cursor</span>: <span class="cv">not-allowed</span>; }
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p>把鼠标移到下面的按钮上试试：</p>
+      <button style="padding: 8px 24px; background: #4fc08d; color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#3aa876'" onmouseout="this.style.background='#4fc08d'">Hover Me</button>
+      <p style="margin-top: 12px;">隔行变色列表：</p>
+      <ul style="list-style: none; padding: 0;">
+        <li style="background: #f9f9f9; padding: 6px 12px;">第1行（奇数行变色）</li>
+        <li style="background: #fff; padding: 6px 12px;">第2行（偶数行不变色）</li>
+        <li style="background: #f9f9f9; padding: 6px 12px;">第3行</li>
+        <li style="background: #fff; padding: 6px 12px;">第4行</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>3.4 伪元素选择器</h3>
+  <p>伪元素用双冒号 <code>::</code> 表示（CSS3 规范），用于创建"不存在于 HTML 中的虚拟元素"。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* ::before —— 在元素内容的前面插入虚拟内容 */</span>
+<span class="cm">/* ::after —— 在元素内容的后面插入虚拟内容 */</span>
+<span class="cm">/* 必须配合 content 属性使用 */</span>
+
+<span class="cs">.quote::before</span> {
+  <span class="cp">content</span>: <span class="cv">"「"</span>;
+  <span class="cp">color</span>: <span class="cv">#6c5ce7</span>;
+  <span class="cp">font-size</span>: <span class="cv">20px</span>;
+}
+<span class="cs">.quote::after</span> {
+  <span class="cp">content</span>: <span class="cv">"」"</span>;
+  <span class="cp">color</span>: <span class="cv">#6c5ce7</span>;
+  <span class="cp">font-size</span>: <span class="cv">20px</span>;
+}
+
+<span class="cm">/* ::first-letter —— 首字母特殊样式 */</span>
+<span class="cs">.article::first-letter</span> {
+  <span class="cp">font-size</span>: <span class="cv">2em</span>;
+  <span class="cp">font-weight</span>: <span class="cv">bold</span>;
+  <span class="cp">color</span>: <span class="cv">#6c5ce7</span>;
+}
+
+<span class="cm">/* ::first-line —— 首行特殊样式 */</span>
+<span class="cs">.article::first-line</span> {
+  <span class="cp">color</span>: <span class="cv">#666</span>;
+}
+
+<span class="cm">/* ::selection —— 文字选中时的样式 */</span>
+<span class="cs">::selection</span> {
+  <span class="cp">background</span>: <span class="cv">#6c5ce7</span>;
+  <span class="cp">color</span>: <span class="cv">#fff</span>;
+}
+
+<span class="cm">/* ::placeholder —— 输入框占位符样式 */</span>
+<span class="cs">input::placeholder</span> {
+  <span class="cp">color</span>: <span class="cv">#ccc</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="font-size: 16px;"><span style="color: #6c5ce7; font-size: 20px;">「</span>这是用 ::before 和 ::after 添加的引号<span style="color: #6c5ce7; font-size: 20px;">」</span></p>
+      <p style="margin-top: 8px;"><span style="font-size: 2em; font-weight: bold; color: #6c5ce7;">这</span>是首字母放大的效果（::first-letter）</p>
+    </div>
+  </div>
+
+  <h3>3.5 属性选择器</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 选中带有 title 属性的所有元素 */</span>
+<span class="cs">[title]</span> { <span class="cp">cursor</span>: <span class="cv">help</span>; }
+
+<span class="cm">/* 选中 type="text" 的 input */</span>
+<span class="cs">[type="text"]</span> { <span class="cp">border</span>: <span class="cv">1px solid #ccc</span>; }
+
+<span class="cm">/* 选中 class 以 "btn-" 开头的元素 */</span>
+<span class="cs">[class^="btn-"]</span> { <span class="cp">display</span>: <span class="cv">inline-block</span>; }
+
+<span class="cm">/* 选中 href 以 ".pdf" 结尾的链接 */</span>
+<span class="cs">a[href$=".pdf"]</span> { <span class="cp">color</span>: <span class="cv">red</span>; }
+
+<span class="cm">/* 选中 class 中包含 "active" 的元素 */</span>
+<span class="cs">[class*="active"]</span> { <span class="cp">font-weight</span>: <span class="cv">bold</span>; }
+</code></pre>
+    </div>
+  </div>
+
+  <h3>3.6 选择器一览表</h3>
+  <table class="ref-table">
+    <tr><th>选择器</th><th>语法</th><th>说明</th></tr>
+    <tr><td>标签选择器</td><td>p</td><td>选中所有 p 标签</td></tr>
+    <tr><td>类选择器</td><td>.card</td><td>选中 class="card" 的元素</td></tr>
+    <tr><td>ID 选择器</td><td>#header</td><td>选中 id="header" 的元素</td></tr>
+    <tr><td>通配符</td><td>*</td><td>选中所有元素</td></tr>
+    <tr><td>后代选择器</td><td>.card p</td><td>选中 .card 内所有 p（含孙级）</td></tr>
+    <tr><td>子代选择器</td><td>.card > p</td><td>只选 .card 的直接子 p</td></tr>
+    <tr><td>并集选择器</td><td>h1, h2</td><td>同时选中 h1 和 h2</td></tr>
+    <tr><td>交集选择器</td><td>.card.active</td><td>同时有 card 和 active 两个 class</td></tr>
+    <tr><td>相邻兄弟</td><td>h1 + p</td><td>紧跟 h1 后的第一个 p</td></tr>
+    <tr><td>通用兄弟</td><td>h1 ~ p</td><td>h1 后面同层级的所有 p</td></tr>
+    <tr><td>伪类</td><td>:hover</td><td>鼠标悬停状态</td></tr>
+    <tr><td>伪元素</td><td>::before</td><td>在元素前插入虚拟内容</td></tr>
+    <tr><td>属性选择器</td><td>[type="text"]</td><td>选中带特定属性的元素</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第4章：CSS 优先级与层叠
+     ============================================================ -->
+<section id="ch04" class="chapter">
+  <h2>第4章：CSS 优先级与层叠</h2>
+  <p>当多条 CSS 规则都选中同一个元素时，浏览器根据"优先级"决定最终使用哪条规则。CSS 叫"层叠样式表"——层叠就是指多条规则可以叠加在一起。</p>
+
+  <h3>4.1 优先级排序</h3>
+  <p>从高到低排列：</p>
+  <table class="attr-table">
+    <tr><th>优先级</th><th>来源</th><th>示例</th></tr>
+    <tr><td>最高</td><td>!important</td><td>color: red !important;</td></tr>
+    <tr><td>高</td><td>行内样式</td><td>style="color: red;"</td></tr>
+    <tr><td>中</td><td>ID 选择器</td><td>#header { }</td></tr>
+    <tr><td>低</td><td>类/伪类/属性选择器</td><td>.card { } / :hover { }</td></tr>
+    <tr><td>最低</td><td>标签/伪元素选择器</td><td>p { } / ::before { }</td></tr>
+  </table>
+
+  <div class="danger">⚠️ 尽量不要用 !important！它会让 CSS 难以维护。推荐用 class 选择器为主，通过调整选择器组合来控制优先级。</div>
+
+  <h3>4.2 优先级计算（权重值）</h3>
+  <p>CSS 优先级用 (a, b, c, d) 四元组表示：</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/*
+  优先级四元组：(a, b, c, d)
+
+  a: 是否使用 !important（1=是, 0=否）
+  b: ID 选择器的个数
+  c: 类选择器、属性选择器、伪类的个数
+  d: 标签选择器、伪元素的个数
+
+  比较规则：从左到右逐位比较，左边大的胜出。
+*/
+
+<span class="cm">/* 权重 (0, 0, 0, 1) —— 1 个标签 */</span>
+<span class="cs">p</span> { <span class="cp">color</span>: <span class="cv">black</span>; }
+
+<span class="cm">/* 权重 (0, 0, 1, 0) —— 1 个 class */</span>
+<span class="cs">.text-red</span> { <span class="cp">color</span>: <span class="cv">red</span>; }
+
+<span class="cm">/* 权重 (0, 1, 0, 0) —— 1 个 ID */</span>
+<span class="cs">#main</span> { <span class="cp">color</span>: <span class="cv">blue</span>; }
+
+<span class="cm">/* 权重 (0, 0, 1, 1) —— 1 个 class + 1 个标签 */</span>
+<span class="cs">.card p</span> { <span class="cp">color</span>: <span class="cv">green</span>; }
+
+<span class="cm">/* 权重 (0, 0, 2, 0) —— 2 个 class */</span>
+<span class="cs">.card.active</span> { <span class="cp">color</span>: <span class="cv">orange</span>; }
+
+<span class="cm">/* 权重 (1, 0, 0, 0) —— !important 最高 */</span>
+<span class="cs">p</span> { <span class="cp">color</span>: <span class="cv">pink</span> <span class="ck">!important</span>; }
+
+<span class="cm">/*
+  特殊：行内样式优先级相当于 (0, 1, 0, 0, 0)
+  只有 !important 能覆盖行内样式
+*/</span>
+</code></pre>
+    </div>
+  </div>
+
+  <h3>4.3 层叠规则</h3>
+  <p>当优先级相同时，后面的规则覆盖前面的（"后来居上"）。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 两条规则优先级相同（都是 1 个 class） */</span>
+<span class="cs">.box</span> { <span class="cp">color</span>: <span class="cv">red</span>; }    <span class="cm">/* 先写 */</span>
+<span class="cs">.box</span> { <span class="cp">color</span>: <span class="cv">blue</span>; }   <span class="cm">/* 后写，覆盖前面的 */</span>
+
+<span class="cm">/* 最终文字是蓝色 */</span>
+</code></pre>
+    </div>
+  </div>
+
+  <h3>4.4 继承</h3>
+  <p>某些 CSS 属性会从父元素继承到子元素，比如文字相关的属性（color、font-size、font-family、line-height 等）。但盒模型相关的属性（width、padding、border、margin）不会继承。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">body</span> {
+  <span class="cp">font-family</span>: <span class="cv">"Microsoft Yahei"</span>, sans-serif;  <span class="cm">/* 会被子元素继承 */</span>
+  <span class="cp">color</span>: <span class="cv">#333</span>;                               <span class="cm">/* 会被子元素继承 */</span>
+  <span class="cp">line-height</span>: <span class="cv">1.6</span>;                           <span class="cm">/* 会被子元素继承 */</span>
+}
+
+<span class="cs">.card</span> {
+  <span class="cp">border</span>: <span class="cv">1px solid #ccc</span>;  <span class="cm">/* 不会继承给子元素 */</span>
+  <span class="cp">padding</span>: <span class="cv">20px</span>;          <span class="cm">/* 不会继承给子元素 */</span>
+}
+
+<span class="cm">/* 可以用 inherit / initial / unset 控制继承 */</span>
+<span class="cs">.child</span> {
+  <span class="cp">color</span>: <span class="cv">inherit</span>;   <span class="cm">/* 显式继承父元素的 color */</span>
+  <span class="cp">color</span>: <span class="cv">initial</span>;  <span class="cm">/* 恢复为 CSS 默认值 */</span>
+  <span class="cp">color</span>: <span class="cv">unset</span>;     <span class="cm">/* 如果可继承则继承，否则恢复默认 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     第5章：字体属性
+     ============================================================ -->
+<section id="ch05" class="chapter">
+  <h2>第5章：字体属性</h2>
+  <p>CSS 中与字体相关的属性，控制文字的"长相"——字号、粗细、字体族、风格等。</p>
+
+  <h3>5.1 font-size 字号</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">font-size</span>: <span class="cv">16px</span>;   <span class="cm">/* 像素值，最常用 */</span>
+  <span class="cp">font-size</span>: <span class="cv">1.2em</span>;  <span class="cm">/* 相对父元素字号 */</span>
+  <span class="cp">font-size</span>: <span class="cv">1.2rem</span>; <span class="cm">/* 相对根元素字号（推荐） */</span>
+  <span class="cp">font-size</span>: <span class="cv">120%</span>;   <span class="cm">/* 相对父元素字号的百分比 */</span>
+  <span class="cp">font-size</span>: <span class="cv">large</span>;  <span class="cm">/* 关键字：xx-small ~ xx-large */</span>
+}
+
+<span class="cm">/* 浏览器默认字号通常是 16px */</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="font-size: 12px;">12px 文字</p>
+      <p style="font-size: 16px;">16px 文字（默认）</p>
+      <p style="font-size: 24px;">24px 文字</p>
+      <p style="font-size: 32px;">32px 文字</p>
+    </div>
+  </div>
+
+  <h3>5.2 font-weight 字体粗细</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">font-weight</span>: <span class="cv">normal</span>;  <span class="cm">/* 正常（=400） */</span>
+  <span class="cp">font-weight</span>: <span class="cv">bold</span>;    <span class="cm">/* 粗体（=700） */</span>
+  <span class="cp">font-weight</span>: <span class="cv">100</span>;     <span class="cm">/* 最细 */</span>
+  <span class="cp">font-weight</span>: <span class="cv">300</span>;     <span class="cm">/* Light */</span>
+  <span class="cp">font-weight</span>: <span class="cv">400</span>;     <span class="cm">/* Regular（同 normal） */</span>
+  <span class="cp">font-weight</span>: <span class="cv">500</span>;     <span class="cm">/* Medium */</span>
+  <span class="cp">font-weight</span>: <span class="cv">700</span>;     <span class="cm">/* Bold */</span>
+  <span class="cp">font-weight</span>: <span class="cv">900</span>;     <span class="cm">/* 最粗 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="font-weight: 100;">100 最细</p>
+      <p style="font-weight: 400;">400 正常</p>
+      <p style="font-weight: 700;">700 粗体</p>
+      <p style="font-weight: 900;">900 最粗</p>
+    </div>
+  </div>
+
+  <h3>5.3 font-family 字体族</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">body</span> {
+  <span class="cm">/* 多个字体作为后备，从左到右依次尝试 */</span>
+  <span class="cm">/* 用户电脑没装第一个就用第二个，以此类推 */</span>
+  <span class="cp">font-family</span>: <span class="cv">-apple-system, "Microsoft Yahei", "PingFang SC", sans-serif</span>;
+}
+
+<span class="cm">/* 常见字体族分类 */</span>
+<span class="cm">/* serif:    衬线字体（宋体、Times New Roman） */</span>
+<span class="cm">/* sans-serif: 无衬线字体（微软雅黑、PingFang、Arial）*/</span>
+<span class="cm">/* monospace: 等宽字体（Consolas、Fira Code） */</span>
+<span class="cm">/* cursive:  手写体 */</span>
+<span class="cm">/* fantasy:  装饰字体 */</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="font-family: -apple-system, 'PingFang SC', sans-serif;">这是无衬线字体（PingFang SC）</p>
+      <p style="font-family: serif;">这是衬线字体（宋体）</p>
+      <p style="font-family: 'Fira Code', Consolas, monospace;">这是等宽字体（Consolas）</p>
+    </div>
+  </div>
+
+  <h3>5.4 font-style 字体风格</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">font-style</span>: <span class="cv">normal</span>;   <span class="cm">/* 正常（默认） */</span>
+  <span class="cp">font-style</span>: <span class="cv">italic</span>;  <span class="cm">/* 斜体（使用字体的斜体版本） */</span>
+  <span class="cp">font-style</span>: <span class="cv">oblique</span>; <span class="cm">/* 倾斜（机械倾斜，没有斜体字时用） */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="font-style: normal;">正常字体</p>
+      <p style="font-style: italic;">斜体（italic）</p>
+      <p style="font-style: oblique;">倾斜（oblique）</p>
+    </div>
+  </div>
+
+  <h3>5.5 line-height 行高</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">line-height</span>: <span class="cv">1.6</span>;     <span class="cm">/* 无单位，推荐！= 字号 * 1.6 */</span>
+  <span class="cp">line-height</span>: <span class="cv">24px</span>;    <span class="cm">/* 固定像素值 */</span>
+  <span class="cp">line-height</span>: <span class="cv">200%</span>;    <span class="cm">/* 字号的 200% */</span>
+  <span class="cp">line-height</span>: <span class="cv">1.5em</span>;   <span class="cm">/* 字号的 1.5 倍 */</span>
+}
+
+<span class="cm">/* 技巧：单行文字垂直居中，设 line-height = height */</span>
+<span class="cs">.btn</span> {
+  <span class="cp">height</span>: <span class="cv">40px</span>;
+  <span class="cp">line-height</span>: <span class="cv">40px</span>;
+  <span class="cp">text-align</span>: <span class="cv">center</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="line-height: 1; margin: 0 0 8px;">line-height: 1（行间距很小）</p>
+      <p style="line-height: 1.6; margin: 0 0 8px;">line-height: 1.6（推荐值，行间距舒适）</p>
+      <p style="line-height: 2; margin: 0;">line-height: 2（行间距很大）</p>
+    </div>
+  </div>
+
+  <h3>5.6 font 简写属性</h3>
+  <p>可以用一个 <code>font</code> 属性一次性设置多个字体相关属性。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 简写顺序：style weight size/line-height family */</span>
+<span class="cs">.text</span> {
+  <span class="cp">font</span>: <span class="cv">italic bold 16px/1.6 "Microsoft Yahei", sans-serif</span>;
+  <span class="cm">/* 等价于： */</span>
+  <span class="cm">/* font-style: italic; */</span>
+  <span class="cm">/* font-weight: bold; */</span>
+  <span class="cm">/* font-size: 16px; */</span>
+  <span class="cm">/* line-height: 1.6; */</span>
+  <span class="cm">/* font-family: "Microsoft Yahei", sans-serif; */</span>
+}
+
+<span class="cm">/* 注意：简写中至少要有 size 和 family */</span>
+<span class="cm">/* 没写的属性会被重置为默认值！ */</span>
+</code></pre>
+    </div>
+  </div>
+
+  <h3>5.7 字体属性一览表</h3>
+  <table class="ref-table">
+    <tr><th>属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>font-size</td><td>字号</td><td>16px, 1.2rem, 120%</td></tr>
+    <tr><td>font-weight</td><td>粗细</td><td>normal, bold, 100~900</td></tr>
+    <tr><td>font-family</td><td>字体族</td><td>"PingFang SC", sans-serif</td></tr>
+    <tr><td>font-style</td><td>风格</td><td>normal, italic, oblique</td></tr>
+    <tr><td>line-height</td><td>行高</td><td>1.6, 24px, 200%</td></tr>
+    <tr><td>font (简写)</td><td>综合设置</td><td>italic bold 16px/1.6 sans-serif</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第6章：文本属性
+     ============================================================ -->
+<section id="ch06" class="chapter">
+  <h2>第6章：文本属性</h2>
+  <p>文本属性控制文字的排列方式、颜色、装饰、间距等。</p>
+
+  <h3>6.1 color 文字颜色</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">color</span>: <span class="cv">red</span>;              <span class="cm">/* 颜色名 */</span>
+  <span class="cp">color</span>: <span class="cv">#ff0000</span>;          <span class="cm">/* 十六进制（最常用）*/</span>
+  <span class="cp">color</span>: <span class="cv">#f00</span>;             <span class="cm">/* 十六进制简写 */</span>
+  <span class="cp">color</span>: <span class="cv">rgb(255, 0, 0)</span>;    <span class="cm">/* RGB */</span>
+  <span class="cp">color</span>: <span class="cv">rgba(255, 0, 0, 0.5)</span>; <span class="cm">/* RGBA，0.5 是透明度 */</span>
+  <span class="cp">color</span>: <span class="cv">hsl(0, 100%, 50%)</span>;  <span class="cm">/* HSL：色相 饱和度 亮度 */</span>
+  <span class="cp">color</span>: <span class="cv">hsla(0, 100%, 50%, 0.5)</span>;
+}
+
+<span class="cm">/* 常见颜色名：red, blue, green, white, black, orange, purple */</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="color: red;">red 红色</p>
+      <p style="color: #6c5ce7;">#6c5ce7 紫色</p>
+      <p style="color: rgba(79, 192, 141, 0.7);">rgba(79,192,141,0.7) 半透明绿色</p>
+      <p style="color: hsl(210, 80%, 50%);">hsl(210, 80%, 50%) 蓝色</p>
+    </div>
+  </div>
+
+  <h3>6.2 text-align 文本对齐</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">text-align</span>: <span class="cv">left</span>;     <span class="cm">/* 左对齐（默认） */</span>
+  <span class="cp">text-align</span>: <span class="cv">center</span>;   <span class="cm">/* 居中对齐 */</span>
+  <span class="cp">text-align</span>: <span class="cv">right</span>;    <span class="cm">/* 右对齐 */</span>
+  <span class="cp">text-align</span>: <span class="cv">justify</span>;   <span class="cm">/* 两端对齐 */</span>
+  <span class="cp">text-align</span>: <span class="cv">start</span>;    <span class="cm">/* 书写起始方向 */</span>
+  <span class="cp">text-align</span>: <span class="cv">end</span>;      <span class="cm">/* 书写结束方向 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="text-align: left; background: #f5f5f5; padding: 4px;">左对齐（left）</p>
+      <p style="text-align: center; background: #f5f5f5; padding: 4px;">居中对齐（center）</p>
+      <p style="text-align: right; background: #f5f5f5; padding: 4px;">右对齐（right）</p>
+      <p style="text-align: justify; background: #f5f5f5; padding: 4px;">两端对齐（justify）—— 这段文字会左右两端都对齐</p>
+    </div>
+  </div>
+
+  <h3>6.3 text-decoration 文本装饰</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">text-decoration</span>: <span class="cv">none</span>;         <span class="cm">/* 去掉装饰线（如去掉 a 标签下划线） */</span>
+  <span class="cp">text-decoration</span>: <span class="cv">underline</span>;    <span class="cm">/* 下划线 */</span>
+  <span class="cp">text-decoration</span>: <span class="cv">overline</span>;     <span class="cm">/* 上划线 */</span>
+  <span class="cp">text-decoration</span>: <span class="cv">line-through</span>; <span class="cm">/* 删除线 */</span>
+
+  <span class="cm">/* 复合写法：线型 颜色 风格 */</span>
+  <span class="cp">text-decoration</span>: <span class="cv">underline red wavy</span>;
+}
+
+<span class="cm">/* 分拆属性 */</span>
+<span class="cs">.text</span> {
+  <span class="cp">text-decoration-line</span>: <span class="cv">underline</span>;
+  <span class="cp">text-decoration-color</span>: <span class="cv">red</span>;
+  <span class="cp">text-decoration-style</span>: <span class="cv">wavy</span>;   <span class="cm">/* solid / double / dotted / dashed / wavy */</span>
+  <span class="cp">text-decoration-thickness</span>: <span class="cv">2px</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="text-decoration: none;">none 无装饰线</p>
+      <p style="text-decoration: underline;">underline 下划线</p>
+      <p style="text-decoration: overline;">overline 上划线</p>
+      <p style="text-decoration: line-through;">line-through 删除线</p>
+      <p style="text-decoration: underline red wavy;">underline red wavy 红色波浪线</p>
+    </div>
+  </div>
+
+  <h3>6.4 text-indent 文本缩进</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">p</span> {
+  <span class="cp">text-indent</span>: <span class="cv">2em</span>;    <span class="cm">/* 首行缩进 2 个字符宽度 */</span>
+  <span class="cp">text-indent</span>: <span class="cv">32px</span>;   <span class="cm">/* 首行缩进 32px */</span>
+  <span class="cp">text-indent</span>: <span class="cv">-9999px</span>; <span class="cm">/* 文字移出可视区（SEO 隐藏文字技巧） */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="text-indent: 2em;">这是一段有首行缩进文字。text-indent: 2em 表示首行缩进 2 个字符的宽度，在中文排版中非常常用。</p>
+    </div>
+  </div>
+
+  <h3>6.5 letter-spacing 与 word-spacing</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">letter-spacing</span>: <span class="cv">2px</span>;    <span class="cm">/* 每个字符之间的间距 */</span>
+  <span class="cp">letter-spacing</span>: <span class="cv">0.1em</span>;  <span class="cm">/* 相对字号 */</span>
+  <span class="cp">word-spacing</span>: <span class="cv">4px</span>;      <span class="cm">/* 单词之间的间距（英文） */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="letter-spacing: normal;">默认字间距：Hello World 你好世界</p>
+      <p style="letter-spacing: 3px;">letter-spacing: 3px → Hello World 你好世界</p>
+      <p style="letter-spacing: 0.5em;">letter-spacing: 0.5em → 间 距 很 大</p>
+    </div>
+  </div>
+
+  <h3>6.6 white-space 空白处理</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">white-space</span>: <span class="cv">normal</span>;   <span class="cm">/* 默认：多个空格合并为一个，自动换行 */</span>
+  <span class="cp">white-space</span>: <span class="cv">nowrap</span>;   <span class="cm">/* 不换行，一行显示（配合 overflow 使用） */</span>
+  <span class="cp">white-space</span>: <span class="cv">pre</span>;      <span class="cm">/* 保留空格和换行，不自动换行 */</span>
+  <span class="cp">white-space</span>: <span class="cv">pre-wrap</span>; <span class="cm">/* 保留空格和换行，自动换行 */</span>
+  <span class="cp">white-space</span>: <span class="cv">pre-line</span>; <span class="cm">/* 合并空格，保留换行 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div style="white-space: nowrap; background: #f5f5f5; padding: 8px; overflow: hidden;">nowrap: 这是一段很长的文字不会换行会一直向右延伸直到溢出 overflow:hidden 截断</div>
+      <div style="white-space: normal; background: #f5f5f5; padding: 8px;">normal: 这是一段文字   有多个空格但会   合并为一个</div>
+      <div style="white-space: pre; background: #f5f5f5; padding: 8px;">pre:   保留空格   不换行</div>
+    </div>
+  </div>
+
+  <h3>6.7 text-overflow 文本溢出</h3>
+  <p>配合 <code>overflow: hidden</code> 和 <code>white-space: nowrap</code> 使用。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 单行文字溢出显示省略号（经典面试题） */</span>
+<span class="cs">.ellipsis</span> {
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;
+  <span class="cp">white-space</span>: <span class="cv">nowrap</span>;
+  <span class="cp">text-overflow</span>: <span class="cv">ellipsis</span>;    <span class="cm">/* 溢出部分显示 ... */</span>
+  <span class="cp">text-overflow</span>: <span class="cv">clip</span>;        <span class="cm">/* 直接截断（默认） */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 200px; background: #f5f5f5; padding: 8px;">这是一段很长的文字会被截断并显示省略号</div>
+    </div>
+  </div>
+
+  <h3>6.8 text-transform 文本大小写</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.text</span> {
+  <span class="cp">text-transform</span>: <span class="cv">none</span>;        <span class="cm">/* 不转换 */</span>
+  <span class="cp">text-transform</span>: <span class="cv">uppercase</span>;  <span class="cm">/* 全大写 */</span>
+  <span class="cp">text-transform</span>: <span class="cv">lowercase</span>;  <span class="cm">/* 全小写 */</span>
+  <span class="cp">text-transform</span>: <span class="cv">capitalize</span>; <span class="cm">/* 每个单词首字母大写 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="text-transform: uppercase;">uppercase: hello world → HELLO WORLD</p>
+      <p style="text-transform: lowercase;">lowercase: HELLO WORLD → hello world</p>
+      <p style="text-transform: capitalize;">capitalize: hello world → Hello World</p>
+    </div>
+  </div>
+
+  <h3>6.9 文本属性一览表</h3>
+  <table class="ref-table">
+    <tr><th>属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>color</td><td>文字颜色</td><td>red, #333, rgba(), hsl()</td></tr>
+    <tr><td>text-align</td><td>对齐方式</td><td>left, center, right, justify</td></tr>
+    <tr><td>text-decoration</td><td>装饰线</td><td>none, underline, line-through</td></tr>
+    <tr><td>text-indent</td><td>首行缩进</td><td>2em, 32px</td></tr>
+    <tr><td>letter-spacing</td><td>字符间距</td><td>2px, 0.1em</td></tr>
+    <tr><td>word-spacing</td><td>单词间距</td><td>4px, 0.2em</td></tr>
+    <tr><td>white-space</td><td>空白处理</td><td>normal, nowrap, pre, pre-wrap</td></tr>
+    <tr><td>text-overflow</td><td>溢出处理</td><td>clip, ellipsis</td></tr>
+    <tr><td>text-transform</td><td>大小写转换</td><td>uppercase, lowercase, capitalize</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第7章：列表属性
+     ============================================================ -->
+<section id="ch07" class="chapter">
+  <h2>第7章：列表属性</h2>
+  <p>CSS 中控制列表（&lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;）样式的属性。</p>
+
+  <h3>7.1 list-style-type 列表标记类型</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">ul</span> {
+  <span class="cp">list-style-type</span>: <span class="cv">disc</span>;       <span class="cm">/* 实心圆（默认） */</span>
+  <span class="cp">list-style-type</span>: <span class="cv">circle</span>;     <span class="cm">/* 空心圆 */</span>
+  <span class="cp">list-style-type</span>: <span class="cv">square</span>;     <span class="cm">/* 实心方块 */</span>
+  <span class="cp">list-style-type</span>: <span class="cv">decimal</span>;    <span class="cm">/* 数字 1,2,3... */</span>
+  <span class="cp">list-style-type</span>: <span class="cv">none</span>;       <span class="cm">/* 去掉标记（最常用） */</span>
+  <span class="cp">list-style-type</span>: <span class="cv">lower-alpha</span>; <span class="cm">/* a,b,c... */</span>
+  <span class="cp">list-style-type</span>: <span class="cv">upper-roman</span>; <span class="cm">/* Ⅰ,Ⅱ,Ⅲ... */</span>
+}
+
+<span class="cs">ol</span> {
+  <span class="cp">list-style-type</span>: <span class="cv">decimal</span>;  <span class="cm">/* 有序列表默认数字 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <ul style="list-style-type: disc;"><li>disc 实心圆</li><li>第二项</li></ul>
+      <ul style="list-style-type: circle;"><li>circle 空心圆</li><li>第二项</li></ul>
+      <ul style="list-style-type: square;"><li>square 方块</li><li>第二项</li></ul>
+      <ol style="list-style-type: upper-roman;"><li>upper-roman 罗马数字</li><li>第二项</li></ol>
+      <ul style="list-style-type: none; padding-left: 0;"><li>none 无标记</li><li>第二项</li></ul>
+    </div>
+  </div>
+
+  <h3>7.2 list-style-position 标记位置</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">ul</span> {
+  <span class="cp">list-style-position</span>: <span class="cv">outside</span>;  <span class="cm">/* 标记在 li 外部（默认） */</span>
+  <span class="cp">list-style-position</span>: <span class="cv">inside</span>;   <span class="cm">/* 标记在 li 内部 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>7.3 list-style-image 自定义标记图片</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">ul</span> {
+  <span class="cp">list-style-image</span>: <span class="cv">url('bullet.png')</span>;  <span class="cm">/* 用图片做列表标记 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>7.4 list-style 简写</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">ul</span> {
+  <span class="cm">/* 简写：type position image */</span>
+  <span class="cp">list-style</span>: <span class="cv">none</span>;  <span class="cm">/* 最常用：去掉所有列表样式 */</span>
+  <span class="cp">list-style</span>: <span class="cv">square inside</span>;
+  <span class="cp">list-style</span>: <span class="cv">url('bullet.png') outside</span>;
+}
+</code></pre>
+    </div>
+  </div>
+
+  <div class="tip">💡 实际开发中最常用的就是 <code>list-style: none</code>，去掉默认标记后用自定义样式（如背景图、伪元素）实现列表装饰。</div>
+</section>
+
+<!-- ============================================================
+     第8章：overflow 溢出属性
+     ============================================================ -->
+<section id="ch08" class="chapter">
+  <h2>第8章：overflow 溢出属性</h2>
+  <p>当内容超出元素的指定大小（width + height）时，用 overflow 控制如何处理超出部分。</p>
+
+  <h3>8.1 overflow 的四种值</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">overflow</span>: <span class="cv">visible</span>;  <span class="cm">/* 默认：溢出部分正常显示 */</span>
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;   <span class="cm">/* 溢出部分隐藏 */</span>
+  <span class="cp">overflow</span>: <span class="cv">scroll</span>;   <span class="cm">/* 始终显示滚动条 */</span>
+  <span class="cp">overflow</span>: <span class="cv">auto</span>;     <span class="cm">/* 内容溢出时才显示滚动条 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p>visible（默认）：</p>
+      <div class="demo-overflow-visible">这段文字很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长</div>
+      <p>hidden（隐藏溢出）：</p>
+      <div class="demo-overflow-hidden">这段文字很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长</div>
+      <p>scroll（显示滚动条）：</p>
+      <div class="demo-overflow-scroll">这段文字很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长</div>
+      <p>auto（需要时显示滚动条）：</p>
+      <div class="demo-overflow-auto">这段文字很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长</div>
+    </div>
+  </div>
+
+  <h3>8.2 分方向设置</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">overflow-x</span>: <span class="cv">hidden</span>;  <span class="cm">/* 水平方向溢出隐藏 */</span>
+  <span class="cp">overflow-y</span>: <span class="cv">auto</span>;    <span class="cm">/* 垂直方向溢出显示滚动条 */</span>
+}
+
+<span class="cm">/* 典型场景：横向列表可以横向滚动，纵向不滚动 */</span>
+<span class="cs">.scroll-x</span> {
+  <span class="cp">white-space</span>: <span class="cv">nowrap</span>;
+  <span class="cp">overflow-x</span>: <span class="cv">auto</span>;
+  <span class="cp">overflow-y</span>: <span class="cv">hidden</span>;
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>8.3 overflow 的常见妙用</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 1. 清除浮动：父元素加 overflow: hidden 可以清除子元素浮动的影响 */</span>
+<span class="cs">.clearfix</span> {
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;  <span class="cm">/* 触发 BFC，包含浮动子元素 */</span>
+}
+
+<span class="cm">/* 2. 图片圆角：overflow: hidden 配合 border-radius 裁剪内部图片 */</span>
+<span class="cs">.avatar</span> {
+  <span class="cp">width</span>: <span class="cv">80px</span>;
+  <span class="cp">height</span>: <span class="cv">80px</span>;
+  <span class="cp">border-radius</span>: <span class="cv">50%</span>;
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;  <span class="cm">/* 图片不会溢出圆角 */</span>
+}
+<span class="cs">.avatar img</span> {
+  <span class="cp">width</span>: <span class="cv">100%</span>;
+  <span class="cp">height</span>: <span class="cv">100%</span>;
+  <span class="cp">object-fit</span>: <span class="cv">cover</span>;
+}
+
+<span class="cm">/* 3. 单行省略号 */</span>
+<span class="cs">.ellipsis</span> {
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;
+  <span class="cp">white-space</span>: <span class="cv">nowrap</span>;
+  <span class="cp">text-overflow</span>: <span class="cv">ellipsis</span>;
+}
+</code></pre>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>属性值</th><th>说明</th><th>适用场景</th></tr>
+    <tr><td>visible</td><td>溢出正常显示</td><td>默认值，一般不主动设</td></tr>
+    <tr><td>hidden</td><td>溢出部分隐藏</td><td>圆角裁剪、清除浮动、省略号</td></tr>
+    <tr><td>scroll</td><td>始终显示滚动条</td><td>固定区域滚动</td></tr>
+    <tr><td>auto</td><td>需要时才滚动</td><td>列表、弹窗内容区</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第9章：盒模型
+     ============================================================ -->
+<section id="ch09" class="chapter">
+  <h2>第9章：盒模型（Box Model）</h2>
+  <p>每个 HTML 元素都是一个矩形盒子，由四层组成（从内到外）：content、padding、border、margin。</p>
+
+  <h3>9.1 盒模型结构图</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/*
+  ┌─────────────────────────────────────┐
+  │              margin                 │  ← 外边距：盒子和其他盒子的距离
+  │  ┌───────────────────────────────┐  │
+  │  │           border              │  │  ← 边框
+  │  │  ┌─────────────────────────┐  │  │
+  │  │  │        padding          │  │  │  ← 内边距：内容和边框之间
+  │  │  │  ┌───────────────────┐  │  │  │
+  │  │  │  │                   │  │  │  │
+  │  │  │  │     content       │  │  │  │  ← 内容区域（width × height）
+  │  │  │  │                   │  │  │  │
+  │  │  │  └───────────────────┘  │  │  │
+  │  │  └─────────────────────────┘  │  │
+  │  └───────────────────────────────┘  │
+  └─────────────────────────────────────┘
+*/</span>
+
+<span class="cs">.box</span> {
+  <span class="cp">width</span>: <span class="cv">200px</span>;          <span class="cm">/* 内容宽度 */</span>
+  <span class="cp">height</span>: <span class="cv">100px</span>;         <span class="cm">/* 内容高度 */</span>
+  <span class="cp">padding</span>: <span class="cv">20px</span>;         <span class="cm">/* 内边距：内容到边框的距离 */</span>
+  <span class="cp">border</span>: <span class="cv">2px solid #ccc</span>; <span class="cm">/* 边框：宽度 样式 颜色 */</span>
+  <span class="cp">margin</span>: <span class="cv">10px</span>;           <span class="cm">/* 外边距：盒子到其他盒子的距离 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-box-model">
+        content (200×80)
+      </div>
+    </div>
+  </div>
+
+  <h3>9.2 width 和 height</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">width</span>: <span class="cv">200px</span>;      <span class="cm">/* 固定宽度 */</span>
+  <span class="cp">width</span>: <span class="cv">50%</span>;        <span class="cm">/* 父元素宽度的 50% */</span>
+  <span class="cp">width</span>: <span class="cv">auto</span>;        <span class="cm">/* 自动（默认，块级元素占满父级） */</span>
+
+  <span class="cp">height</span>: <span class="cv">100px</span>;     <span class="cm">/* 固定高度 */</span>
+  <span class="cp">height</span>: <span class="cv">100vh</span>;     <span class="cm">/* 视口高度（全屏） */</span>
+  <span class="cp">height</span>: <span class="cv">auto</span>;       <span class="cm">/* 自动（由内容撑开） */</span>
+}
+
+<span class="cm">/* 限制最大/最小尺寸 */</span>
+<span class="cs">.container</span> {
+  <span class="cp">max-width</span>: <span class="cv">1200px</span>;  <span class="cm">/* 最大宽度不超过 1200px */</span>
+  <span class="cp">min-width</span>: <span class="cv">320px</span>;   <span class="cm">/* 最小宽度不低于 320px */</span>
+  <span class="cp">min-height</span>: <span class="cv">200px</span>;  <span class="cm">/* 最小高度 */</span>
+  <span class="cp">max-height</span>: <span class="cv">500px</span>;  <span class="cm">/* 最大高度 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>9.3 padding 内边距</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">padding</span>: <span class="cv">20px</span>;           <span class="cm">/* 四个方向都是 20px */</span>
+  <span class="cp">padding</span>: <span class="cv">10px 20px</span>;       <span class="cm">/* 上下 10px, 左右 20px */</span>
+  <span class="cp">padding</span>: <span class="cv">10px 20px 30px</span>;   <span class="cm">/* 上10, 左右20, 下30 */</span>
+  <span class="cp">padding</span>: <span class="cv">10px 20px 30px 40px</span>; <span class="cm">/* 上10 右20 下30 左40（顺时针） */</span>
+}
+
+<span class="cm">/* 分方向设置 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">padding-top</span>: <span class="cv">10px</span>;
+  <span class="cp">padding-right</span>: <span class="cv">20px</span>;
+  <span class="cp">padding-bottom</span>: <span class="cv">30px</span>;
+  <span class="cp">padding-left</span>: <span class="cv">40px</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div style="background: #eef0ff; border: 2px dashed #6c5ce7; display: inline-block;">
+        <div style="background: #6c5ce7; color: #fff; padding: 20px;">padding: 20px 的内容区</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>9.4 margin 外边距</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">margin</span>: <span class="cv">10px</span>;           <span class="cm">/* 四个方向 */</span>
+  <span class="cp">margin</span>: <span class="cv">10px 20px</span>;       <span class="cm">/* 上下10, 左右20 */</span>
+  <span class="cp">margin</span>: <span class="cv">0 auto</span>;         <span class="cm">/* 上下0, 左右自动 → 水平居中！ */</span>
+  <span class="cp">margin-top</span>: <span class="cv">20px</span>;      <span class="cm">/* 单独设置 */</span>
+}
+
+<span class="cm">/* 经典技巧：固定宽度元素水平居中 */</span>
+<span class="cs">.center</span> {
+  <span class="cp">width</span>: <span class="cv">600px</span>;
+  <span class="cp">margin</span>: <span class="cv">0 auto</span>;  <span class="cm">/* 左右自动平分剩余空间 */</span>
+}
+
+<span class="cm">/* 注意：margin 可以为负值！ */</span>
+<span class="cs">.overlap</span> {
+  <span class="cp">margin-top</span>: <span class="cv">-20px</span>;  <span class="cm">/* 向上移动 20px，产生重叠 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <div class="warn">⚠️ margin 塌陷：垂直方向相邻的两个块级元素，margin 不会叠加，取较大的那个值。这叫 margin 塌陷。解决办法：给父元素加 overflow: hidden 触发 BFC，或用 padding 代替 margin。</div>
+
+  <h3>9.5 box-sizing（重要！）</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* content-box（默认）：width 只算 content */</span>
+<span class="cs">.box1</span> {
+  <span class="cp">box-sizing</span>: <span class="cv">content-box</span>;
+  <span class="cp">width</span>: <span class="cv">200px</span>;
+  <span class="cp">padding</span>: <span class="cv">20px</span>;
+  <span class="cp">border</span>: <span class="cv">2px solid #ccc</span>;
+  <span class="cm">/* 实际宽度 = 200 + 20*2 + 2*2 = 244px ！*/</span>
+}
+
+<span class="cm">/* border-box（推荐！）：width 包含 content + padding + border */</span>
+<span class="cs">.box2</span> {
+  <span class="cp">box-sizing</span>: <span class="cv">border-box</span>;
+  <span class="cp">width</span>: <span class="cv">200px</span>;
+  <span class="cp">padding</span>: <span class="cv">20px</span>;
+  <span class="cp">border</span>: <span class="cv">2px solid #ccc</span>;
+  <span class="cm">/* 实际宽度 = 200px，所见即所得 */</span>
+}
+
+<span class="cm">/* 全局设置（项目标配！） */</span>
+<span class="cs">*</span> {
+  <span class="cp">box-sizing</span>: <span class="cv">border-box</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p>content-box: width=200, padding=20, border=2 → 实际宽 244px</p>
+      <div style="box-sizing: content-box; width: 200px; padding: 20px; border: 2px solid #e6a23c; background: #fff7e6; text-align: center;">244px</div>
+      <p>border-box: width=200, padding=20, border=2 → 实际宽 200px</p>
+      <div style="box-sizing: border-box; width: 200px; padding: 20px; border: 2px solid #6c5ce7; background: #eef0ff; text-align: center;">200px</div>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>属性</th><th>说明</th><th>示例</th></tr>
+    <tr><td>width / height</td><td>内容宽高</td><td>200px, 50%, auto</td></tr>
+    <tr><td>min/max-width/height</td><td>最小/最大尺寸</td><td>min-width: 320px</td></tr>
+    <tr><td>padding</td><td>内边距（不可为负）</td><td>20px, 10px 20px</td></tr>
+    <tr><td>margin</td><td>外边距（可为负）</td><td>0 auto, 10px 20px</td></tr>
+    <tr><td>box-sizing</td><td>尺寸计算方式</td><td>content-box, border-box</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第10章：背景属性
+     ============================================================ -->
+<section id="ch10" class="chapter">
+  <h2>第10章：背景属性</h2>
+  <p>CSS 背景属性控制元素的背景颜色、背景图片及其排列方式。</p>
+
+  <h3>10.1 background-color 背景颜色</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">background-color</span>: <span class="cv">white</span>;        <span class="cm">/* 颜色名 */</span>
+  <span class="cp">background-color</span>: <span class="cv">#4fc08d</span>;     <span class="cm">/* 十六进制 */</span>
+  <span class="cp">background-color</span>: <span class="cv">rgba(0,0,0,0.5)</span>; <span class="cm">/* 半透明黑 */</span>
+  <span class="cp">background-color</span>: <span class="cv">transparent</span>;  <span class="cm">/* 透明（默认） */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-bg-color">background-color: #4fc08d</div>
+    </div>
+  </div>
+
+  <h3>10.2 background-image 背景图片</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">background-image</span>: <span class="cv">url('bg.jpg')</span>;   <span class="cm">/* 单张背景图 */</span>
+  <span class="cp">background-image</span>: <span class="cv">url('a.png'), url('b.png')</span>; <span class="cm">/* 多张叠加 */</span>
+  <span class="cm">/* 前面的图在上面，后面的在下面 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>10.3 background-size 背景图大小</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">background-size</span>: <span class="cv">cover</span>;     <span class="cm">/* 等比缩放铺满，可能裁切（最常用） */</span>
+  <span class="cp">background-size</span>: <span class="cv">contain</span>;   <span class="cm">/* 等比缩放放完，可能留白 */</span>
+  <span class="cp">background-size</span>: <span class="cv">200px 100px</span>; <span class="cm">/* 指定宽高 */</span>
+  <span class="cp">background-size</span>: <span class="cv">50% 50%</span>;    <span class="cm">/* 相对元素宽高 */</span>
+  <span class="cp">background-size</span>: <span class="cv">100% auto</span>;   <span class="cm">/* 宽 100%，高自动 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>10.4 background-position 背景图位置</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">background-position</span>: <span class="cv">center</span>;      <span class="cm">/* 居中 */</span>
+  <span class="cp">background-position</span>: <span class="cv">top left</span>;   <span class="cm">/* 左上角 */</span>
+  <span class="cp">background-position</span>: <span class="cv">right bottom</span>; <span class="cm">/* 右下角 */</span>
+  <span class="cp">background-position</span>: <span class="cv">10px 20px</span>;   <span class="cm">/* x=10px, y=20px */</span>
+  <span class="cp">background-position</span>: <span class="cv">50% 50%</span>;    <span class="cm">/* 居中（等价 center） */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>10.5 background-repeat 背景图重复</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">background-repeat</span>: <span class="cv">repeat</span>;    <span class="cm">/* 横纵都重复（默认） */</span>
+  <span class="cp">background-repeat</span>: <span class="cv">no-repeat</span>; <span class="cm">/* 不重复 */</span>
+  <span class="cp">background-repeat</span>: <span class="cv">repeat-x</span>;  <span class="cm">/* 只横向重复 */</span>
+  <span class="cp">background-repeat</span>: <span class="cv">repeat-y</span>;  <span class="cm">/* 只纵向重复 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>10.6 background-attachment 背景图固定</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">background-attachment</span>: <span class="cv">scroll</span>; <span class="cm">/* 跟随滚动（默认） */</span>
+  <span class="cp">background-attachment</span>: <span class="cv">fixed</span>;  <span class="cm">/* 固定不动（视差滚动效果） */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>10.7 background 简写</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.card</span> {
+  <span class="cm">/* 简写顺序：color image position size repeat attachment */</span>
+  <span class="cp">background</span>: <span class="cv">#fff url('bg.jpg') center/cover no-repeat</span>;
+
+  <span class="cm">/* 等价于： */</span>
+  <span class="cm">/* background-color: #fff; */</span>
+  <span class="cm">/* background-image: url('bg.jpg'); */</span>
+  <span class="cm">/* background-position: center; */</span>
+  <span class="cm">/* background-size: cover; (注意 size 要跟在 position 后面用 / 分隔) */</span>
+  <span class="cm">/* background-repeat: no-repeat; */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>10.8 渐变背景</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 线性渐变 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">background</span>: <span class="cv">linear-gradient(to right, #6c5ce7, #4fc08d)</span>;
+  <span class="cp">background</span>: <span class="cv">linear-gradient(45deg, #667eea, #764ba2)</span>;
+  <span class="cp">background</span>: <span class="cv">linear-gradient(to bottom, #f0f0f0 0%, #fff 50%, #f0f0f0 100%)</span>;
+  <span class="cm">/* 可以有多段颜色和位置 */</span>
+}
+
+<span class="cm">/* 径向渐变 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">background</span>: <span class="cv">radial-gradient(circle, #4fc08d, transparent)</span>;
+}
+
+<span class="cm">/* 锥形渐变 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">background</span>: <span class="cv">conic-gradient(from 0deg, red, yellow, green, red)</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-bg-gradient">linear-gradient(135deg, #667eea, #764ba2)</div>
+      <div style="background: linear-gradient(to right, #6c5ce7, #4fc08d); color: #fff; padding: 16px; border-radius: 4px; margin-top: 8px;">linear-gradient(to right, #6c5ce7, #4fc08d)</div>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>background-color</td><td>背景色</td><td>#fff, transparent, rgba()</td></tr>
+    <tr><td>background-image</td><td>背景图</td><td>url('x.jpg'), linear-gradient()</td></tr>
+    <tr><td>background-size</td><td>背景图大小</td><td>cover, contain, 200px</td></tr>
+    <tr><td>background-position</td><td>背景图位置</td><td>center, top left, 50%</td></tr>
+    <tr><td>background-repeat</td><td>重复方式</td><td>repeat, no-repeat, repeat-x</td></tr>
+    <tr><td>background-attachment</td><td>是否固定</td><td>scroll, fixed</td></tr>
+    <tr><td>background (简写)</td><td>综合设置</td><td>#fff url() center/cover</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第11章：边框与圆角
+     ============================================================ -->
+<section id="ch11" class="chapter">
+  <h2>第11章：边框与圆角</h2>
+
+  <h3>11.1 border 边框</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cm">/* 简写：宽度 样式 颜色 */</span>
+  <span class="cp">border</span>: <span class="cv">1px solid #ddd</span>;
+
+  <span class="cm">/* 分方向设置 */</span>
+  <span class="cp">border-top</span>: <span class="cv">2px solid #6c5ce7</span>;
+  <span class="cp">border-right</span>: <span class="cv">1px dashed #e6a23c</span>;
+  <span class="cp">border-bottom</span>: <span class="cv">1px dotted #f56c6c</span>;
+  <span class="cp">border-left</span>: <span class="cv">none</span>;  <span class="cm">/* 无边框 */</span>
+
+  <span class="cm">/* 分属性设置 */</span>
+  <span class="cp">border-width</span>: <span class="cv">2px</span>;           <span class="cm">/* 边框宽度 */</span>
+  <span class="cp">border-style</span>: <span class="cv">solid</span>;          <span class="cm">/* 边框样式 */</span>
+  <span class="cp">border-color</span>: <span class="cv">#6c5ce7</span>;       <span class="cm">/* 边框颜色 */</span>
+}
+
+<span class="cm">/* border-style 可选值： */</span>
+<span class="cm">/* solid: 实线 */</span>
+<span class="cm">/* dashed: 虚线 */</span>
+<span class="cm">/* dotted: 点线 */</span>
+<span class="cm">/* double: 双线 */</span>
+<span class="cm">/* none: 无边框 */</span>
+<span class="cm">/* groove: 3D 凹槽 */</span>
+<span class="cm">/* ridge: 3D 凸脊 */</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-border-solid">border: 3px solid</div>
+      <div class="demo-border-dashed">border: 3px dashed</div>
+      <div class="demo-border-dotted">border: 3px dotted</div>
+    </div>
+  </div>
+
+  <h3>11.2 border-radius 圆角</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">border-radius</span>: <span class="cv">8px</span>;        <span class="cm">/* 四个角都是 8px 圆角 */</span>
+  <span class="cp">border-radius</span>: <span class="cv">50%</span>;       <span class="cm">/* 圆形（正方形元素） */</span>
+  <span class="cp">border-radius</span>: <span class="cv">10px 20px 30px 40px</span>; <span class="cm">/* 左上 右上 右下 左下 */</span>
+  <span class="cp">border-radius</span>: <span class="cv">0 50% 50% 0</span>; <span class="cm">/* 左半圆 */</span>
+}
+
+<span class="cm">/* 分角设置 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">border-top-left-radius</span>: <span class="cv">10px</span>;
+  <span class="cp">border-top-right-radius</span>: <span class="cv">20px</span>;
+  <span class="cp">border-bottom-right-radius</span>: <span class="cv">30px</span>;
+  <span class="cp">border-bottom-left-radius</span>: <span class="cv">40px</span>;
+}
+
+<span class="cm">/* 椭圆圆角：水平 / 垂直 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">border-radius</span>: <span class="cv">50% / 30%</span>;  <span class="cm">/* 水平50%，垂直30% */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-border-radius">border-radius: 12px</div>
+      <div class="demo-border-circle">50%</div>
+    </div>
+  </div>
+
+  <h3>11.3 outline 轮廓</h3>
+  <p>outline 是绘制在元素边框外的线，不占空间，不影响布局。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.input:focus</span> {
+  <span class="cp">outline</span>: <span class="cv">2px solid #6c5ce7</span>;
+  <span class="cp">outline-offset</span>: <span class="cv">2px</span>;  <span class="cm">/* 轮廓与边框的距离 */</span>
+}
+
+<span class="cs">.btn:focus</span> {
+  <span class="cp">outline</span>: <span class="cv">none</span>;  <span class="cm">/* 去掉默认轮廓（注意无障碍！） */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>border</td><td>边框简写</td><td>1px solid #ccc</td></tr>
+    <tr><td>border-style</td><td>边框样式</td><td>solid, dashed, dotted, none</td></tr>
+    <tr><td>border-radius</td><td>圆角</td><td>8px, 50%, 10px 20px</td></tr>
+    <tr><td>outline</td><td>轮廓（不占空间）</td><td>2px solid blue, none</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第12章：阴影
+     ============================================================ -->
+<section id="ch12" class="chapter">
+  <h2>第12章：阴影</h2>
+
+  <h3>12.1 box-shadow 盒子阴影</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.card</span> {
+  <span class="cm">/* x偏移 y偏移 模糊半径 扩散半径 颜色 */</span>
+  <span class="cp">box-shadow</span>: <span class="cv">0 2px 8px rgba(0, 0, 0, 0.1)</span>;
+
+  <span class="cm">/* 多层阴影（逗号分隔） */</span>
+  <span class="cp">box-shadow</span>: <span class="cv">0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1)</span>;
+
+  <span class="cm">/* 内阴影 */</span>
+  <span class="cp">box-shadow</span>: <span class="cv">inset 0 2px 4px rgba(0,0,0,0.1)</span>;
+
+  <span class="cm">/* 无偏移（均匀阴影） */</span>
+  <span class="cp">box-shadow</span>: <span class="cv">0 0 12px rgba(108, 92, 231, 0.3)</span>;
+}
+
+<span class="cm">/*
+  参数说明：
+  x-offset:    水平偏移，正值向右，负值向左
+  y-offset:    垂直偏移，正值向下，负值向上
+  blur-radius: 模糊半径，值越大越模糊（不能为负）
+  spread:      扩展半径，正值扩大，负值缩小（可选）
+  color:       阴影颜色
+  inset:       内阴影（可选关键字）
+*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-box-shadow">box-shadow: 0 4px 12px rgba(108,92,231,0.3)</div>
+    </div>
+  </div>
+
+  <h3>12.2 text-shadow 文字阴影</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.title</span> {
+  <span class="cm">/* x偏移 y偏移 模糊半径 颜色 */</span>
+  <span class="cp">text-shadow</span>: <span class="cv">2px 2px 4px rgba(0, 0, 0, 0.5)</span>;
+
+  <span class="cm">/* 多层文字阴影 */</span>
+  <span class="cp">text-shadow</span>: <span class="cv">1px 1px 0 #fff, 2px 2px 0 #6c5ce7</span>;
+
+  <span class="cm">/* 无偏移光晕效果 */</span>
+  <span class="cp">text-shadow</span>: <span class="cv">0 0 10px rgba(108, 92, 231, 0.8)</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p class="demo-text-shadow">Text Shadow 文字阴影效果</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     第13章：display 显示属性
+     ============================================================ -->
+<section id="ch13" class="chapter">
+  <h2>第13章：display 显示属性</h2>
+  <p>display 决定元素"以什么方式"显示在页面上——是独占一行，还是并排显示，还是隐藏。</p>
+
+  <h3>13.1 常见 display 值</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">div</span> {
+  <span class="cp">display</span>: <span class="cv">block</span>;         <span class="cm">/* 块级：独占一行，可设宽高 */</span>
+  <span class="cp">display</span>: <span class="cv">inline</span>;        <span class="cm">/* 行内：不换行，宽高由内容决定 */</span>
+  <span class="cp">display</span>: <span class="cv">inline-block</span>; <span class="cm">/* 行内块：不换行，可设宽高 */</span>
+  <span class="cp">display</span>: <span class="cv">none</span>;         <span class="cm">/* 隐藏：不占空间，不显示 */</span>
+  <span class="cp">display</span>: <span class="cv">flex</span>;         <span class="cm">/* 弹性布局（第16章详解） */</span>
+  <span class="cp">display</span>: <span class="cv">grid</span>;         <span class="cm">/* 网格布局（第17章详解） */</span>
+  <span class="cp">display</span>: <span class="cv">table</span>;        <span class="cm">/* 表格布局 */</span>
+  <span class="cp">display</span>: <span class="cv">inline-flex</span>;   <span class="cm">/* 行内弹性 */</span>
+  <span class="cp">display</span>: <span class="cv">inline-grid</span>;   <span class="cm">/* 行内网格 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-display-block">block：独占一行</div>
+      <div class="demo-display-inline">inline1</div>
+      <div class="demo-display-inline">inline2</div>
+      <div class="demo-display-inline">inline3</div>
+      <br>
+      <div class="demo-display-inline-block">inline-block1</div>
+      <div class="demo-display-inline-block">inline-block2</div>
+    </div>
+  </div>
+
+  <h3>13.2 block / inline / inline-block 对比</h3>
+  <table class="ref-table">
+    <tr><th>特性</th><th>block（块级）</th><th>inline（行内）</th><th>inline-block（行内块）</th></tr>
+    <tr><td>是否独占一行</td><td>是</td><td>否</td><td>否</td></tr>
+    <tr><td>可设宽高</td><td>可以</td><td>不可以</td><td>可以</td></tr>
+    <tr><td>可设 margin/padding</td><td>四方向都可以</td><td>左右可以，上下无效</td><td>四方向都可以</td></tr>
+    <tr><td>默认占据宽度</td><td>父级宽度 100%</td><td>内容宽度</td><td>内容宽度</td></tr>
+    <tr><td>典型标签</td><td>div, p, h1, ul, li</td><td>span, a, strong</td><td>img, input, button</td></tr>
+  </table>
+
+  <h3>13.3 display: none 与 visibility: hidden 的区别</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box1</span> {
+  <span class="cp">display</span>: <span class="cv">none</span>;  <span class="cm">/* 完全隐藏，不占空间，不可交互 */</span>
+}
+
+<span class="cs">.box2</span> {
+  <span class="cp">visibility</span>: <span class="cv">hidden</span>;  <span class="cm">/* 隐藏，但仍占据空间，不可交互 */</span>
+}
+
+<span class="cs">.box3</span> {
+  <span class="cp">opacity</span>: <span class="cv">0</span>;  <span class="cm">/* 完全透明，仍占空间，可交互！ */</span>
+}
+
+<span class="cm">/* visibility 继承特性： */</span>
+<span class="cs">.parent</span> { <span class="cp">visibility</span>: <span class="cv">hidden</span>; }
+<span class="cs">.parent .child</span> { <span class="cp">visibility</span>: <span class="cv">visible</span>; } <span class="cm">/* 子元素可以独立显示 */</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p>display: none → <span style="display: none;">这段文字消失了</span>（看不到，不占空间）</p>
+      <p>visibility: hidden → <span style="visibility: hidden;">这段文字隐藏了</span>（看不到，但占空间）</p>
+      <p>opacity: 0 → <span style="opacity: 0;">这段文字透明了</span>（看不到，但占空间，可选中）</p>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>方式</th><th>是否占空间</th><th>是否可交互</th><th>是否可继承覆盖</th></tr>
+    <tr><td>display: none</td><td>否</td><td>否</td><td>否</td></tr>
+    <tr><td>visibility: hidden</td><td>是</td><td>否</td><td>是（子元素可 visible）</td></tr>
+    <tr><td>opacity: 0</td><td>是</td><td>是（可点击）</td><td>是</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第14章：定位 position
+     ============================================================ -->
+<section id="ch14" class="chapter">
+  <h2>第14章：定位 position</h2>
+  <p>position 属性控制元素的定位方式，是 CSS 布局的核心知识。</p>
+
+  <h3>14.1 五种定位方式</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">position</span>: <span class="cv">static</span>;   <span class="cm">/* 默认值，正常文档流，不受 top/left 影响 */</span>
+  <span class="cp">position</span>: <span class="cv">relative</span>; <span class="cm">/* 相对定位：相对自身原位置偏移，不影响其他元素 */</span>
+  <span class="cp">position</span>: <span class="cv">absolute</span>; <span class="cm">/* 绝对定位：脱离文档流，相对最近的非 static 祖先 */</span>
+  <span class="cp">position</span>: <span class="cv">fixed</span>;    <span class="cm">/* 固定定位：脱离文档流，相对浏览器视口 */</span>
+  <span class="cp">position</span>: <span class="cv">sticky</span>;   <span class="cm">/* 粘性定位：正常流中，到达阈值后变 fixed */</span>
+}
+
+<span class="cm">/* 配合 top / right / bottom / left 使用 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">position</span>: <span class="cv">absolute</span>;
+  <span class="cp">top</span>: <span class="cv">10px</span>;
+  <span class="cp">right</span>: <span class="cv">20px</span>;
+  <span class="cp">bottom</span>: <span class="cv">10px</span>;
+  <span class="cp">left</span>: <span class="cv">20px</span>;
+  <span class="cm">/* 4 个方向都设可以让元素撑满父级 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>14.2 相对定位 relative</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.offset</span> {
+  <span class="cp">position</span>: <span class="cv">relative</span>;
+  <span class="cp">top</span>: <span class="cv">10px</span>;    <span class="cm">/* 从原位置向下移动 10px */</span>
+  <span class="cp">left</span>: <span class="cv">20px</span>;   <span class="cm">/* 从原位置向右移动 20px */</span>
+}
+
+<span class="cm">/*
+  特点：
+  1. 元素仍然占据原来的位置（不会脱离文档流）
+  2. 其他元素不会被影响（不会填补空位）
+  3. 常用作 absolute 定位的父级参照物
+*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div style="background: #d3f9d8; padding: 10px; margin: 5px;">正常位置</div>
+      <div class="demo-position-relative">relative: top 10px, left 20px</div>
+    </div>
+  </div>
+
+  <h3>14.3 绝对定位 absolute</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.popup</span> {
+  <span class="cp">position</span>: <span class="cv">absolute</span>;
+  <span class="cp">top</span>: <span class="cv">100%</span>;   <span class="cm">/* 在父元素正下方 */</span>
+  <span class="cp">left</span>: <span class="cv">0</span>;
+}
+
+<span class="cm">/*
+  特点：
+  1. 脱离文档流，不占据原来的空间
+  2. 相对最近的"非 static 定位"的祖先元素偏移
+  3. 如果所有祖先都是 static，则相对 &lt;html&gt; 偏移
+  4. 通常需要给父元素设 position: relative
+*/</span>
+
+<span class="cs">.parent</span> {
+  <span class="cp">position</span>: <span class="cv">relative</span>; <span class="cm">/* 作为子元素 absolute 的参照物 */</span>
+}
+<span class="cs">.parent .child</span> {
+  <span class="cp">position</span>: <span class="cv">absolute</span>;
+  <span class="cp">top</span>: <span class="cv">0</span>;
+  <span class="cp">right</span>: <span class="cv">0</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-position-wrap">
+        <div class="demo-position-static">static：正常文档流中的元素</div>
+        <div class="demo-position-static">static：第二个元素</div>
+        <div class="demo-position-absolute">absolute：脱离文档流，相对父级定位</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>14.4 固定定位 fixed</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.header</span> {
+  <span class="cp">position</span>: <span class="cv">fixed</span>;
+  <span class="cp">top</span>: <span class="cv">0</span>;
+  <span class="cp">left</span>: <span class="cv">0</span>;
+  <span class="cp">width</span>: <span class="cv">100%</span>;
+  <span class="cp">z-index</span>: <span class="cv">1000</span>;  <span class="cm">/* 层级，大的在上面 */</span>
+  <span class="cp">background</span>: <span class="cv">#fff</span>;
+  <span class="cp">box-shadow</span>: <span class="cv">0 2px 8px rgba(0,0,0,0.1)</span>;
+}
+
+<span class="cm">/*
+  特点：
+  1. 相对浏览器视口定位，页面滚动时不动
+  2. 脱离文档流
+  3. 常用于：固定导航栏、回到顶部按钮、悬浮广告
+*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-position-fixed">fixed：看右下角→</div>
+    </div>
+  </div>
+
+  <h3>14.5 粘性定位 sticky</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.sticky-nav</span> {
+  <span class="cp">position</span>: <span class="cv">sticky</span>;
+  <span class="cp">top</span>: <span class="cv">0</span>;  <span class="cm">/* 滚动到这里时粘住 */</span>
+  <span class="cp">background</span>: <span class="cv">#6c5ce7</span>;
+  <span class="cp">color</span>: <span class="cv">#fff</span>;
+  <span class="cp">z-index</span>: <span class="cv">100</span>;
+}
+
+<span class="cm">/*
+  特点：
+  1. 在到达阈值前是 relative（正常流中）
+  2. 到达阈值后变成 fixed（粘住不动）
+  3. 比用 JS 监听滚动优雅得多
+  4. 常用于：表格表头、侧边栏吸顶
+*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-sticky-container">
+        <div class="demo-sticky-header">粘性标题 — 滚动区域内试滚动↓</div>
+        <div class="demo-sticky-item">列表项 1</div>
+        <div class="demo-sticky-item">列表项 2</div>
+        <div class="demo-sticky-item">列表项 3</div>
+        <div class="demo-sticky-item">列表项 4</div>
+        <div class="demo-sticky-item">列表项 5</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>14.6 z-index 层级</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">z-index</span>: <span class="cv">1</span>;     <span class="cm">/* 在 z-index:0 的上面 */</span>
+  <span class="cp">z-index</span>: <span class="cv">100</span>;   <span class="cm">/* 更高层级 */</span>
+  <span class="cp">z-index</span>: <span class="cv">-1</span>;    <span class="cm">/* 在普通元素下面 */</span>
+  <span class="cp">z-index</span>: <span class="cv">auto</span>;  <span class="cm">/* 默认，不创建层叠上下文 */</span>
+}
+
+<span class="cm">/*
+  注意：
+  1. z-index 只对非 static 定位的元素生效
+  2. 值越大越在上面
+  3. 父元素的 z-index 会限制子元素的层级范围
+     （这叫"层叠上下文"）
+*/</span>
+</code></pre>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>定位方式</th><th>是否脱离文档流</th><th>参照物</th><th>典型用途</th></tr>
+    <tr><td>static</td><td>否</td><td>无（默认流）</td><td>默认值</td></tr>
+    <tr><td>relative</td><td>否</td><td>自身原位置</td><td>微调位置、absolute 父级</td></tr>
+    <tr><td>absolute</td><td>是</td><td>最近的非 static 祖先</td><td>弹出层、图标、角标</td></tr>
+    <tr><td>fixed</td><td>是</td><td>浏览器视口</td><td>固定导航、回到顶部</td></tr>
+    <tr><td>sticky</td><td>半脱离</td><td>滚动容器</td><td>吸顶表头、侧边栏</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第15章：浮动 float
+     ============================================================ -->
+<section id="ch15" class="chapter">
+  <h2>第15章：浮动 float</h2>
+  <p>浮动是早期 CSS 布局的主要手段，现代开发中多被 Flex / Grid 替代，但仍需了解。</p>
+
+  <h3>15.1 float 基本用法</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">float</span>: <span class="cv">left</span>;   <span class="cm">/* 向左浮动 */</span>
+  <span class="cp">float</span>: <span class="cv">right</span>;  <span class="cm">/* 向右浮动 */</span>
+  <span class="cp">float</span>: <span class="cv">none</span>;   <span class="cm">/* 不浮动（默认） */</span>
+}
+
+<span class="cm">/*
+  浮动特点：
+  1. 脱离文档流（后面的元素会上移）
+  2. 文字会环绕浮动元素
+  3. 行内元素浮动后变成块级（可设宽高）
+  4. 浮动元素会贴到父容器边缘或前一个浮动元素旁
+*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-float-container">
+        <div class="demo-float-left">左浮动</div>
+        <div class="demo-float-right">右浮动</div>
+        <p>这段文字会环绕浮动元素。浮动设计的初衷就是让文字环绕图片。当元素浮动后，它脱离了正常的文档流，后面的块级元素会上移，但文字内容会自动避开浮动区域。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>15.2 清除浮动</h3>
+  <p>浮动元素脱离文档流后，父容器高度不会包含浮动子元素（"高度塌陷"），需要清除浮动。</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 方法1：父元素加 overflow: hidden（触发 BFC） */</span>
+<span class="cs">.parent</span> {
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;
+}
+
+<span class="cm">/* 方法2：父元素也浮动（不推荐，副作用大） */</span>
+
+<span class="cm">/* 方法3：在最后加一个空元素清除浮动（旧方法） */</span>
+<span class="cs">.clear</span> {
+  <span class="cp">clear</span>: <span class="cv">both</span>;
+}
+
+<span class="cm">/* 方法4：clearfix 伪元素（推荐！） */</span>
+<span class="cs">.clearfix::after</span> {
+  <span class="cp">content</span>: <span class="cv">""</span>;
+  <span class="cp">display</span>: <span class="cv">block</span>;
+  <span class="cp">clear</span>: <span class="cv">both</span>;
+}
+
+<span class="cm">/* clear 的值：left / right / both */</span>
+</code></pre>
+    </div>
+  </div>
+
+  <div class="warn">⚠️ 现代开发中，布局优先使用 Flex 或 Grid，浮动主要用于文字环绕图片的场景。不要用浮动做整体布局！</div>
+</section>
+
+<!-- ============================================================
+     第16章：Flex 弹性布局
+     ============================================================ -->
+<section id="ch16" class="chapter">
+  <h2>第16章：Flex 弹性布局</h2>
+  <p>Flex 是现代前端最常用的布局方式，95% 的布局都能用 Flex 解决。</p>
+
+  <h3>16.1 基本概念</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.container</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;  <span class="cm">/* 开启 Flex 布局 */</span>
+}
+
+<span class="cm">/*
+  设为 display: flex 的元素叫"容器"（flex container）
+  里面的子元素叫"项目"（flex item）
+
+  容器有两条轴：
+  - 主轴（main axis）：项目排列的方向
+  - 交叉轴（cross axis）：垂直于主轴
+
+  Flex 的所有属性都是围绕这两条轴设置的
+*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-flex-container">
+        <div class="demo-flex-item">1</div>
+        <div class="demo-flex-item">2</div>
+        <div class="demo-flex-item">3</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>16.2 容器属性</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.container</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;
+
+  <span class="cm">/* 主轴方向 */</span>
+  <span class="cp">flex-direction</span>: <span class="cv">row</span>;            <span class="cm">/* → 横向（默认） */</span>
+  <span class="cp">flex-direction</span>: <span class="cv">row-reverse</span>;    <span class="cm">/* ← 横向反向 */</span>
+  <span class="cp">flex-direction</span>: <span class="cv">column</span>;         <span class="cm">/* ↓ 纵向 */</span>
+  <span class="cp">flex-direction</span>: <span class="cv">column-reverse</span>;  <span class="cm">/* ↑ 纵向反向 */</span>
+
+  <span class="cm">/* 主轴对齐方式 */</span>
+  <span class="cp">justify-content</span>: <span class="cv">flex-start</span>;    <span class="cm">/* 起点对齐（默认） */</span>
+  <span class="cp">justify-content</span>: <span class="cv">center</span>;        <span class="cm">/* 居中 */</span>
+  <span class="cp">justify-content</span>: <span class="cv">flex-end</span>;      <span class="cm">/* 终点对齐 */</span>
+  <span class="cp">justify-content</span>: <span class="cv">space-between</span>; <span class="cm">/* 两端对齐，间距相等 */</span>
+  <span class="cp">justify-content</span>: <span class="cv">space-around</span>;  <span class="cm">/* 每个项目两侧间距相等 */</span>
+  <span class="cp">justify-content</span>: <span class="cv">space-evenly</span>;   <span class="cm">/* 完全等间距 */</span>
+
+  <span class="cm">/* 交叉轴对齐方式 */</span>
+  <span class="cp">align-items</span>: <span class="cv">flex-start</span>;  <span class="cm">/* 顶部对齐 */</span>
+  <span class="cp">align-items</span>: <span class="cv">center</span>;      <span class="cm">/* 垂直居中 */</span>
+  <span class="cp">align-items</span>: <span class="cv">flex-end</span>;    <span class="cm">/* 底部对齐 */</span>
+  <span class="cp">align-items</span>: <span class="cv">stretch</span>;     <span class="cm">/* 拉伸铺满（默认） */</span>
+  <span class="cp">align-items</span>: <span class="cv">baseline</span>;    <span class="cm">/* 基线对齐 */</span>
+
+  <span class="cm">/* 是否换行 */</span>
+  <span class="cp">flex-wrap</span>: <span class="cv">nowrap</span>;  <span class="cm">/* 不换行（默认，挤在一起） */</span>
+  <span class="cp">flex-wrap</span>: <span class="cv">wrap</span>;    <span class="cm">/* 换行 */</span>
+
+  <span class="cm">/* 子元素间距 */</span>
+  <span class="cp">gap</span>: <span class="cv">16px</span>;           <span class="cm">/* 间距 16px */</span>
+  <span class="cp">gap</span>: <span class="cv">10px 20px</span>;      <span class="cm">/* 行间距10, 列间距20 */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p>justify-content: space-between</p>
+      <div style="display: flex; justify-content: space-between; gap: 10px; padding: 10px; background: #f0f0f0; border-radius: 6px;">
+        <div class="demo-flex-item">1</div>
+        <div class="demo-flex-item">2</div>
+        <div class="demo-flex-item">3</div>
+      </div>
+      <p>justify-content: center</p>
+      <div style="display: flex; justify-content: center; gap: 10px; padding: 10px; background: #f0f0f0; border-radius: 6px;">
+        <div class="demo-flex-item">1</div>
+        <div class="demo-flex-item">2</div>
+        <div class="demo-flex-item">3</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>16.3 项目属性</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.item</span> {
+  <span class="cm">/* flex 简写：grow shrink basis */</span>
+  <span class="cp">flex</span>: <span class="cv">1</span>;          <span class="cm">/* 占据剩余空间（最常用） */</span>
+  <span class="cp">flex</span>: <span class="cv">0 0 200px</span>;  <span class="cm">/* 不伸缩，固定 200px */</span>
+  <span class="cp">flex</span>: <span class="cv">1 0 0</span>;      <span class="cm">/* 等分空间 */</span>
+
+  <span class="cp">flex-grow</span>: <span class="cv">1</span>;     <span class="cm">/* 放大比例：有剩余空间时如何分配 */</span>
+  <span class="cp">flex-grow</span>: <span class="cv">0</span>;     <span class="cm">/* 不放大 */</span>
+  <span class="cp">flex-shrink</span>: <span class="cv">0</span>;   <span class="cm">/* 不缩小 */</span>
+  <span class="cp">flex-basis</span>: <span class="cv">200px</span>; <span class="cm">/* 初始大小 */</span>
+
+  <span class="cm">/* 单个项目交叉轴对齐（覆盖 align-items） */</span>
+  <span class="cp">align-self</span>: <span class="cv">center</span>;
+  <span class="cp">align-self</span>: <span class="cv">flex-end</span>;
+
+  <span class="cm">/* 排列顺序 */</span>
+  <span class="cp">order</span>: <span class="cv">-1</span>;  <span class="cm">/* 排到最前面 */</span>
+  <span class="cp">order</span>: <span class="cv">2</span>;   <span class="cm">/* 排到后面 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>16.4 常见 Flex 布局模式</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 1. 水平垂直居中（经典！） */</span>
+<span class="cs">.center</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;
+  <span class="cp">justify-content</span>: <span class="cv">center</span>;
+  <span class="cp">align-items</span>: <span class="cv">center</span>;
+}
+
+<span class="cm">/* 2. 顶部导航栏：左右两端对齐 */</span>
+<span class="cs">.navbar</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;
+  <span class="cp">justify-content</span>: <span class="cv">space-between</span>;
+  <span class="cp">align-items</span>: <span class="cv">center</span>;
+  <span class="cp">padding</span>: <span class="cv">0 20px</span>;
+  <span class="cp">height</span>: <span class="cv">60px</span>;
+}
+
+<span class="cm">/* 3. 侧边栏 + 主内容 */</span>
+<span class="cs">.layout</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;
+}
+<span class="cs">.sidebar</span> { <span class="cp">width</span>: <span class="cv">200px</span>; }
+<span class="cs">.main</span> { <span class="cp">flex</span>: <span class="cv">1</span>; }  <span class="cm">/* 占据剩余宽度 */</span>
+
+<span class="cm">/* 4. 等宽卡片排列 */</span>
+<span class="cs">.card-list</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;
+  <span class="cp">gap</span>: <span class="cv">16px</span>;
+}
+<span class="cs">.card-list .card</span> {
+  <span class="cp">flex</span>: <span class="cv">1</span>;  <span class="cm">/* 每张卡片等宽 */</span>
+}
+
+<span class="cm">/* 5. 底部固定按钮栏 */</span>
+<span class="cs">.footer-bar</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;
+  <span class="cp">gap</span>: <span class="cv">12px</span>;
+  <span class="cp">padding</span>: <span class="cv">12px 16px</span>;
+}
+<span class="cs">.footer-bar .btn-secondary</span> { <span class="cp">flex</span>: <span class="cv">1</span>; }
+<span class="cs">.footer-bar .btn-primary</span> { <span class="cp">flex</span>: <span class="cv">2</span>; }
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p>导航栏（space-between）：</p>
+      <div style="display: flex; justify-content: space-between; align-items: center; height: 50px; background: #6c5ce7; color: #fff; padding: 0 20px; border-radius: 6px;">
+        <span>Logo</span>
+        <span>菜单</span>
+      </div>
+      <p>侧边栏 + 主内容：</p>
+      <div style="display: flex; gap: 10px; height: 80px;">
+        <div style="width: 80px; background: #4fc08d; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff;">sidebar</div>
+        <div style="flex: 1; background: #eef0ff; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #6c5ce7;">main (flex: 1)</div>
+      </div>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>容器属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>flex-direction</td><td>主轴方向</td><td>row, column</td></tr>
+    <tr><td>justify-content</td><td>主轴对齐</td><td>center, space-between</td></tr>
+    <tr><td>align-items</td><td>交叉轴对齐</td><td>center, flex-start, stretch</td></tr>
+    <tr><td>flex-wrap</td><td>是否换行</td><td>nowrap, wrap</td></tr>
+    <tr><td>gap</td><td>项目间距</td><td>16px, 10px 20px</td></tr>
+    <tr><td>align-content</td><td>多行对齐</td><td>center, space-between</td></tr>
+  </table>
+  <table class="ref-table">
+    <tr><th>项目属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>flex (简写)</td><td>伸缩比例</td><td>1, 0 0 200px</td></tr>
+    <tr><td>flex-grow</td><td>放大比例</td><td>0, 1, 2</td></tr>
+    <tr><td>flex-shrink</td><td>缩小比例</td><td>0, 1</td></tr>
+    <tr><td>flex-basis</td><td>初始大小</td><td>200px, auto</td></tr>
+    <tr><td>align-self</td><td>单独交叉轴对齐</td><td>center, auto</td></tr>
+    <tr><td>order</td><td>排列顺序</td><td>-1, 0, 1, 2</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第17章：Grid 网格布局
+     ============================================================ -->
+<section id="ch17" class="chapter">
+  <h2>第17章：Grid 网格布局</h2>
+  <p>Grid 是 CSS 最强大的二维布局系统，适合复杂的网格结构。</p>
+
+  <h3>17.1 基本用法</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.container</span> {
+  <span class="cp">display</span>: <span class="cv">grid</span>;
+
+  <span class="cm">/* 定义列：3 列等宽 */</span>
+  <span class="cp">grid-template-columns</span>: <span class="cv">1fr 1fr 1fr</span>;
+  <span class="cm">/* fr 是"分数单位"，类似 flex-grow */</span>
+
+  <span class="cm">/* 固定宽度列 */</span>
+  <span class="cp">grid-template-columns</span>: <span class="cv">200px 1fr</span>;  <span class="cm">/* 第一列200px，第二列占剩余 */</span>
+
+  <span class="cm">/* 使用 repeat() 简写 */</span>
+  <span class="cp">grid-template-columns</span>: <span class="cv">repeat(3, 1fr)</span>;  <span class="cm">/* 3 列等宽 */</span>
+  <span class="cp">grid-template-columns</span>: <span class="cv">repeat(auto-fill, 200px)</span>; <span class="cm">/* 自动填充 */</span>
+  <span class="cp">grid-template-columns</span>: <span class="cv">repeat(auto-fit, minmax(200px, 1fr))</span>;
+
+  <span class="cm">/* 定义行 */</span>
+  <span class="cp">grid-template-rows</span>: <span class="cv">60px 1fr 40px</span>;
+
+  <span class="cm">/* 间距 */</span>
+  <span class="cp">gap</span>: <span class="cv">16px</span>;
+  <span class="cp">row-gap</span>: <span class="cv">16px</span>;
+  <span class="cp">column-gap</span>: <span class="cv">16px</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-grid-container">
+        <div class="demo-grid-item">1</div>
+        <div class="demo-grid-item">2</div>
+        <div class="demo-grid-item">3</div>
+        <div class="demo-grid-item">4</div>
+        <div class="demo-grid-item">5</div>
+        <div class="demo-grid-item">6</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>17.2 网格区域</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.container</span> {
+  <span class="cp">display</span>: <span class="cv">grid</span>;
+  <span class="cp">grid-template-columns</span>: <span class="cv">200px 1fr</span>;
+  <span class="cp">grid-template-rows</span>: <span class="cv">60px 1fr 40px</span>;
+  <span class="cp">gap</span>: <span class="cv">10px</span>;
+
+  <span class="cm">/* 用名称定义区域布局（超直观！） */</span>
+  <span class="cp">grid-template-areas</span>: <span class="cv">
+    "header header"
+    "sidebar main"
+    "footer footer"
+  </span>;
+}
+
+<span class="cs">.header</span> { <span class="cp">grid-area</span>: <span class="cv">header</span>; }
+<span class="cs">.sidebar</span> { <span class="cp">grid-area</span>: <span class="cv">sidebar</span>; }
+<span class="cs">.main</span> { <span class="cp">grid-area</span>: <span class="cv">main</span>; }
+<span class="cs">.footer</span> { <span class="cp">grid-area</span>: <span class="cv">footer</span>; }
+
+<span class="cm">/*
+  +--------+-------+
+  |  header         |
+  +--------+-------+
+  |sidebar | main  |
+  +--------+-------+
+  |  footer         |
+  +--------+-------+
+*/</span>
+</code></pre>
+    </div>
+  </div>
+
+  <h3>17.3 跨行跨列</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.item</span> {
+  <span class="cm">/* 合并列：从第 1 列到第 3 列 */</span>
+  <span class="cp">grid-column</span>: <span class="cv">1 / 3</span>;     <span class="cm">/* 起始线 / 结束线 */</span>
+  <span class="cp">grid-column</span>: <span class="cv">1 / span 2</span>; <span class="cm">/* 从第1列开始跨2列 */</span>
+
+  <span class="cm">/* 合并行 */</span>
+  <span class="cp">grid-row</span>: <span class="cv">1 / 3</span>;
+  <span class="cp">grid-row</span>: <span class="cv">1 / span 2</span>;
+}
+</code></pre>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>容器属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>grid-template-columns</td><td>定义列</td><td>1fr 1fr, repeat(3, 1fr)</td></tr>
+    <tr><td>grid-template-rows</td><td>定义行</td><td>60px 1fr, auto</td></tr>
+    <tr><td>gap / row-gap / column-gap</td><td>间距</td><td>16px, 10px 20px</td></tr>
+    <tr><td>grid-template-areas</td><td>命名区域</td><td>"header header" "side main"</td></tr>
+    <tr><td>justify-items</td><td>水平对齐</td><td>start, center, end, stretch</td></tr>
+    <tr><td>align-items</td><td>垂直对齐</td><td>start, center, end, stretch</td></tr>
+  </table>
+  <table class="ref-table">
+    <tr><th>项目属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>grid-column</td><td>跨列</td><td>1 / 3, 1 / span 2</td></tr>
+    <tr><td>grid-row</td><td>跨行</td><td>1 / 3, 1 / span 2</td></tr>
+    <tr><td>grid-area</td><td>指定区域名</td><td>header, main</td></tr>
+    <tr><td>justify-self</td><td>单独水平对齐</td><td>start, center</td></tr>
+    <tr><td>align-self</td><td>单独垂直对齐</td><td>start, center</td></tr>
+  </table>
+
+  <div class="tip">💡 Flex 是一维布局（一条线方向），Grid 是二维布局（行和列同时控制）。简单排列用 Flex，复杂网格用 Grid，两者可以嵌套使用。</div>
+</section>
+
+<!-- ============================================================
+     第18章：transition 过渡
+     ============================================================ -->
+<section id="ch18" class="chapter">
+  <h2>第18章：transition 过渡</h2>
+  <p>transition 让 CSS 属性变化时产生平滑的动画过渡，而不是瞬间跳变。</p>
+
+  <h3>18.1 基本语法</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">transition</span>: <span class="cv">all 0.3s ease</span>;
+
+  <span class="cm">/* 完整写法：property duration timing-function delay */</span>
+  <span class="cp">transition</span>: <span class="cv">width 0.5s ease-in-out 0.1s</span>;
+
+  <span class="cm">/* 分属性写 */</span>
+  <span class="cp">transition-property</span>: <span class="cv">width, height</span>;  <span class="cm">/* 过渡的属性 */</span>
+  <span class="cp">transition-duration</span>: <span class="cv">0.5s</span>;          <span class="cm">/* 持续时间 */</span>
+  <span class="cp">transition-timing-function</span>: <span class="cv">ease</span>;   <span class="cm">/* 缓动函数 */</span>
+  <span class="cp">transition-delay</span>: <span class="cv">0.1s</span>;              <span class="cm">/* 延迟开始 */</span>
+
+  <span class="cm">/* 多个属性分别过渡 */</span>
+  <span class="cp">transition</span>: <span class="cv">width 0.3s ease, height 0.5s ease</span>;
+}
+
+<span class="cm">/*
+  timing-function 缓动函数：
+  ease:      慢→快→慢（默认）
+  linear:    匀速
+  ease-in:   慢→快
+  ease-out:  快→慢
+  ease-in-out: 慢→快→慢
+  cubic-bezier(n, n, n, n): 自定义贝塞尔曲线
+*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p>把鼠标移到下面的方块上：</p>
+      <div class="demo-transition-box">hover me</div>
+    </div>
+  </div>
+
+  <h3>18.2 常见过渡场景</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 按钮颜色渐变 */</span>
+<span class="cs">.btn</span> {
+  <span class="cp">background</span>: <span class="cv">#6c5ce7</span>;
+  <span class="cp">transition</span>: <span class="cv">background 0.3s ease</span>;
+}
+<span class="cs">.btn:hover</span> {
+  <span class="cp">background</span>: <span class="cv">#4fc08d</span>;
+}
+
+<span class="cm">/* 下拉菜单展开 */</span>
+<span class="cs">.dropdown</span> {
+  <span class="cp">max-height</span>: <span class="cv">0</span>;
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;
+  <span class="cp">transition</span>: <span class="cv">max-height 0.3s ease</span>;
+}
+<span class="cs">.dropdown.open</span> {
+  <span class="cp">max-height</span>: <span class="cv">300px</span>;
+}
+
+<span class="cm">/* 淡入淡出 */</span>
+<span class="cs">.fade</span> {
+  <span class="cp">opacity</span>: <span class="cv">0</span>;
+  <span class="cp">transition</span>: <span class="cv">opacity 0.4s ease</span>;
+}
+<span class="cs">.fade.show</span> {
+  <span class="cp">opacity</span>: <span class="cv">1</span>;
+}
+</code></pre>
+    </div>
+  </div>
+
+  <div class="tip">💡 不是所有 CSS 属性都能过渡，只有"可计算中间值"的属性才能过渡。比如 width、height、color、opacity、transform 可以，但 display、position 不可以。</div>
+</section>
+
+<!-- ============================================================
+     第19章：animation 动画
+     ============================================================ -->
+<section id="ch19" class="chapter">
+  <h2>第19章：animation 动画</h2>
+  <p>animation 可以创建更复杂的动画——多帧、循环、暂停控制。</p>
+
+  <h3>19.1 定义关键帧 @keyframes</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 定义动画的关键帧 */</span>
+<span class="ck">@keyframes</span> <span class="cs">spin</span> {
+  <span class="ck">from</span> { <span class="cp">transform</span>: <span class="cv">rotate(0deg)</span>; }
+  <span class="ck">to</span> { <span class="cp">transform</span>: <span class="cv">rotate(360deg)</span>; }
+}
+
+<span class="cm">/* 用百分比定义多个关键帧 */</span>
+<span class="ck">@keyframes</span> <span class="cs">bounce</span> {
+  <span class="cn">0%</span>   { <span class="cp">transform</span>: <span class="cv">translateY(0)</span>; }
+  <span class="cn">25%</span>  { <span class="cp">transform</span>: <span class="cv">translateY(-20px)</span>; }
+  <span class="cn">50%</span>  { <span class="cp">transform</span>: <span class="cv">translateY(0)</span>; }
+  <span class="cn">75%</span>  { <span class="cp">transform</span>: <span class="cv">translateY(-10px)</span>; }
+  <span class="cn">100%</span> { <span class="cp">transform</span>: <span class="cv">translateY(0)</span>; }
+}
+
+<span class="cm">/* 也可以只写 0% 和 100% */</span>
+<span class="ck">@keyframes</span> <span class="cs">fade-in</span> {
+  <span class="ck">from</span> { <span class="cp">opacity</span>: <span class="cv">0</span>; }
+  <span class="ck">to</span>   { <span class="cp">opacity</span>: <span class="cv">1</span>; }
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>19.2 使用动画</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.spinner</span> {
+  <span class="cm">/* 简写：name duration timing-function delay iteration direction */</span>
+  <span class="cp">animation</span>: <span class="cv">spin 2s linear infinite</span>;
+
+  <span class="cm">/* 分属性写 */</span>
+  <span class="cp">animation-name</span>: <span class="cv">spin</span>;           <span class="cm">/* 动画名 */</span>
+  <span class="cp">animation-duration</span>: <span class="cv">2s</span>;       <span class="cm">/* 一次持续 2 秒 */</span>
+  <span class="cp">animation-timing-function</span>: <span class="cv">linear</span>; <span class="cm">/* 匀速 */</span>
+  <span class="cp">animation-delay</span>: <span class="cv">0s</span>;           <span class="cm">/* 延迟开始 */</span>
+  <span class="cp">animation-iteration-count</span>: <span class="cv">infinite</span>; <span class="cm">/* 无限循环 */</span>
+  <span class="cp">animation-direction</span>: <span class="cv">normal</span>;   <span class="cm">/* normal / reverse / alternate */</span>
+  <span class="cp">animation-fill-mode</span>: <span class="cv">forwards</span>; <span class="cm">/* 保持最后一帧的状态 */</span>
+  <span class="cp">animation-play-state</span>: <span class="cv">running</span>; <span class="cm">/* running / paused */</span>
+}
+
+<span class="cm">/*
+  animation-direction 可选值：
+  normal:     正常播放
+  reverse:    反向播放
+  alternate:  正反交替（来回收放）
+  alternate-reverse: 反正交替
+
+  animation-fill-mode 可选值：
+  none:       不应用任何样式（默认）
+  forwards:   保持最后一帧
+  backwards:  应用第一帧
+  both:       同时应用 forwards 和 backwards
+*/</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-anim-box"></div>
+      <p style="text-align: center; font-size: 12px; color: #999;">animation: spin 2s linear infinite</p>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>属性</th><th>说明</th><th>常用值</th></tr>
+    <tr><td>@keyframes</td><td>定义关键帧</td><td>from/to 或 0%~100%</td></tr>
+    <tr><td>animation-name</td><td>动画名</td><td>spin, bounce, fade-in</td></tr>
+    <tr><td>animation-duration</td><td>持续时间</td><td>2s, 500ms</td></tr>
+    <tr><td>animation-timing-function</td><td>缓动函数</td><td>ease, linear, ease-in-out</td></tr>
+    <tr><td>animation-iteration-count</td><td>循环次数</td><td>infinite, 3</td></tr>
+    <tr><td>animation-direction</td><td>播放方向</td><td>normal, alternate</td></tr>
+    <tr><td>animation-fill-mode</td><td>填充模式</td><td>forwards, both</td></tr>
+    <tr><td>animation-play-state</td><td>播放状态</td><td>running, paused</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第20章：transform 变换
+     ============================================================ -->
+<section id="ch20" class="chapter">
+  <h2>第20章：transform 变换</h2>
+  <p>transform 对元素进行移动、缩放、旋转、倾斜等变换，不影响文档流。</p>
+
+  <h3>20.1 常用变换函数</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cm">/* 平移 */</span>
+  <span class="cp">transform</span>: <span class="cv">translate(50px, 20px)</span>;  <span class="cm">/* x=50px, y=20px */</span>
+  <span class="cp">transform</span>: <span class="cv">translateX(50px)</span>;       <span class="cm">/* 只移 x */</span>
+  <span class="cp">transform</span>: <span class="cv">translateY(20px)</span>;       <span class="cm">/* 只移 y */</span>
+  <span class="cp">transform</span>: <span class="cv">translate(-50%, -50%)</span>;  <span class="cm">/* 居中定位常用 */</span>
+
+  <span class="cm">/* 缩放 */</span>
+  <span class="cp">transform</span>: <span class="cv">scale(1.5)</span>;          <span class="cm">/* 放大 1.5 倍 */</span>
+  <span class="cp">transform</span>: <span class="cv">scale(0.5)</span>;          <span class="cm">/* 缩小一半 */</span>
+  <span class="cp">transform</span>: <span class="cv">scaleX(2)</span>;           <span class="cm">/* 横向放大 2 倍 */</span>
+  <span class="cp">transform</span>: <span class="cv">scaleY(0.5)</span>;          <span class="cm">/* 纵向缩小一半 */</span>
+
+  <span class="cm">/* 旋转 */</span>
+  <span class="cp">transform</span>: <span class="cv">rotate(45deg)</span>;        <span class="cm">/* 顺时针旋转 45 度 */</span>
+  <span class="cp">transform</span>: <span class="cv">rotate(-90deg)</span>;       <span class="cm">/* 逆时针旋转 90 度 */</span>
+
+  <span class="cm">/* 倾斜 */</span>
+  <span class="cp">transform</span>: <span class="cv">skew(15deg, 5deg)</span>;   <span class="cm">/* x 倾斜 15deg, y 倾斜 5deg */</span>
+  <span class="cp">transform</span>: <span class="cv">skewX(15deg)</span>;
+  <span class="cp">transform</span>: <span class="cv">skewY(5deg)</span>;
+
+  <span class="cm">/* 组合变换（用空格分隔） */</span>
+  <span class="cp">transform</span>: <span class="cv">translate(50px, 0) rotate(15deg) scale(1.2)</span>;
+}
+
+<span class="cm">/* 3D 变换 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">transform</span>: <span class="cv">rotateX(45deg)</span>;      <span class="cm">/* 绕 X 轴旋转 */</span>
+  <span class="cp">transform</span>: <span class="cv">rotateY(45deg)</span>;      <span class="cm">/* 绕 Y 轴旋转 */</span>
+  <span class="cp">transform</span>: <span class="cv">rotateZ(45deg)</span>;      <span class="cm">/* 等同 rotate() */</span>
+  <span class="cp">transform</span>: <span class="cv">translateZ(100px)</span>;   <span class="cm">/* Z 轴平移 */</span>
+  <span class="cp">transform</span>: <span class="cv">perspective(500px) rotateY(45deg)</span>;
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-transform-box">原始</div>
+      <div class="demo-transform-box demo-tf-rotate">rotate(15deg)</div>
+      <div class="demo-transform-box demo-tf-scale">scale(1.2)</div>
+      <div class="demo-transform-box demo-tf-skew">skew(15deg, 5deg)</div>
+      <div class="demo-transform-box demo-tf-translate">translate(20px, 10px)</div>
+    </div>
+  </div>
+
+  <h3>20.2 transform-origin 变换原点</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">transform-origin</span>: <span class="cv">center center</span>; <span class="cm">/* 默认：中心点 */</span>
+  <span class="cp">transform-origin</span>: <span class="cv">top left</span>;     <span class="cm">/* 左上角 */</span>
+  <span class="cp">transform-origin</span>: <span class="cv">50% 0%</span>;       <span class="cm">/* 顶部中心 */</span>
+  <span class="cp">transform-origin</span>: <span class="cv">10px 20px</span>;    <span class="cm">/* 具体坐标 */</span>
+
+  <span class="cp">transform</span>: <span class="cv">rotate(45deg)</span>;  <span class="cm">/* 绕上面的原点旋转 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <div class="tip">💡 transform 是性能最好的动画属性，因为它不触发重排（reflow），只触发重绘（repaint）+ 合成。尽量用 transform 和 opacity 做动画，避免动画 width/height/top/left。</div>
+</section>
+
+<!-- ============================================================
+     第21章：CSS 变量
+     ============================================================ -->
+<section id="ch21" class="chapter">
+  <h2>第21章：CSS 变量（自定义属性）</h2>
+  <p>CSS 变量（Custom Properties）让你定义可复用的值，统一管理主题色、间距等。</p>
+
+  <h3>21.1 定义与使用</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 定义变量：以 -- 开头 */</span>
+<span class="cs">:root</span> {
+  <span class="cp">--primary</span>: <span class="cv">#6c5ce7</span>;
+  <span class="cp">--text-color</span>: <span class="cv">#333</span>;
+  <span class="cp">--radius</span>: <span class="cv">8px</span>;
+  <span class="cp">--gap</span>: <span class="cv">16px</span>;
+}
+
+<span class="cm">/* 使用变量：用 var() 函数 */</span>
+<span class="cs">.card</span> {
+  <span class="cp">background</span>: <span class="cv">var(--primary)</span>;
+  <span class="cp">color</span>: <span class="cv">var(--text-color)</span>;
+  <span class="cp">border-radius</span>: <span class="cv">var(--radius)</span>;
+}
+
+<span class="cm">/* var() 可以设默认值 */</span>
+<span class="cs">.box</span> {
+  <span class="cp">padding</span>: <span class="cv">var(--gap, 16px)</span>;  <span class="cm">/* 如果 --gap 没定义，用 16px */</span>
+}
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div class="demo-var-card">
+        <strong>--card-border: #6c5ce7</strong><br>
+        这是一个使用 CSS 变量定义样式的卡片
+      </div>
+    </div>
+  </div>
+
+  <h3>21.2 变量作用域</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* :root 里的变量是全局的，所有元素都能用 */</span>
+<span class="cs">:root</span> {
+  <span class="cp">--bg</span>: <span class="cv">#fff</span>;
+}
+
+<span class="cm">/* 也可以在特定元素里定义局部变量 */</span>
+<span class="cs">.dark-theme</span> {
+  <span class="cp">--bg</span>: <span class="cv">#1a1a2e</span>;  <span class="cm">/* 只有 .dark-theme 内部的元素能用这个值 */</span>
+}
+
+<span class="cs">body</span> {
+  <span class="cp">background</span>: <span class="cv">var(--bg)</span>;  <span class="cm">/* 全局 #fff */</span>
+}
+<span class="cs">.dark-theme</span> {
+  <span class="cp">background</span>: <span class="cv">var(--bg)</span>;  <span class="cm">/* 局部 #1a1a2e */</span>
+}
+
+<span class="cm">/* JS 可以动态修改变量（主题切换！） */</span>
+<span class="cm">/* document.documentElement.style.setProperty('--bg', '#1a1a2e') */</span>
+</code></pre>
+    </div>
+  </div>
+
+  <div class="tip">💡 CSS 变量与 SCSS 变量的区别：CSS 变量运行在浏览器端，可以被 JS 动态修改；SCSS 变量编译时固定，不能运行时修改。</div>
+</section>
+
+<!-- ============================================================
+     第22章：媒体查询与响应式
+     ============================================================ -->
+<section id="ch22" class="chapter">
+  <h2>第22章：媒体查询与响应式</h2>
+  <p>媒体查询让 CSS 根据屏幕宽度、设备类型等条件应用不同样式。</p>
+
+  <h3>22.1 基本语法</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* @media 媒体类型 and (条件) { ... } */</span>
+
+<span class="cm">/* 屏幕宽度 >= 768px 时应用 */</span>
+<span class="ck">@media</span> <span class="cv">(min-width: 768px)</span> {
+  <span class="cs">.grid</span> {
+    <span class="cp">grid-template-columns</span>: <span class="cv">1fr 1fr</span>;
+  }
+}
+
+<span class="cm">/* 屏幕宽度 >= 1024px 时应用 */</span>
+<span class="ck">@media</span> <span class="cv">(min-width: 1024px)</span> {
+  <span class="cs">.grid</span> {
+    <span class="cp">grid-template-columns</span>: <span class="cv">1fr 1fr 1fr</span>;
+  }
+}
+
+<span class="cm">/* 屏幕宽度 <= 480px 时应用（手机端） */</span>
+<span class="ck">@media</span> <span class="cv">(max-width: 480px)</span> {
+  <span class="cs">.grid</span> {
+    <span class="cp">grid-template-columns</span>: <span class="cv">1fr</span>;
+  }
+}
+
+<span class="cm">/* 多条件组合 */</span>
+<span class="ck">@media</span> <span class="cv">(min-width: 768px) and (max-width: 1023px)</span> {
+  <span class="cm">/* 768px ~ 1023px 之间 */</span>
+}
+
+<span class="cm">/* 横屏 / 竖屏 */</span>
+<span class="ck">@media</span> <span class="cv">(orientation: landscape)</span> { <span class="cm">/* 横屏 */</span> }
+<span class="ck">@media</span> <span class="cv">(orientation: portrait)</span>  { <span class="cm">/* 竖屏 */</span> }
+</code></pre>
+    </div>
+  </div>
+
+  <h3>22.2 响应式设计模式</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 移动端优先（推荐！）：默认写手机样式，逐步增强 */</span>
+<span class="cs">.grid</span> {
+  <span class="cp">grid-template-columns</span>: <span class="cv">1fr</span>;  <span class="cm">/* 默认：1 列（手机） */</span>
+}
+
+<span class="cm">/* 平板：>= 481px 变 2 列 */</span>
+<span class="ck">@media</span> <span class="cv">(min-width: 481px)</span> {
+  <span class="cs">.grid</span> {
+    <span class="cp">grid-template-columns</span>: <span class="cv">1fr 1fr</span>;
+  }
+}
+
+<span class="cm">/* 桌面：>= 769px 变 3 列 */</span>
+<span class="ck">@media</span> <span class="cv">(min-width: 769px)</span> {
+  <span class="cs">.grid</span> {
+    <span class="cp">grid-template-columns</span>: <span class="cv">1fr 1fr 1fr</span>;
+  }
+}
+
+<span class="cm">/* 常用断点参考值 */</span>
+<span class="cm">/* 手机:   320px ~ 480px */</span>
+<span class="cm">/* 平板:   481px ~ 768px */</span>
+<span class="cm">/* 笔记本: 769px ~ 1024px */</span>
+<span class="cm">/* 桌面:   1025px+           */</span>
+</code></pre>
+    </div>
+  </div>
+
+  <h3>22.3 viewport meta 标签</h3>
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">&lt;!-- 在 HTML &lt;head&gt; 中必须写这个标签，媒体查询才能正常工作 --&gt;</span>
+&lt;meta <span class="cp">name</span>=<span class="cv">"viewport"</span> <span class="cp">content</span>=<span class="cv">"width=device-width, initial-scale=1.0"</span>&gt;
+
+<span class="cm">/* width=device-width: 视口宽度=设备宽度 */</span>
+<span class="cm">/* initial-scale=1.0: 初始缩放比例=1 */</span>
+</code></pre>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>媒体特性</th><th>说明</th><th>示例</th></tr>
+    <tr><td>width / height</td><td>视口宽/高</td><td>min-width: 768px</td></tr>
+    <tr><td>orientation</td><td>屏幕方向</td><td>landscape / portrait</td></tr>
+    <tr><td>resolution</td><td>分辨率</td><td>min-resolution: 2dppx</td></tr>
+    <tr><td>prefers-color-scheme</td><td>暗色/亮色模式</td><td>dark / light</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     第23章：CSS 单位
+     ============================================================ -->
+<section id="ch23" class="chapter">
+  <h2>第23章：CSS 单位</h2>
+  <p>CSS 有绝对单位和相对单位，理解它们的区别对响应式设计至关重要。</p>
+
+  <table class="ref-table">
+    <tr><th>单位</th><th>类型</th><th>含义</th><th>用途</th></tr>
+    <tr><td>px</td><td>绝对</td><td>像素</td><td>固定尺寸（边框、图标）</td></tr>
+    <tr><td>%</td><td>相对</td><td>相对父元素的百分比</td><td>响应式宽度</td></tr>
+    <tr><td>em</td><td>相对</td><td>相对父元素字号</td><td>嵌套缩放（注意层级）</td></tr>
+    <tr><td>rem</td><td>相对</td><td>相对根元素（html）字号</td><td>响应式字体（推荐）</td></tr>
+    <tr><td>vw</td><td>相对</td><td>视口宽度的 1%</td><td>全屏布局</td></tr>
+    <tr><td>vh</td><td>相对</td><td>视口高度的 1%</td><td>全屏布局</td></tr>
+    <tr><td>vmin</td><td>相对</td><td>视口宽高较小者的 1%</td><td>适配移动端</td></tr>
+    <tr><td>vmax</td><td>相对</td><td>视口宽高较大者的 1%</td><td>适配移动端</td></tr>
+    <tr><td>ch</td><td>相对</td><td>字符 "0" 的宽度</td><td>等宽限制</td></tr>
+    <tr><td>fr</td><td>相对</td><td>Grid 分数单位</td><td>网格列宽分配</td></tr>
+  </table>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 常见用法 */</span>
+<span class="cs">.container</span> { <span class="cp">width</span>: <span class="cv">80%</span>; <span class="cp">max-width</span>: <span class="cv">1200px</span>; }  <span class="cm">/* 居中容器 */</span>
+<span class="cs">.title</span> { <span class="cp">font-size</span>: <span class="cv">1.5rem</span>; }       <span class="cm">/* 根字号的 1.5 倍 */</span>
+<span class="cs">.hero</span> { <span class="cp">height</span>: <span class="cv">100vh</span>; }            <span class="cm">/* 满屏高度 */</span>
+<span class="cs">.sidebar</span> { <span class="cp">width</span>: <span class="cv">20vw</span>; }            <span class="cm">/* 视口宽度的 20% */</span>
+
+<span class="cm">/* em 的陷阱：嵌套时层层放大 */</span>
+<span class="cs">.parent</span> { <span class="cp">font-size</span>: <span class="cv">20px</span>; }
+<span class="cs">.parent .child</span> { <span class="cp">font-size</span>: <span class="cv">1.2em</span>; }  <span class="cm">/* 24px */</span>
+<span class="cs">.parent .child .grandchild</span> { <span class="cp">font-size</span>: <span class="cv">1.2em</span>; }  <span class="cm">/* 28.8px！层层放大 */</span>
+
+<span class="cm">/* rem 不会嵌套放大：始终相对根元素 */</span>
+<span class="cs">html</span> { <span class="cp">font-size</span>: <span class="cv">16px</span>; }  <span class="cm">/* 1rem = 16px */</span>
+</code></pre>
+    </div>
+  </div>
+
+  <h3>23.2 calc() 计算函数</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cm">/* 混合不同单位进行计算 */</span>
+  <span class="cp">width</span>: <span class="cv">calc(100% - 200px)</span>;   <span class="cm">/* 全宽减去固定值 */</span>
+  <span class="cp">height</span>: <span class="cv">calc(100vh - 60px)</span>;   <span class="cm">/* 全高减去导航栏 */</span>
+  <span class="cp">padding</span>: <span class="cv">calc(1rem + 2px)</span>;    <span class="cm">/* 混合单位 */</span>
+}
+
+<span class="cm">/* 注意：运算符两边要有空格！ */</span>
+<span class="cm">/* calc(100% - 200px) ✓ */</span>
+<span class="cm">/* calc(100%-200px) ✗ */</span>
+</code></pre>
+    </div>
+  </div>
+
+  <div class="tip">💡 rem 适合字体大小（相对根元素，不会嵌套放大），% 适合容器宽度（相对父元素），vw/vh 适合全屏布局。</div>
+</section>
+
+<!-- ============================================================
+     第24章：颜色与渐变
+     ============================================================ -->
+<section id="ch24" class="chapter">
+  <h2>第24章：颜色与渐变</h2>
+
+  <h3>24.1 颜色表示法</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 1. 颜色名（140 个预定义颜色） */</span>
+<span class="cp">color</span>: <span class="cv">red</span>;
+<span class="cp">color</span>: <span class="cv">cornflowerblue</span>;
+
+<span class="cm">/* 2. 十六进制（最常用） */</span>
+<span class="cp">color</span>: <span class="cv">#ff0000</span>;   <span class="cm">/* RRGGBB */</span>
+<span class="cp">color</span>: <span class="cv">#f00</span>;      <span class="cm">/* RGB 简写 */</span>
+<span class="cp">color</span>: <span class="cv">#ff000080</span>; <span class="cm">/* RRGGBBAA（8 位，带透明度） */</span>
+
+<span class="cm">/* 3. RGB / RGBA */</span>
+<span class="cp">color</span>: <span class="cv">rgb(255, 0, 0)</span>;        <span class="cm">/* 0~255 */</span>
+<span class="cp">color</span>: <span class="cv">rgba(255, 0, 0, 0.5)</span>;   <span class="cm">/* 第 4 个参数：0~1 透明度 */</span>
+
+<span class="cm">/* 4. HSL / HSLA（更直观） */</span>
+<span class="cp">color</span>: <span class="cv">hsl(0, 100%, 50%)</span>;     <span class="cm">/* 色相 饱和度 亮度 */</span>
+<span class="cp">color</span>: <span class="cv">hsla(0, 100%, 50%, 0.5)</span>;
+<span class="cm">/* 色相：0=红, 120=绿, 240=蓝 */</span>
+<span class="cm">/* 饱和度：0%=灰, 100%=纯色 */</span>
+<span class="cm">/* 亮度：0%=黑, 50%=正常, 100%=白 */</span>
+
+<span class="cm">/* 5. CSS4 新函数（现代浏览器支持） */</span>
+<span class="cp">color</span>: <span class="cv">rgb(255 0 0 / 0.5)</span>;   <span class="cm">/* 空格语法 */</span>
+<span class="cp">color</span>: <span class="cv">hsl(0 100% 50% / 0.5)</span>;
+<span class="cp">color</span>: <span class="cv">lab(50% 40 30)</span>;       <span class="cm">/* LAB 色彩空间 */</span>
+<span class="cp">color</span>: <span class="cv">color(display-p3 1 0 0)</span>; <span class="cm">/* P3 广色域 */</span>
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <p style="color: #ff0000;">#ff0000 红色</p>
+      <p style="color: #6c5ce7;">#6c5ce7 紫色</p>
+      <p style="color: rgba(79, 192, 141, 0.7);">rgba 半透明绿色</p>
+      <p style="color: hsl(240, 100%, 50%);">hsl(240, 100%, 50%) 蓝色</p>
+    </div>
+  </div>
+
+  <h3>24.2 渐变</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 线性渐变 */</span>
+<span class="cp">background</span>: <span class="cv">linear-gradient(to right, #6c5ce7, #4fc08d)</span>;
+<span class="cp">background</span>: <span class="cv">linear-gradient(45deg, #667eea, #764ba2)</span>;
+<span class="cp">background</span>: <span class="cv">linear-gradient(to bottom, #f0f0f0 0%, #fff 50%, #f0f0f0 100%)</span>;
+
+<span class="cm">/* 径向渐变 */</span>
+<span class="cp">background</span>: <span class="cv">radial-gradient(circle at center, #4fc08d, transparent)</span>;
+<span class="cp">background</span>: <span class="cv">radial-gradient(circle at top right, #6c5ce7, #4fc08d)</span>;
+
+<span class="cm">/* 锥形渐变 */</span>
+<span class="cp">background</span>: <span class="cv">conic-gradient(from 0deg, red, yellow, green, blue, red)</span>;
+
+<span class="cm">/* 重复渐变 */</span>
+<span class="cp">background</span>: <span class="cv">repeating-linear-gradient(45deg, #6c5ce7 0, #6c5ce7 10px, #4fc08d 10px, #4fc08d 20px)</span>;
+</code></pre>
+    </div>
+    <div class="demo-preview">
+      <span class="demo-label">效果预览</span>
+      <div style="background: linear-gradient(to right, #6c5ce7, #4fc08d); color: #fff; padding: 16px; border-radius: 4px;">linear-gradient(to right)</div>
+      <div style="background: radial-gradient(circle at top right, #6c5ce7, #4fc08d); color: #fff; padding: 16px; border-radius: 4px; margin-top: 8px;">radial-gradient(circle at top right)</div>
+      <div style="background: repeating-linear-gradient(45deg, #6c5ce7 0, #6c5ce7 10px, #fff 10px, #fff 20px); padding: 16px; border-radius: 4px; margin-top: 8px; text-align: center;">repeating-linear-gradient</div>
+    </div>
+  </div>
+
+  <h3>24.3 透明度 opacity</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cs">.box</span> {
+  <span class="cp">opacity</span>: <span class="cv">1</span>;    <span class="cm">/* 完全不透明（默认） */</span>
+  <span class="cp">opacity</span>: <span class="cv">0.5</span>;  <span class="cm">/* 半透明 */</span>
+  <span class="cp">opacity</span>: <span class="cv">0</span>;    <span class="cm">/* 完全透明（但仍占空间，可交互） */</span>
+}
+
+<span class="cm">/* 注意：opacity 影响整个元素（包括子元素） */</span>
+<span class="cm">/* 如果只想让背景半透明，用 rgba() */</span>
+<span class="cs">.box</span> {
+  <span class="cp">background</span>: <span class="cv">rgba(255, 255, 255, 0.5)</span>;  <span class="cm">/* 背景半透明，文字不透明 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     第25章：CSS 常见面试题
+     ============================================================ -->
+<section id="ch25" class="chapter">
+  <h2>第25章：CSS 常见面试题</h2>
+
+  <h3>Q1: CSS 盒模型是什么？box-sizing 的作用？</h3>
+  <p>盒模型由 content + padding + border + margin 四层组成。box-sizing: content-box（默认）的 width 只算 content，加上 padding 和 border 后实际更宽；box-sizing: border-box 的 width 包含 content + padding + border，所见即所得。实际项目全局设置 <code>* { box-sizing: border-box; }</code>。</p>
+
+  <h3>Q2: CSS 选择器优先级怎么计算？</h3>
+  <p>优先级四元组 (a, b, c, d)：a=是否 !important，b=ID 选择器个数，c=class/伪类/属性选择器个数，d=标签/伪元素选择器个数。从左到右逐位比较。行内样式优先级高于所有非 !important 规则。</p>
+
+  <h3>Q3: display: none、visibility: hidden、opacity: 0 的区别？</h3>
+  <p>display: none 完全隐藏，不占空间，不可交互。visibility: hidden 隐藏但占空间，不可交互。opacity: 0 完全透明，占空间，仍可交互（可被点击）。</p>
+
+  <h3>Q4: 什么是 BFC（块级格式化上下文）？</h3>
+  <p>BFC 是一个独立的渲染区域，内部元素的布局不影响外部。触发 BFC 的方式：overflow: hidden/auto/scroll、float: left/right、position: absolute/fixed、display: flex/grid/inline-block。BFC 的作用：清除浮动、防止 margin 塌陷、阻止文字环绕。</p>
+
+  <h3>Q5: 如何实现元素水平垂直居中？</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 方法1：Flex（推荐！） */</span>
+<span class="cs">.parent</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;
+  <span class="cp">justify-content</span>: <span class="cv">center</span>;
+  <span class="cp">align-items</span>: <span class="cv">center</span>;
+}
+
+<span class="cm">/* 方法2：Grid */</span>
+<span class="cs">.parent</span> {
+  <span class="cp">display</span>: <span class="cv">grid</span>;
+  <span class="cp">place-items</span>: <span class="cv">center</span>;
+}
+
+<span class="cm">/* 方法3：绝对定位 + transform */</span>
+<span class="cs">.child</span> {
+  <span class="cp">position</span>: <span class="cv">absolute</span>;
+  <span class="cp">top</span>: <span class="cv">50%</span>;
+  <span class="cp">left</span>: <span class="cv">50%</span>;
+  <span class="cp">transform</span>: <span class="cv">translate(-50%, -50%)</span>;
+}
+
+<span class="cm">/* 方法4：绝对定位 + margin auto（需要固定宽高） */</span>
+<span class="cs">.child</span> {
+  <span class="cp">position</span>: <span class="cv">absolute</span>;
+  <span class="cp">top</span>: <span class="cv">0</span>;
+  <span class="cp">right</span>: <span class="cv">0</span>;
+  <span class="cp">bottom</span>: <span class="cv">0</span>;
+  <span class="cp">left</span>: <span class="cv">0</span>;
+  <span class="cp">margin</span>: <span class="cv">auto</span>;
+  <span class="cp">width</span>: <span class="cv">200px</span>;
+  <span class="cp">height</span>: <span class="cv">100px</span>;
+}
+
+<span class="cm">/* 方法5：line-height = height（单行文字） */</span>
+<span class="cs">.box</span> {
+  <span class="cp">height</span>: <span class="cv">40px</span>;
+  <span class="cp">line-height</span>: <span class="cv">40px</span>;
+  <span class="cp">text-align</span>: <span class="cv">center</span>;
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>Q6: 单行省略号怎么实现？多行呢？</h3>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 单行省略号 */</span>
+<span class="cs">.ellipsis</span> {
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;
+  <span class="cp">white-space</span>: <span class="cv">nowrap</span>;
+  <span class="cp">text-overflow</span>: <span class="cv">ellipsis</span>;
+}
+
+<span class="cm">/* 多行省略号（如 2 行） */</span>
+<span class="cs">.ellipsis-2</span> {
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;
+  <span class="cp">display</span>: <span class="cv">-webkit-box</span>;
+  <span class="cp">-webkit-box-orient</span>: <span class="cv">vertical</span>;
+  <span class="cp">-webkit-line-clamp</span>: <span class="cv">2</span>;  <span class="cm">/* 显示 2 行 */</span>
+}
+</code></pre>
+    </div>
+  </div>
+
+  <h3>Q7: Flex 和 Grid 有什么区别？</h3>
+  <p>Flex 是一维布局，一次只能控制一个方向（行或列）的排列。Grid 是二维布局，可以同时控制行和列。Flex 适合导航栏、按钮组、卡片排列等线性布局。Grid 适合页面整体布局、表格、复杂网格。两者可以嵌套使用。</p>
+
+  <h3>Q8: 响应式设计怎么做？</h3>
+  <p>核心是使用媒体查询 <code>@media</code> + 相对单位 + viewport meta 标签。推荐"移动端优先"策略：先写手机端样式，再用 <code>min-width</code> 逐步增强到平板、桌面。Flex 和 Grid 的 <code>fr</code>、<code>auto-fit</code> 也可以实现自动响应式排列。</p>
+
+  <h3>Q9: CSS 动画性能优化的建议？</h3>
+  <p>尽量用 transform 和 opacity 做动画，避免动画 width/height/top/left（会触发重排）。对动画元素使用 <code>will-change: transform</code> 提示浏览器优化。避免在动画过程中频繁操作 DOM。大量元素动画时考虑用 Canvas 或 WebGL。</p>
+
+  <h3>Q10: 什么是 CSS Reset 和 Normalize？</h3>
+  <p>CSS Reset 是把所有浏览器默认样式"暴力清零"（margin: 0, padding: 0 等）。Normalize 是保留有用的默认样式，只统一浏览器之间的差异。现代项目通常用一个简化的 Reset：</p>
+
+  <div class="demo-card">
+    <div class="demo-code">
+      <span class="demo-label">源码 + 注释</span>
+<pre><code><span class="cm">/* 现代项目常用的 Reset */</span>
+<span class="cs">*, *::before, *::after</span> {
+  <span class="cp">box-sizing</span>: <span class="cv">border-box</span>;
+  <span class="cp">margin</span>: <span class="cv">0</span>;
+  <span class="cp">padding</span>: <span class="cv">0</span>;
+}
+
+<span class="cs">body</span> {
+  <span class="cp">font-family</span>: <span class="cv">-apple-system, "Microsoft Yahei", sans-serif</span>;
+  <span class="cp">line-height</span>: <span class="cv">1.6</span>;
+  <span class="cp">-webkit-font-smoothing</span>: <span class="cv">antialiased</span>;
+}
+
+<span class="cs">a</span> { <span class="cp">text-decoration</span>: <span class="cv">none</span>; <span class="cp">color</span>: <span class="cv">inherit</span>; }
+<span class="cs">img</span> { <span class="cp">max-width</span>: <span class="cv">100%</span>; <span class="cp">height</span>: <span class="cv">auto</span>; <span class="cp">display</span>: <span class="cv">block</span>; }
+<span class="cs">button</span> { <span class="cp">cursor</span>: <span class="cv">pointer</span>; <span class="cp">border</span>: <span class="cv">none</span>; <span class="cp">background</span>: <span class="cv">none</span>; }
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     页脚
+     ============================================================ -->
+<footer class="site-footer">
+  <p>🎨 CSS 知识大全 | 整理自千古前端教程 + 项目实战笔记</p>
+  <p>建议配合 <code>docs/02-CSS基础语法.md</code> 一起看——那份是精简版，这份是详尽版。</p>
+  <p>网站地址：<a href="https://web.qianguyihao.com" target="_blank">https://web.qianguyihao.com</a></p>
+</footer>
+
+  </main>
+</div>
+
+</body>
+</html>

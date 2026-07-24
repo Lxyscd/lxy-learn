@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>CSS 知识地图 - 类比归纳总复习</title>
+  <style>
+    /* ========== 全局 ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, 'Microsoft YaHei', 'PingFang SC', sans-serif;
+      background: #f7f8fa;
+      color: #333;
+      line-height: 1.8;
+      padding-bottom: 60px;
+    }
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* 顶部 */
+    .site-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 40px 24px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .site-header h1 { font-size: 32px; margin-bottom: 10px; }
+    .site-header p { opacity: 0.9; font-size: 14px; }
+
+    /* 导航 */
+    .nav-bar {
+      background: #fff;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .nav-bar a {
+      padding: 6px 14px;
+      background: #f0f2f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #555;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .nav-bar a:hover { background: #667eea; color: #fff; }
+
+    /* 大章节 */
+    .chapter {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .chapter > h2 {
+      font-size: 22px;
+      color: #667eea;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e8e8e8;
+      margin-bottom: 20px;
+    }
+    .chapter > h3 {
+      font-size: 17px;
+      color: #444;
+      margin: 24px 0 12px;
+      padding-left: 10px;
+      border-left: 4px solid #667eea;
+    }
+    .chapter > h4 {
+      font-size: 15px;
+      color: #666;
+      margin: 18px 0 10px;
+    }
+
+    /* 类比表格 */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+    .compare-table th {
+      background: #f0f2f5;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: #444;
+      border-bottom: 2px solid #ddd;
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+    .compare-table tr:hover td { background: #fafbfc; }
+    .compare-table code {
+      background: #f5f5f5;
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: #c7254e;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+    }
+
+    /* 代码块 */
+    .code-block {
+      background: #282c34;
+      color: #abb2bf;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 14px 0;
+      overflow-x: auto;
+    }
+    .code-block pre { margin: 0; font-family: Consolas, monospace; font-size: 13px; line-height: 1.7; }
+    .code-block .sel { color: #e06c75; }
+    .code-block .prop { color: #d19a66; }
+    .code-block .val { color: #98c379; }
+    .code-block .punct { color: #abb2bf; }
+    .code-block .comment { color: #5c6370; font-style: italic; }
+
+    /* 提示框 */
+    .tip-box {
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+    .tip-box.note { background: #e8f4fd; border-left: 4px solid #3498db; }
+    .tip-box.warn { background: #fdf6ec; border-left: 4px solid #e6a23c; }
+    .tip-box.key { background: #f0f9ff; border-left: 4px solid #667eea; }
+
+    /* 双栏对比 */
+    .dual { display: flex; gap: 16px; margin: 14px 0; }
+    .dual > div { flex: 1; min-width: 0; }
+    .dual .label { font-size: 12px; color: #999; margin-bottom: 6px; }
+
+    /* 标签 */
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+    .tag-blue { background: #e3f2fd; color: #1976d2; }
+    .tag-red { background: #ffebee; color: #c62828; }
+    .tag-green { background: #e8f5e9; color: #2e7d32; }
+    .tag-purple { background: #f3e5f5; color: #7b1fa2; }
+
+    /* 小卡片组 */
+    .card-group { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0; }
+    .mini-card {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px;
+      background: #fafbfc;
+      border-radius: 8px;
+      border: 1px solid #e8e8e8;
+    }
+    .mini-card h5 { font-size: 14px; margin-bottom: 8px; color: #444; }
+    .mini-card p { font-size: 13px; color: #666; }
+
+    /* 树状结构示意 */
+    .tree { font-size: 14px; line-height: 2; }
+    .tree .branch { padding-left: 20px; border-left: 1px dashed #ccc; margin-left: 8px; }
+    .tree .leaf { padding: 2px 10px; background: #f5f5f5; border-radius: 4px; display: inline-block; margin: 2px 0; }
+
+    /* 效果演示区 */
+    .demo-area {
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      margin: 10px 0;
+      border: 1px dashed #ddd;
+    }
+
+    /* 流程图 */
+    .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+    .flow .step {
+      padding: 8px 16px;
+      background: #667eea;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .flow .arrow { color: #999; font-size: 18px; }
+  </style>
+</head>
+<body>
+
+<div class="site-header">
+  <h1>CSS 知识地图</h1>
+  <p>按「相似性」归类，六大体系串联所有知识点</p>
+</div>
+
+<div class="wrapper">
+
+  <!-- 导航 -->
+  <nav class="nav-bar">
+    <a href="#selector">一、选择器体系</a>
+    <a href="#boxmodel">二、盒模型体系</a>
+    <a href="#visual">三、视觉表现体系</a>
+    <a href="#layout">四、布局体系</a>
+    <a href="#animate">五、动画交互体系</a>
+    <a href="#engineer">六、工程化体系</a>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- 一、选择器体系 -->
+  <!-- ============================================================ -->
+  <section class="chapter" id="selector">
+    <h2>一、选择器体系 —— 怎么找到元素</h2>
+    <p style="color:#666;font-size:14px;margin-bottom:16px;">选择器的核心就一件事：用更精确、更灵活的方式找到你要设置样式的元素。</p>
+
+    <h3>1.1 基础选择器：四大「单选」方式</h3>
+    <table class="compare-table">
+      <tr><th>选择器</th><th>写法</th><th>选中谁</th><th>类比记忆</th></tr>
+      <tr>
+        <td>标签选择器</td><td><code>p</code></td>
+        <td>所有同名标签</td>
+        <td>按「职业」找人：所有老师</td>
+      </tr>
+      <tr>
+        <td>类选择器</td><td><code>.card</code></td>
+        <td>class 含该值的元素</td>
+        <td>按「班级」找人：三年二班所有人</td>
+      </tr>
+      <tr>
+        <td>ID 选择器</td><td><code>#header</code></td>
+        <td>唯一元素（页面中只应出现一次）</td>
+        <td>按「身份证号」找人：只找一个</td>
+      </tr>
+      <tr>
+        <td>通配符</td><td><code>*</code></td>
+        <td>所有元素</td>
+        <td>「全员集合」：常用于重置默认样式</td>
+      </tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 实际使用：基础选择器组合 */</span>
+<span class="sel">*</span> <span class="punct">{</span> <span class="prop">margin</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span> <span class="prop">padding</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span> <span class="punct">}</span>       <span class="comment">/* 通配符：全员重置 */</span>
+
+<span class="sel">h1, h2, h3</span> <span class="punct">{</span>                     <span class="comment">/* 并集：同时选中多个标签 */</span>
+  <span class="prop">font-weight</span><span class="punct">:</span> <span class="val">bold</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">#header</span> <span class="punct">{</span> <span class="prop">height</span><span class="punct">:</span> <span class="val">60px</span><span class="punct">;</span> <span class="punct">}</span>          <span class="comment">/* ID：唯一元素 */</span>
+
+<span class="sel">.card.active</span> <span class="punct">{</span>                   <span class="comment">/* 交集：同时满足两个类 */</span>
+  <span class="prop">border-color</span><span class="punct">:</span> <span class="val">green</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <div class="tip-box key">
+      <strong>权重记忆口诀：</strong> ID(100) > 类(10) > 标签(1) > 通配符(0)。同类选择器后面的覆盖前面的（层叠）。
+    </div>
+
+    <h3>1.2 组合选择器：四大「关系」方式</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">组合选择器 = 两个基础选择器 + 一个「关系符号」</p>
+    <table class="compare-table">
+      <tr><th>关系</th><th>符号</th><th>含义</th><th>类比</th></tr>
+      <tr>
+        <td>后代</td><td><code>空格</code></td>
+        <td>A 里面<strong>所有</strong>的 B（包括孙级）</td>
+        <td>「家族」：爷爷的所有后代</td>
+      </tr>
+      <tr>
+        <td>子代</td><td><code>&gt;</code></td>
+        <td>A 里面<strong>直接</strong>的 B（只认儿子）</td>
+        <td>「父子」：只找亲生儿子</td>
+      </tr>
+      <tr>
+        <td>相邻兄弟</td><td><code>+</code></td>
+        <td>紧挨在 A 后面的<strong>第一个</strong> B</td>
+        <td>「同桌」：只找紧挨着的下一个</td>
+      </tr>
+      <tr>
+        <td>通用兄弟</td><td><code>~</code></td>
+        <td>A 后面的<strong>所有</strong> B</td>
+        <td>「后排同学」：后面所有同辈</td>
+      </tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 后代 vs 子代：范围不同 */</span>
+<span class="sel">.nav a</span> <span class="punct">{</span> <span class="prop">color</span><span class="punct">:</span> <span class="val">#333</span><span class="punct">;</span> <span class="punct">}</span>          <span class="comment">/* 后代：.nav 里所有 a（包括嵌套） */</span>
+<span class="sel">.nav > a</span> <span class="punct">{</span> <span class="prop">color</span><span class="punct">:</span> <span class="val">red</span><span class="punct">;</span> <span class="punct">}</span>          <span class="comment">/* 子代：只选直接子 a */</span>
+
+<span class="comment">/* 相邻兄弟：紧挨着的下一个 */</span>
+<span class="sel">h2 + p</span> <span class="punct">{</span> <span class="prop">margin-top</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span> <span class="punct">}</span>        <span class="comment">/* 紧跟 h2 的第一个 p 去掉上边距 */</span>
+
+<span class="comment">/* 通用兄弟：后面所有同辈 */</span>
+<span class="sel">input:checked ~ .tips</span> <span class="punct">{</span>          <span class="comment">/* 选中后显示所有提示 */</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">block</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <h3>1.3 伪类 vs 伪元素：「状态」和「虚拟节点」</h3>
+    <div class="dual">
+      <div>
+        <div class="label">伪类 <code>:xxx</code> —— 选中元素的某种「状态」</div>
+        <div class="code-block">
+          <pre><span class="comment">/* 链接状态 */</span>
+<span class="sel">a:link</span>      <span class="comment">/* 未访问过 */</span>
+<span class="sel">a:visited</span>   <span class="comment">/* 已访问过 */</span>
+<span class="sel">a:hover</span>     <span class="comment">/* 鼠标悬停 */</span>
+<span class="sel">a:active</span>    <span class="comment">/* 点击瞬间 */</span>
+
+<span class="comment">/* 表单状态 */</span>
+<span class="sel">input:focus</span>     <span class="comment">/* 获得焦点 */</span>
+<span class="sel">input:disabled</span>  <span class="comment">/* 禁用状态 */</span>
+<span class="sel">input:checked</span>   <span class="comment">/* 被选中 */</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">伪元素 <code>::xxx</code> —— 在元素前后插入「虚拟节点」</div>
+        <div class="code-block">
+          <pre><span class="comment">/* 在元素内容前后插入 */</span>
+<span class="sel">.quote::before</span> <span class="punct">{</span> <span class="prop">content</span><span class="punct">:</span> <span class="val">'"'</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="sel">.quote::after</span>  <span class="punct">{</span> <span class="prop">content</span><span class="punct">:</span> <span class="val">'"'</span><span class="punct">;</span> <span class="punct">}</span>
+
+<span class="comment">/* 选中文本的样式 */</span>
+<span class="sel">::selection</span> <span class="punct">{</span> <span class="prop">background</span><span class="punct">:</span> <span class="val">yellow</span><span class="punct">;</span> <span class="punct">}</span>
+
+<span class="comment">/* 首行/首字特殊样式 */</span>
+<span class="sel">p::first-line</span>  <span class="comment">/* 第一行 */</span>
+<span class="sel">p::first-letter</span> <span class="comment">/* 第一个字 */</span></pre>
+        </div>
+      </div>
+    </div>
+    <div class="tip-box note">
+      <strong>核心区别：</strong> 伪类选择的是「已有元素的不同状态」；伪元素创建的是「原本不存在的虚拟节点」。伪元素必须配合 <code>content</code> 属性使用。
+    </div>
+
+    <h3>1.4 结构伪类：按「位置」选元素</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">结构伪类的核心思路有两种：按「在父元素中的位置」选，或按「在同类型中的位置」选。</p>
+
+    <h4>第一类：以「所有子元素」为参考（:nth-child）</h4>
+    <table class="compare-table">
+      <tr><th>选择器</th><th>选中</th><th>类比</th></tr>
+      <tr><td><code>:first-child</code></td><td>第一个子元素</td><td>排队第一个</td></tr>
+      <tr><td><code>:last-child</code></td><td>最后一个子元素</td><td>排队最后一个</td></tr>
+      <tr><td><code>:nth-child(n)</code></td><td>第 n 个子元素</td><td>排队第 n 个</td></tr>
+      <tr><td><code>:nth-child(odd)</code></td><td>奇数位置的子元素</td><td>1、3、5…</td></tr>
+      <tr><td><code>:nth-child(even)</code></td><td>偶数位置的子元素</td><td>2、4、6…</td></tr>
+      <tr><td><code>:nth-child(2n)</code></td><td>2 的倍数</td><td>每第 2 个</td></tr>
+      <tr><td><code>:nth-child(-n+3)</code></td><td>前 3 个</td><td>前 3 名</td></tr>
+      <tr><td><code>:nth-last-child(-n+3)</code></td><td>最后 3 个</td><td>倒数前 3 名</td></tr>
+      <tr><td><code>:only-child</code></td><td>唯一的子元素</td><td>独生子女</td></tr>
+    </table>
+
+    <h4>第二类：以「同类型元素」为参考（:nth-of-type）</h4>
+    <table class="compare-table">
+      <tr><th>选择器</th><th>选中</th><th>与 :nth-child 的区别</th></tr>
+      <tr><td><code>:first-of-type</code></td><td>同类型中的第一个</td><td rowspan="4">只数「同标签」，忽略其他类型的兄弟</td></tr>
+      <tr><td><code>:last-of-type</code></td><td>同类型中的最后一个</td></tr>
+      <tr><td><code>:nth-of-type(n)</code></td><td>同类型中的第 n 个</td></tr>
+      <tr><td><code>:only-of-type</code></td><td>同类型中唯一的那个</td></tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 结构伪类实战：表格斑马纹 + 首末行特殊处理 */</span>
+<span class="sel">tr:nth-child(even)</span> <span class="punct">{</span>             <span class="comment">/* 偶数行 */</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">#f9f9f9</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">tr:first-child</span> <span class="punct">{</span>                 <span class="comment">/* 表头 */</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">#667eea</span><span class="punct">;</span>
+  <span class="prop">color</span><span class="punct">:</span> <span class="val">#fff</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">li:nth-child(-n+3)</span> <span class="punct">{</span>             <span class="comment">/* 前 3 个高亮（排行榜） */</span>
+  <span class="prop">color</span><span class="punct">:</span> <span class="val">gold</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">p:only-child</span> <span class="punct">{</span>                   <span class="comment">/* 独生子女加粗 */</span>
+  <span class="prop">font-weight</span><span class="punct">:</span> <span class="val">bold</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <div class="tip-box warn">
+      <strong>易混点：</strong> <code>li:nth-child(2)</code> 选中的是父元素的第 2 个子元素且必须是 li；<code>li:nth-of-type(2)</code> 选中的是父元素中第 2 个 li，中间有其他标签不影响。
+    </div>
+
+    <h3>1.5 属性选择器：按「属性特征」选元素</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">属性选择器的符号跟正则表达式很像：<code>^</code> 开头、<code>$</code> 结尾、<code>*</code> 包含。</p>
+    <table class="compare-table">
+      <tr><th>选择器</th><th>匹配规则</th><th>类比</th></tr>
+      <tr><td><code>[attr]</code></td><td>有 attr 属性即可</td><td>「有驾照就行」</td></tr>
+      <tr><td><code>[attr="val"]</code></td><td>属性值完全等于 val</td><td>「精确匹配」</td></tr>
+      <tr><td><code>[attr^="val"]</code></td><td>以 val 开头</td><td>「startswith」</td></tr>
+      <tr><td><code>[attr$="val"]</code></td><td>以 val 结尾</td><td>「endswith」</td></tr>
+      <tr><td><code>[attr*="val"]</code></td><td>任意位置包含 val</td><td>「contains」</td></tr>
+      <tr><td><code>[attr~="val"]</code></td><td>包含 val 这个词（空格分隔）</td><td>「单词级匹配」</td></tr>
+      <tr><td><code>[attr|="val"]</code></td><td>等于 val 或以 val- 开头</td><td>「lang 属性专用」</td></tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 属性选择器实战 */</span>
+<span class="comment">/* 区分表单控件类型 */</span>
+<span class="sel">input[type="text"]</span> <span class="punct">{</span> <span class="prop">border</span><span class="punct">:</span> <span class="val">1px solid #ccc</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="sel">input[type="submit"]</span> <span class="punct">{</span> <span class="prop">background</span><span class="punct">:</span> <span class="val">#3498db</span><span class="punct">;</span> <span class="punct">}</span>
+
+<span class="comment">/* 外部链接加图标 */</span>
+<span class="sel">a[href^="http"]::after</span> <span class="punct">{</span>
+  <span class="prop">content</span><span class="punct">:</span> <span class="val">' ↗'</span><span class="punct">;</span>
+  <span class="prop">font-size</span><span class="punct">:</span> <span class="val">12px</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* PDF 链接标红 */</span>
+<span class="sel">a[href$=".pdf"]</span> <span class="punct">{</span> <span class="prop">color</span><span class="punct">:</span> <span class="val">#e74c3c</span><span class="punct">;</span> <span class="punct">}</span>
+
+<span class="comment">/* 包含某个类的元素（只要 class 里有 active） */</span>
+<span class="sel">[class*="active"]</span> <span class="punct">{</span> <span class="prop">box-shadow</span><span class="punct">:</span> <span class="val">0 0 0 2px #667eea</span><span class="punct">;</span> <span class="punct">}</span></pre>
+    </div>
+
+    <div class="tip-box key">
+      <strong>实战技巧：</strong> <code>input[type="text"]</code> 区分不同表单控件、<code>a[href^="http"]</code> 选中外部链接、<code>a[href$=".pdf"]</code> 选中 PDF 链接。
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 二、盒模型体系 -->
+  <!-- ============================================================ -->
+  <section class="chapter" id="boxmodel">
+    <h2>二、盒模型体系 —— 元素占多大空间</h2>
+    <p style="color:#666;font-size:14px;margin-bottom:16px;">盒模型回答一个问题：一个元素在页面上到底占了多大的矩形区域？</p>
+
+    <h3>2.1 盒模型的四层「洋葱结构」</h3>
+    <div class="dual">
+      <div>
+        <div class="label">从内到外</div>
+        <div class="code-block">
+          <pre><span class="comment">/* 标准盒模型（content-box，默认值） */</span>
+<span class="prop">width/height</span> <span class="punct">=</span> <span class="val">内容区域</span>
+<span class="prop">实际宽度</span> <span class="punct">=</span> <span class="val">width + padding*2 + border*2 + margin*2</span>
+
+<span class="comment">/* 怪异盒模型（border-box） */</span>
+<span class="prop">width/height</span> <span class="punct">=</span> <span class="val">内容 + padding + border 的总和</span>
+<span class="prop">实际宽度</span> <span class="punct">=</span> <span class="val">width + margin*2</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">类比：快递包裹</div>
+        <div class="tree">
+          <div class="leaf">内容 content → 商品本身</div>
+          <div class="branch">
+            <div class="leaf">内边距 padding → 泡沫填充层</div>
+            <div class="branch">
+              <div class="leaf">边框 border → 包装盒</div>
+              <div class="branch">
+                <div class="leaf">外边距 margin → 与其他包裹的间距</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box key">
+      <strong>强烈推荐：</strong> 在项目开头写 <code>* { box-sizing: border-box; }</code>，这样设置 width 就是最终看到的宽度，不用心算 padding 和 border。
+    </div>
+
+    <h3>2.2 margin 的「社会化行为」</h3>
+    <table class="compare-table">
+      <tr><th>现象</th><th>描述</th><th>解决</th></tr>
+      <tr>
+        <td>margin 塌陷</td>
+        <td>上下相邻块元素的 margin 不会叠加，取最大值</td>
+        <td>只设一个方向的 margin；或用 padding 替代</td>
+      </tr>
+      <tr>
+        <td>margin 穿透</td>
+        <td>子元素的 margin-top 会「穿透」父元素</td>
+        <td>父元素加 <code>overflow:hidden</code> 或 <code>padding/border</code></td>
+      </tr>
+      <tr>
+        <td>水平居中</td>
+        <td><code>margin: 0 auto;</code> 让块元素在父容器中水平居中</td>
+        <td>必须设置宽度，且是块级元素</td>
+      </tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* margin 塌陷示例：两个块元素上下排列 */</span>
+<span class="sel">.box-a</span> <span class="punct">{</span> <span class="prop">margin-bottom</span><span class="punct">:</span> <span class="val">30px</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="sel">.box-b</span> <span class="punct">{</span> <span class="prop">margin-top</span><span class="punct">:</span> <span class="val">20px</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="comment">/* 实际间距 = 30px（取最大值），不是 50px！ */</span>
+
+<span class="comment">/* margin 穿透：子元素 margin-top 穿透父元素 */</span>
+<span class="sel">.parent</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">#f5f5f5</span><span class="punct">;</span>
+  <span class="prop">overflow</span><span class="punct">:</span> <span class="val">hidden</span><span class="punct">;</span>   <span class="comment">/* 阻止 margin 穿透 */</span>
+<span class="punct">}</span>
+<span class="sel">.child</span> <span class="punct">{</span> <span class="prop">margin-top</span><span class="punct">:</span> <span class="val">20px</span><span class="punct">;</span> <span class="punct">}</span>
+
+<span class="comment">/* 经典水平居中：版心 */</span>
+<span class="sel">.container</span> <span class="punct">{</span>
+  <span class="prop">width</span><span class="punct">:</span> <span class="val">1000px</span><span class="punct">;</span>
+  <span class="prop">margin</span><span class="punct">:</span> <span class="val">0 auto</span><span class="punct">;</span>   <span class="comment">/* 左右 margin 自动分配 */</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <h3>2.3 padding vs margin：何时用哪个？</h3>
+    <div class="dual">
+      <div>
+        <div class="label">用 padding（内边距）</div>
+        <div class="code-block">
+          <pre><span class="comment">/* 背景色/背景图需要延伸到边缘 */</span>
+<span class="sel">.btn</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">#3498db</span><span class="punct">;</span>
+  <span class="prop">padding</span><span class="punct">:</span> <span class="val">10px 20px</span><span class="punct">;</span>  <span class="comment">/* 蓝色背景会填充 padding 区域 */</span>
+<span class="punct">}</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">用 margin（外边距）</div>
+        <div class="code-block">
+          <pre><span class="comment">/* 只是要隔开两个元素 */</span>
+<span class="sel">.card</span> <span class="punct">{</span>
+  <span class="prop">margin-bottom</span><span class="punct">:</span> <span class="val">20px</span><span class="punct">;</span>  <span class="comment">/* 与下一个卡片保持距离 */</span>
+<span class="punct">}</span></pre>
+        </div>
+      </div>
+    </div>
+    <div class="tip-box note">
+      <strong>判断口诀：</strong> 需要背景跟着延伸 → padding；只是要间距 → margin。点击区域要变大 → padding。
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 三、视觉表现体系 -->
+  <!-- ============================================================ -->
+  <section class="chapter" id="visual">
+    <h2>三、视觉表现体系 —— 长什么样</h2>
+
+    <h3>3.1 颜色与背景：两大「上色」维度</h3>
+    <div class="dual">
+      <div>
+        <div class="label">文字颜色 <code>color</code></div>
+        <div class="code-block">
+          <pre><span class="prop">color</span><span class="punct">:</span> <span class="val">red</span><span class="punct">;</span>           <span class="comment">/* 关键字 */</span>
+<span class="prop">color</span><span class="punct">:</span> <span class="val">#ff0000</span><span class="punct">;</span>       <span class="comment">/* 十六进制 */</span>
+<span class="prop">color</span><span class="punct">:</span> <span class="val">#f00</span><span class="punct">;</span>          <span class="comment">/* 简写 */</span>
+<span class="prop">color</span><span class="punct">:</span> <span class="val">rgb(255,0,0)</span><span class="punct">;</span>  <span class="comment">/* RGB */</span>
+<span class="prop">color</span><span class="punct">:</span> <span class="val">rgba(255,0,0,0.5)</span><span class="punct">;</span> <span class="comment">/* 带透明度 */</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">背景 <code>background</code></div>
+        <div class="code-block">
+          <pre><span class="prop">background-color</span><span class="punct">:</span> <span class="val">#f5f5f5</span><span class="punct">;</span>
+<span class="prop">background-image</span><span class="punct">:</span> <span class="val">url('bg.png')</span><span class="punct">;</span>
+<span class="prop">background-size</span><span class="punct">:</span> <span class="val">cover</span><span class="punct">;</span>      <span class="comment">/* 铺满：cover/contain */</span>
+<span class="prop">background-position</span><span class="punct">:</span> <span class="val">center</span><span class="punct">;</span> <span class="comment">/* 位置 */</span>
+<span class="prop">background-repeat</span><span class="punct">:</span> <span class="val">no-repeat</span><span class="punct">;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <h3>3.2 渐变：背景的高级「上色」方式</h3>
+    <table class="compare-table">
+      <tr><th>类型</th><th>写法</th><th>效果</th></tr>
+      <tr>
+        <td>线性渐变</td>
+        <td><code>linear-gradient(to right, red, blue)</code></td>
+        <td>沿直线方向颜色过渡</td>
+      </tr>
+      <tr>
+        <td>径向渐变</td>
+        <td><code>radial-gradient(circle, red, blue)</code></td>
+        <td>从中心向外辐射过渡</td>
+      </tr>
+      <tr>
+        <td>重复渐变</td>
+        <td><code>repeating-linear-gradient(...)</code></td>
+        <td>重复平铺的渐变条纹</td>
+      </tr>
+    </table>
+    <div class="code-block">
+      <pre><span class="comment">/* 线性渐变：从上到下（默认） */</span>
+<span class="sel">.header</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">linear-gradient(135deg, #667eea 0%, #764ba2 100%)</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 多色停止点 */</span>
+<span class="sel">.rainbow</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">linear-gradient(to right, red, orange, yellow, green, blue)</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 径向渐变 */</span>
+<span class="sel">.sun</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">radial-gradient(circle at center, #fff 0%, #f90 50%, #c00 100%)</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 重复渐变：条纹效果 */</span>
+<span class="sel">.stripe</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">repeating-linear-gradient(45deg, #ccc, #ccc 10px, #fff 10px, #fff 20px)</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <div class="tip-box note">
+      <strong>渐变是 background-image 不是 background-color。</strong> 可以写多个颜色停止点：<code>linear-gradient(to right, red 0%, yellow 50%, blue 100%)</code>
+    </div>
+
+    <h3>3.3 边框体系：border、圆角、阴影、轮廓</h3>
+    <div class="card-group">
+      <div class="mini-card">
+        <h5>边框样式 <span class="tag tag-blue">border</span></h5>
+        <p>solid / dashed / dotted / double / groove / ridge / inset / outset</p>
+      </div>
+      <div class="mini-card">
+        <h5>圆角 <span class="tag tag-green">border-radius</span></h5>
+        <p>8px 小圆角、50% 正圆、10px 20px 30px 40px 四个角不同</p>
+      </div>
+      <div class="mini-card">
+        <h5>阴影 <span class="tag tag-purple">box-shadow</span></h5>
+        <p>x偏移 y偏移 模糊半径 颜色；可叠加多层；加 inset 变内阴影</p>
+      </div>
+      <div class="mini-card">
+        <h5>轮廓 <span class="tag tag-red">outline</span></h5>
+        <p>不占盒模型空间；outline-offset 控制与边框距离；常用于 focus 状态</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 边框体系综合代码 */</span>
+<span class="comment">/* 圆角 */</span>
+<span class="sel">.card</span> <span class="punct">{</span> <span class="prop">border-radius</span><span class="punct">:</span> <span class="val">12px</span><span class="punct">;</span> <span class="punct">}</span>          <span class="comment">/* 统一圆角 */</span>
+<span class="sel">.pill</span> <span class="punct">{</span> <span class="prop">border-radius</span><span class="punct">:</span> <span class="val">999px</span><span class="punct">;</span> <span class="punct">}</span>         <span class="comment">/* 胶囊形状 */</span>
+<span class="sel">.circle</span> <span class="punct">{</span> <span class="prop">border-radius</span><span class="punct">:</span> <span class="val">50%</span><span class="punct">;</span> <span class="punct">}</span>         <span class="comment">/* 正圆（宽高相等时） */</span>
+<span class="sel">.leaf</span> <span class="punct">{</span> <span class="prop">border-radius</span><span class="punct">:</span> <span class="val">10px 30px</span><span class="punct">;</span> <span class="punct">}</span>   <span class="comment">/* 不对称圆角：左上右下 10，右上左下 30 */</span>
+
+<span class="comment">/* 阴影：x偏移 y偏移 模糊 扩散 颜色 */</span>
+<span class="sel">.shadow</span> <span class="punct">{</span>
+  <span class="prop">box-shadow</span><span class="punct">:</span> <span class="val">0 4px 12px rgba(0,0,0,0.15)</span><span class="punct">;</span>   <span class="comment">/* 外阴影 */</span>
+<span class="punct">}</span>
+<span class="sel">.inset</span> <span class="punct">{</span>
+  <span class="prop">box-shadow</span><span class="punct">:</span> <span class="val">inset 0 2px 4px rgba(0,0,0,0.1)</span><span class="punct">;</span> <span class="comment">/* 内阴影 */</span>
+<span class="punct">}</span>
+<span class="sel">.glow</span> <span class="punct">{</span>
+  <span class="prop">box-shadow</span><span class="punct">:</span> <span class="val">0 0 0 4px #667eea, 0 4px 12px rgba(0,0,0,0.2)</span><span class="punct">;</span> <span class="comment">/* 多层阴影 */</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 轮廓（不占空间，不影响布局） */</span>
+<span class="sel">input:focus</span> <span class="punct">{</span>
+  <span class="prop">outline</span><span class="punct">:</span> <span class="val">2px solid #3498db</span><span class="punct">;</span>
+  <span class="prop">outline-offset</span><span class="punct">:</span> <span class="val">2px</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <h3>3.4 文字排版核心属性</h3>
+    <table class="compare-table">
+      <tr><th>属性</th><th>作用</th><th>常用值</th></tr>
+      <tr><td><code>font-family</code></td><td>字体</td><td>'Microsoft YaHei', sans-serif</td></tr>
+      <tr><td><code>font-size</code></td><td>字号</td><td>14px、16px、1.2rem</td></tr>
+      <tr><td><code>font-weight</code></td><td>粗细</td><td>normal(400)、bold(700)</td></tr>
+      <tr><td><code>line-height</code></td><td>行高</td><td>1.6（无单位表示倍数）</td></tr>
+      <tr><td><code>text-align</code></td><td>水平对齐</td><td>left / center / right / justify</td></tr>
+      <tr><td><code>text-decoration</code></td><td>文字修饰</td><td>none / underline / line-through</td></tr>
+      <tr><td><code>color</code></td><td>文字颜色</td><td>#333、rgba(0,0,0,0.8)</td></tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 文字排版综合示例 */</span>
+<span class="sel">body</span> <span class="punct">{</span>
+  <span class="prop">font-family</span><span class="punct">:</span> <span class="val">-apple-system, 'Microsoft YaHei', 'PingFang SC', sans-serif</span><span class="punct">;</span>
+  <span class="prop">font-size</span><span class="punct">:</span> <span class="val">16px</span><span class="punct">;</span>
+  <span class="prop">line-height</span><span class="punct">:</span> <span class="val">1.6</span><span class="punct">;</span>              <span class="comment">/* 无单位 = 倍数，会随字体大小缩放 */</span>
+  <span class="prop">color</span><span class="punct">:</span> <span class="val">#333</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">.title</span> <span class="punct">{</span>
+  <span class="prop">font-size</span><span class="punct">:</span> <span class="val">1.5rem</span><span class="punct">;</span>             <span class="comment">/* rem = 相对于根元素 html 的字体大小 */</span>
+  <span class="prop">font-weight</span><span class="punct">:</span> <span class="val">700</span><span class="punct">;</span>
+  <span class="prop">text-align</span><span class="punct">:</span> <span class="val">center</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">.price</span> <span class="punct">{</span>
+  <span class="prop">text-decoration</span><span class="punct">:</span> <span class="val">line-through</span><span class="punct">;</span>  <span class="comment">/* 删除线 */</span>
+  <span class="prop">color</span><span class="punct">:</span> <span class="val">#999</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">.link</span> <span class="punct">{</span>
+  <span class="prop">text-decoration</span><span class="punct">:</span> <span class="val">none</span><span class="punct">;</span>          <span class="comment">/* 去掉下划线 */</span>
+  <span class="prop">color</span><span class="punct">:</span> <span class="val">#3498db</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <h3>3.5 显示与可见性：三者的区别</h3>
+    <table class="compare-table">
+      <tr><th>属性</th><th>是否占空间</th><th>是否可交互</th><th>使用场景</th></tr>
+      <tr>
+        <td><code>display: none</code></td>
+        <td>不占</td><td>不可</td>
+        <td>完全移除，需要时才显示</td>
+      </tr>
+      <tr>
+        <td><code>visibility: hidden</code></td>
+        <td>占</td><td>不可</td>
+        <td>占位隐藏，布局不动</td>
+      </tr>
+      <tr>
+        <td><code>opacity: 0</code></td>
+        <td>占</td><td>可</td>
+        <td>透明但还能点击，配合 transition 做淡入淡出</td>
+      </tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 显示与可见性实战：下拉菜单 */</span>
+<span class="sel">.dropdown-menu</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">none</span><span class="punct">;</span>            <span class="comment">/* 完全移除，不占空间 */</span>
+  <span class="prop">position</span><span class="punct">:</span> <span class="val">absolute</span><span class="punct">;</span>
+  <span class="prop">top</span><span class="punct">:</span> <span class="val">100%</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="sel">.dropdown:hover .dropdown-menu</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">block</span><span class="punct">;</span>           <span class="comment">/* 悬停时显示 */</span>
+<span class="punct">}</span>
+
+<span class="comment">/* opacity 配合 transition 做淡入淡出 */</span>
+<span class="sel">.fade</span> <span class="punct">{</span>
+  <span class="prop">opacity</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span>
+  <span class="prop">transition</span><span class="punct">:</span> <span class="val">opacity 0.3s ease</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="sel">.fade.show</span> <span class="punct">{</span> <span class="prop">opacity</span><span class="punct">:</span> <span class="val">1</span><span class="punct">;</span> <span class="punct">}</span>
+
+<span class="comment">/* visibility 用于占位隐藏（无法配合 transition 做动画） */</span>
+<span class="sel">.skeleton</span> <span class="punct">{</span>
+  <span class="prop">visibility</span><span class="punct">:</span> <span class="val">hidden</span><span class="punct">;</span>       <span class="comment">/* 布局不动，只是看不见 */</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <h3>3.6 溢出处理 <code>overflow</code></h3>
+    <table class="compare-table">
+      <tr><th>值</th><th>行为</th></tr>
+      <tr><td><code>visible</code></td><td>默认，内容超出也不裁剪</td></tr>
+      <tr><td><code>hidden</code></td><td>超出部分裁剪，常用于清除浮动、阻止 margin 穿透</td></tr>
+      <tr><td><code>scroll</code></td><td>始终显示滚动条</td></tr>
+      <tr><td><code>auto</code></td><td>超出时才显示滚动条</td></tr>
+    </table>
+    <div class="code-block">
+      <pre><span class="comment">/* 单行文本溢出显示省略号 */</span>
+<span class="sel">.ellipsis</span> <span class="punct">{</span>
+  <span class="prop">white-space</span><span class="punct">:</span> <span class="val">nowrap</span><span class="punct">;</span>
+  <span class="prop">overflow</span><span class="punct">:</span> <span class="val">hidden</span><span class="punct">;</span>
+  <span class="prop">text-overflow</span><span class="punct">:</span> <span class="val">ellipsis</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 多行文本溢出（WebKit 内核） */</span>
+<span class="sel">.multi-ellipsis</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">-webkit-box</span><span class="punct">;</span>
+  <span class="prop">-webkit-line-clamp</span><span class="punct">:</span> <span class="val">3</span><span class="punct">;</span>
+  <span class="prop">-webkit-box-orient</span><span class="punct">:</span> <span class="val">vertical</span><span class="punct">;</span>
+  <span class="prop">overflow</span><span class="punct">:</span> <span class="val">hidden</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 四、布局体系 -->
+  <!-- ============================================================ -->
+  <section class="chapter" id="layout">
+    <h2>四、布局体系 —— 放在哪里</h2>
+    <p style="color:#666;font-size:14px;margin-bottom:16px;">布局的核心是控制元素在页面上的位置和排列方式。CSS 提供了从传统到现代的多种布局手段。</p>
+
+    <h3>4.1 文档流：元素的「默认站位」</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">文档流是元素默认的排列规则，理解它是学习所有布局的基础。</p>
+    <table class="compare-table">
+      <tr><th>元素类型</th><th>特点</th><th>代表标签</th></tr>
+      <tr>
+        <td>块级元素 <span class="tag tag-blue">block</span></td>
+        <td>独占一行，宽度默认撑满父元素，可设宽高</td>
+        <td>div、p、h1~h6、ul、li、section</td>
+      </tr>
+      <tr>
+        <td>行内元素 <span class="tag tag-green">inline</span></td>
+        <td>不独占一行，宽高由内容决定，不可设宽高</td>
+        <td>span、a、strong、em、label</td>
+      </tr>
+      <tr>
+        <td>行内块 <span class="tag tag-purple">inline-block</span></td>
+        <td>不独占一行，但可以设宽高（两全其美）</td>
+        <td>img、input、button、textarea</td>
+      </tr>
+    </table>
+    <div class="code-block">
+      <pre><span class="comment">/* display 转换实战 */</span>
+<span class="comment">/* 行内元素变块级：导航链接 */</span>
+<span class="sel">nav a</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">block</span><span class="punct">;</span>           <span class="comment">/* 原来 a 是 inline，现在可以设宽高和上下边距 */</span>
+  <span class="prop">padding</span><span class="punct">:</span> <span class="val">10px 20px</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 块级元素变行内：横向排列的列表 */</span>
+<span class="sel">li</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">inline-block</span><span class="punct">;</span>    <span class="comment">/* 既可以横向排列，又可以设宽高 */</span>
+  <span class="prop">width</span><span class="punct">:</span> <span class="val">80px</span><span class="punct">;</span>
+  <span class="prop">height</span><span class="punct">:</span> <span class="val">36px</span><span class="punct">;</span>
+  <span class="prop">text-align</span><span class="punct">:</span> <span class="val">center</span><span class="punct">;</span>
+  <span class="prop">line-height</span><span class="punct">:</span> <span class="val">36px</span><span class="punct">;</span>        <span class="comment">/* 行高 = 高度，单行垂直居中 */</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 隐藏元素（保留空间） */</span>
+<span class="sel">.hidden</span> <span class="punct">{</span> <span class="prop">visibility</span><span class="punct">:</span> <span class="val">hidden</span><span class="punct">;</span> <span class="punct">}</span>
+
+<span class="comment">/* 彻底移除（不保留空间） */</span>
+<span class="sel">.removed</span> <span class="punct">{</span> <span class="prop">display</span><span class="punct">:</span> <span class="val">none</span><span class="punct">;</span> <span class="punct">}</span></pre>
+    </div>
+
+    <div class="tip-box note">
+      <strong>display 转换：</strong> 任何元素都可以用 <code>display: block/inline/inline-block</code> 改变其默认类型。
+    </div>
+
+    <h3>4.2 浮动布局：让块元素「排排坐」</h3>
+    <div class="dual">
+      <div>
+        <div class="label">核心代码</div>
+        <div class="code-block">
+          <pre><span class="sel">.left</span> <span class="punct">{</span> <span class="prop">float</span><span class="punct">:</span> <span class="val">left</span><span class="punct">;</span> <span class="punct">}</span>   <span class="comment">/* 向左飘 */</span>
+<span class="sel">.right</span> <span class="punct">{</span> <span class="prop">float</span><span class="punct">:</span> <span class="val">right</span><span class="punct">;</span> <span class="punct">}</span>  <span class="comment">/* 向右飘 */</span>
+
+<span class="comment">/* 清除浮动：给父元素加 */</span>
+<span class="sel">.parent::after</span> <span class="punct">{</span>
+  <span class="prop">content</span><span class="punct">:</span> <span class="val">''</span><span class="punct">;</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">block</span><span class="punct">;</span>
+  <span class="prop">clear</span><span class="punct">:</span> <span class="val">both</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">浮动的本质</div>
+        <p style="font-size:14px;color:#666;line-height:2;">
+          浮动让元素「脱离正常文档流」，向左或向右靠拢，直到碰到父元素边界或另一个浮动元素。<br><br>
+          <strong>副作用：</strong> 浮动元素不占据高度 → 父元素「塌陷」→ 需要清除浮动。<br><br>
+          <strong>现代替代：</strong> Flex 和 Grid 已经能完全替代浮动布局，新项目不推荐用 float。
+        </p>
+      </div>
+    </div>
+
+    <h3>4.3 定位布局：把元素「钉」在特定位置</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">定位通过 <code>position</code> 属性改变元素的参考系，五大定位模式：</p>
+    <table class="compare-table">
+      <tr><th>定位类型</th><th>参考系</th><th>是否脱离文档流</th><th>典型用途</th></tr>
+      <tr>
+        <td><code>static</code></td>
+        <td>默认，无特殊定位</td>
+        <td>否</td>
+        <td>正常文档流</td>
+      </tr>
+      <tr>
+        <td><code>relative</code></td>
+        <td>自身原始位置</td>
+        <td>否（占位保留）</td>
+        <td>微调位置、作为 absolute 的参照物</td>
+      </tr>
+      <tr>
+        <td><code>absolute</code></td>
+        <td>最近的非 static 祖先</td>
+        <td>是</td>
+        <td>弹窗、下拉菜单、徽章</td>
+      </tr>
+      <tr>
+        <td><code>fixed</code></td>
+        <td>浏览器视口</td>
+        <td>是</td>
+        <td>固定导航栏、回到顶部按钮</td>
+      </tr>
+      <tr>
+        <td><code>sticky</code></td>
+        <td>滚动到阈值前随文档流，之后粘住</td>
+        <td>混合</td>
+        <td>表格表头、侧边目录</td>
+      </tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 定位实战代码 */</span>
+
+<span class="comment">/* relative：微调位置，保留占位 */</span>
+<span class="sel">.badge</span> <span class="punct">{</span>
+  <span class="prop">position</span><span class="punct">:</span> <span class="val">relative</span><span class="punct">;</span>
+  <span class="prop">top</span><span class="punct">:</span> <span class="val">-2px</span><span class="punct">;</span>                <span class="comment">/* 向上微移 2px，原位置仍占位 */</span>
+  <span class="prop">left</span><span class="punct">:</span> <span class="val">4px</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* absolute：脱离文档流，相对于最近非 static 祖先 */</span>
+<span class="sel">.modal</span> <span class="punct">{</span>
+  <span class="prop">position</span><span class="punct">:</span> <span class="val">absolute</span><span class="punct">;</span>
+  <span class="prop">top</span><span class="punct">:</span> <span class="val">50%</span><span class="punct">;</span>
+  <span class="prop">left</span><span class="punct">:</span> <span class="val">50%</span><span class="punct">;</span>
+  <span class="prop">transform</span><span class="punct">:</span> <span class="val">translate(-50%, -50%)</span><span class="punct">;</span>  <span class="comment">/* 真正的完美居中 */</span>
+<span class="punct">}</span>
+
+<span class="comment">/* fixed：相对于视口 */</span>
+<span class="sel">.back-to-top</span> <span class="punct">{</span>
+  <span class="prop">position</span><span class="punct">:</span> <span class="val">fixed</span><span class="punct">;</span>
+  <span class="prop">right</span><span class="punct">:</span> <span class="val">20px</span><span class="punct">;</span>
+  <span class="prop">bottom</span><span class="punct">:</span> <span class="val">20px</span><span class="punct">;</span>
+  <span class="prop">z-index</span><span class="punct">:</span> <span class="val">999</span><span class="punct">;</span>             <span class="comment">/* 确保在最上层 */</span>
+<span class="punct">}</span>
+
+<span class="comment">/* sticky：滚动到阈值前正常，之后粘住 */</span>
+<span class="sel">.sticky-header</span> <span class="punct">{</span>
+  <span class="prop">position</span><span class="punct">:</span> <span class="val">sticky</span><span class="punct">;</span>
+  <span class="prop">top</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span>                   <span class="comment">/* 滚动到顶部 0px 时粘住 */</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">#fff</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <div class="tip-box key">
+      <strong>定位三件套：</strong> 设置 <code>position: absolute/fixed/sticky</code> 后，才能用 <code>top / right / bottom / left</code> 控制位置。
+    </div>
+
+    <h3>4.4 居中方案大全：类比不同场景</h3>
+    <table class="compare-table">
+      <tr><th>场景</th><th>方案</th><th>核心代码</th></tr>
+      <tr>
+        <td>块元素水平居中</td>
+        <td>margin 自动</td>
+        <td><code>margin: 0 auto;</code> + 定宽</td>
+      </tr>
+      <tr>
+        <td>行内/行内块水平居中</td>
+        <td>父级 text-align</td>
+        <td><code>text-align: center;</code></td>
+      </tr>
+      <tr>
+        <td>单行文字垂直居中</td>
+        <td>行高等于容器高</td>
+        <td><code>line-height: 容器高度;</code></td>
+      </tr>
+      <tr>
+        <td>绝对定位居中</td>
+        <td>定位 + margin auto</td>
+        <td><code>position:absolute; inset:0; margin:auto;</code></td>
+      </tr>
+      <tr>
+        <td>绝对定位居中（兼容）</td>
+        <td>定位 + transform</td>
+        <td><code>left:50%; top:50%; transform:translate(-50%,-50%);</code></td>
+      </tr>
+      <tr>
+        <td>Flex 完美居中</td>
+        <td>最推荐</td>
+        <td><code>display:flex; justify-content:center; align-items:center;</code></td>
+      </tr>
+    </table>
+
+    <h3>4.5 Flex 布局：一维排列的「神器」</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">Flex 解决的是「一行或一列」的排列问题。只需要记住：给父元素加 <code>display: flex</code>，子元素自动变成弹性项。</p>
+
+    <h4>父容器属性（控制整体排列）</h4>
+    <table class="compare-table">
+      <tr><th>属性</th><th>作用</th><th>常用值</th></tr>
+      <tr><td><code>flex-direction</code></td><td>主轴方向</td><td>row（默认）/ row-reverse / column / column-reverse</td></tr>
+      <tr><td><code>justify-content</code></td><td>主轴对齐</td><td>flex-start / center / flex-end / space-between / space-around / space-evenly</td></tr>
+      <tr><td><code>align-items</code></td><td>侧轴对齐（单行）</td><td>flex-start / center / flex-end / stretch（默认）</td></tr>
+      <tr><td><code>align-content</code></td><td>侧轴对齐（多行）</td><td>同上，需要 wrap 换行才生效</td></tr>
+      <tr><td><code>flex-wrap</code></td><td>是否换行</td><td>nowrap（默认）/ wrap / wrap-reverse</td></tr>
+    </table>
+
+    <h4>子元素属性（控制个体行为）</h4>
+    <table class="compare-table">
+      <tr><th>属性</th><th>作用</th><th>说明</th></tr>
+      <tr><td><code>flex: 1</code></td><td>占据剩余空间的份数</td><td>flex: 1 等价于 flex-grow:1 flex-shrink:1 flex-basis:0%</td></tr>
+      <tr><td><code>align-self</code></td><td>单独设置侧轴对齐</td><td>覆盖父级的 align-items</td></tr>
+      <tr><td><code>order</code></td><td>排列顺序</td><td>数值越小越靠前，默认 0</td></tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* Flex 实战：常见布局模式 */</span>
+
+<span class="comment">/* 1. 水平垂直居中 */</span>
+<span class="sel">.center</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">flex</span><span class="punct">;</span>
+  <span class="prop">justify-content</span><span class="punct">:</span> <span class="val">center</span><span class="punct">;</span>     <span class="comment">/* 主轴居中 */</span>
+  <span class="prop">align-items</span><span class="punct">:</span> <span class="val">center</span><span class="punct">;</span>         <span class="comment">/* 侧轴居中 */</span>
+  <span class="prop">height</span><span class="punct">:</span> <span class="val">300px</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 2. 两端对齐（导航栏） */</span>
+<span class="sel">.navbar</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">flex</span><span class="punct">;</span>
+  <span class="prop">justify-content</span><span class="punct">:</span> <span class="val">space-between</span><span class="punct">;</span>  <span class="comment">/* 两端对齐，中间自动分布 */</span>
+  <span class="prop">align-items</span><span class="punct">:</span> <span class="val">center</span><span class="punct">;</span>
+  <span class="prop">padding</span><span class="punct">:</span> <span class="val">0 20px</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 3. 自适应分栏（圣杯布局简化版） */</span>
+<span class="sel">.layout</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">flex</span><span class="punct">;</span>
+  <span class="prop">gap</span><span class="punct">:</span> <span class="val">16px</span><span class="punct">;</span>                  <span class="comment">/* 子元素间距（比 margin 更优雅） */</span>
+<span class="punct">}</span>
+<span class="sel">.layout .sidebar</span> <span class="punct">{</span> <span class="prop">width</span><span class="punct">:</span> <span class="val">200px</span><span class="punct">;</span> <span class="punct">}</span>    <span class="comment">/* 固定侧边栏 */</span>
+<span class="sel">.layout .main</span> <span class="punct">{</span> <span class="prop">flex</span><span class="punct">:</span> <span class="val">1</span><span class="punct">;</span> <span class="punct">}</span>          <span class="comment">/* 主内容区自适应填充剩余空间 */</span>
+
+<span class="comment">/* 4. 底部固定（内容不足时 footer 仍在底部） */</span>
+<span class="sel">body</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">flex</span><span class="punct">;</span>
+  <span class="prop">flex-direction</span><span class="punct">:</span> <span class="val">column</span><span class="punct">;</span>
+  <span class="prop">min-height</span><span class="punct">:</span> <span class="val">100vh</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="sel">main</span> <span class="punct">{</span> <span class="prop">flex</span><span class="punct">:</span> <span class="val">1</span><span class="punct">;</span> <span class="punct">}</span>                  <span class="comment">/* main 撑开剩余空间，footer 被挤到底部 */</span></pre>
+    </div>
+
+    <div class="tip-box key">
+      <strong>Flex 记忆口诀：</strong> 主轴方向 flex-direction，主轴对齐 justify-content，侧轴对齐 align-items，子项伸缩 flex。
+    </div>
+
+    <h3>4.6 Grid 布局：二维排列的「终极方案」</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">Grid 同时控制行和列，适合复杂的二维布局（如整页骨架、图片墙、仪表盘）。</p>
+    <div class="code-block">
+      <pre><span class="sel">.grid</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">grid</span><span class="punct">;</span>
+  <span class="prop">grid-template-columns</span><span class="punct">:</span> <span class="val">200px 1fr 200px</span><span class="punct">;</span>  <span class="comment">/* 三列：固定 | 自适应 | 固定 */</span>
+  <span class="prop">grid-template-rows</span><span class="punct">:</span> <span class="val">60px 1fr 60px</span><span class="punct">;</span>      <span class="comment">/* 三行：头 | 主体 | 尾 */</span>
+  <span class="prop">gap</span><span class="punct">:</span> <span class="val">16px</span><span class="punct">;</span>                                  <span class="comment">/* 行列间距 */</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <h3>4.7 响应式布局：一套代码适配多端</h3>
+    <div class="dual">
+      <div>
+        <div class="label">媒体查询语法</div>
+        <div class="code-block">
+          <pre><span class="comment">/* 手机优先：从小到大写 */</span>
+<span class="sel">.container</span> <span class="punct">{</span> <span class="prop">width</span><span class="punct">:</span> <span class="val">100%</span><span class="punct">;</span> <span class="punct">}</span>     <span class="comment">/* 默认：手机 */</span>
+
+<span class="sel">@media (min-width: 768px)</span> <span class="punct">{</span>   <span class="comment">/* 平板 */</span>
+  <span class="sel">.container</span> <span class="punct">{</span> <span class="prop">width</span><span class="punct">:</span> <span class="val">750px</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="punct">}</span>
+
+<span class="sel">@media (min-width: 1024px)</span> <span class="punct">{</span>  <span class="comment">/* 桌面 */</span>
+  <span class="sel">.container</span> <span class="punct">{</span> <span class="prop">width</span><span class="punct">:</span> <span class="val">960px</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="punct">}</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">常见断点</div>
+        <table class="compare-table" style="margin-top:0;">
+          <tr><th>设备</th><th>断点</th></tr>
+          <tr><td>手机</td><td>&lt; 768px</td></tr>
+          <tr><td>平板</td><td>768px ~ 1024px</td></tr>
+          <tr><td>桌面</td><td>&gt; 1024px</td></tr>
+        </table>
+        <div class="tip-box note" style="margin-top:10px;">
+          <strong>策略：</strong> 先写手机样式（默认），再用 <code>min-width</code> 逐步增强。这与「优雅降级」相反，称为「移动优先」。
+        </div>
+      </div>
+    </div>
+
+    <h3>4.8 布局方式对比总表</h3>
+    <table class="compare-table">
+      <tr><th>布局方式</th><th>维度</th><th>控制对象</th><th>学习优先级</th></tr>
+      <tr><td>文档流</td><td>一维</td><td>元素默认排列</td><td>必须先理解</td></tr>
+      <tr><td>浮动</td><td>一维</td><td>块级元素横向排列</td><td>了解即可，逐步淘汰</td></tr>
+      <tr><td>定位</td><td>一维</td><td>单个元素的位置</td><td>必备（absolute/fixed）</td></tr>
+      <tr><td>Flex</td><td>一维</td><td>一行或一列的子元素</td><td>强烈推荐，日常使用</td></tr>
+      <tr><td>Grid</td><td>二维</td><td>同时控制行列</td><td>复杂布局首选</td></tr>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 五、动画交互体系 -->
+  <!-- ============================================================ -->
+  <section class="chapter" id="animate">
+    <h2>五、动画交互体系 —— 怎么动</h2>
+    <p style="color:#666;font-size:14px;margin-bottom:16px;">CSS 动画分三种：过渡（补间动画）、转换（变形）、关键帧动画。它们常配合使用。</p>
+
+    <h3>5.1 过渡 transition：两种状态之间的「平滑变化」</h3>
+    <div class="dual">
+      <div>
+        <div class="label">核心语法</div>
+        <div class="code-block">
+          <pre><span class="sel">.box</span> <span class="punct">{</span>
+  <span class="prop">transition</span><span class="punct">:</span> <span class="val">属性 持续时间 曲线 延迟</span><span class="punct">;</span>
+  <span class="prop">transition</span><span class="punct">:</span> <span class="val">all 0.3s ease 0s</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 拆分写法 */</span>
+<span class="prop">transition-property</span><span class="punct">:</span> <span class="val">all</span><span class="punct">;</span>
+<span class="prop">transition-duration</span><span class="punct">:</span> <span class="val">0.3s</span><span class="punct">;</span>
+<span class="prop">transition-timing-function</span><span class="punct">:</span> <span class="val">ease</span><span class="punct">;</span>
+<span class="prop">transition-delay</span><span class="punct">:</span> <span class="val">0s</span><span class="punct">;</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">timing-function 取值</div>
+        <table class="compare-table" style="margin-top:0;">
+          <tr><th>值</th><th>效果</th></tr>
+          <tr><td><code>linear</code></td><td>匀速</td></tr>
+          <tr><td><code>ease</code></td><td>慢-快-慢（默认）</td></tr>
+          <tr><td><code>ease-in</code></td><td>慢启动</td></tr>
+          <tr><td><code>ease-out</code></td><td>慢结束</td></tr>
+          <tr><td><code>ease-in-out</code></td><td>慢启动+慢结束</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="tip-box note">
+      <strong>触发条件：</strong> transition 不会自动播放，需要状态变化触发（如 :hover、添加 class、JS 修改样式）。
+    </div>
+
+    <h3>5.2 转换 transform：元素的「变形术」</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">transform 只改变元素的视觉呈现，不影响文档流位置。常与 transition 配合。</p>
+
+    <h4>2D 转换</h4>
+    <table class="compare-table">
+      <tr><th>函数</th><th>作用</th><th>示例</th></tr>
+      <tr><td><code>translate(x, y)</code></td><td>位移</td><td><code>translate(50px, -20px)</code></td></tr>
+      <tr><td><code>translateX/Y</code></td><td>单方向位移</td><td><code>translateX(-50%)</code> 用于居中</td></tr>
+      <tr><td><code>scale(x, y)</code></td><td>缩放</td><td><code>scale(1.5)</code> 放大1.5倍</td></tr>
+      <tr><td><code>rotate(deg)</code></td><td>旋转</td><td><code>rotate(45deg)</code> 顺时针45度</td></tr>
+      <tr><td><code>skew(x, y)</code></td><td>倾斜</td><td><code>skew(10deg)</code> 水平倾斜</td></tr>
+    </table>
+
+    <h4>3D 转换</h4>
+    <table class="compare-table">
+      <tr><th>函数</th><th>作用</th><th>前提条件</th></tr>
+      <tr><td><code>rotateX(deg)</code></td><td>绕 X 轴旋转</td><td rowspan="3">父元素需设 <code>perspective</code>（透视距离）</td></tr>
+      <tr><td><code>rotateY(deg)</code></td><td>绕 Y 轴旋转</td></tr>
+      <tr><td><code>rotate3d(x,y,z,deg)</code></td><td>绕任意轴旋转</td></tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* transform 组合使用 + 3D 翻转卡片 */</span>
+
+<span class="comment">/* 组合变换：注意顺序影响结果 */</span>
+<span class="sel">.box:hover</span> <span class="punct">{</span>
+  <span class="prop">transform</span><span class="punct">:</span> <span class="val">translateX(20px) scale(1.1) rotate(5deg)</span><span class="punct">;</span>
+  <span class="comment">/* 先位移 → 再缩放 → 再旋转（从右向左执行） */</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 3D 翻转卡片（正反面） */</span>
+<span class="sel">.card-wrapper</span> <span class="punct">{</span>
+  <span class="prop">perspective</span><span class="punct">:</span> <span class="val">800px</span><span class="punct">;</span>          <span class="comment">/* 透视距离，决定 3D 效果的强弱 */</span>
+<span class="punct">}</span>
+<span class="sel">.card-inner</span> <span class="punct">{</span>
+  <span class="prop">transform-style</span><span class="punct">:</span> <span class="val">preserve-3d</span><span class="punct">;</span> <span class="comment">/* 子元素保留 3D 位置关系 */</span>
+  <span class="prop">transition</span><span class="punct">:</span> <span class="val">transform 0.6s</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="sel">.card-wrapper:hover .card-inner</span> <span class="punct">{</span>
+  <span class="prop">transform</span><span class="punct">:</span> <span class="val">rotateY(180deg)</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="sel">.card-front, .card-back</span> <span class="punct">{</span>
+  <span class="prop">backface-visibility</span><span class="punct">:</span> <span class="val">hidden</span><span class="punct">;</span>  <span class="comment">/* 背面不可见 */</span>
+  <span class="prop">position</span><span class="punct">:</span> <span class="val">absolute</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="sel">.card-back</span> <span class="punct">{</span> <span class="prop">transform</span><span class="punct">:</span> <span class="val">rotateY(180deg)</span><span class="punct">;</span> <span class="punct">}</span></pre>
+    </div>
+
+    <h3>5.3 动画 animation：由你控制的「完整剧本」</h3>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">transition 只能控制「起点→终点」，animation 可以控制任意多个关键帧。</p>
+
+    <div class="code-block">
+      <pre><span class="comment">/* 第一步：定义关键帧 */</span>
+<span class="sel">@keyframes slide</span> <span class="punct">{</span>
+  <span class="sel">0%</span>   <span class="punct">{</span> <span class="prop">transform</span><span class="punct">:</span> <span class="val">translateX(0)</span><span class="punct">;</span> <span class="prop">opacity</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span> <span class="punct">}</span>
+  <span class="sel">50%</span>  <span class="punct">{</span> <span class="prop">transform</span><span class="punct">:</span> <span class="val">translateX(100px)</span><span class="punct">;</span> <span class="prop">opacity</span><span class="punct">:</span> <span class="val">1</span><span class="punct">;</span> <span class="punct">}</span>
+  <span class="sel">100%</span> <span class="punct">{</span> <span class="prop">transform</span><span class="punct">:</span> <span class="val">translateX(200px)</span><span class="punct">;</span> <span class="prop">opacity</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 第二步：应用动画 */</span>
+<span class="sel">.box</span> <span class="punct">{</span>
+  <span class="prop">animation</span><span class="punct">:</span> <span class="val">slide 2s ease-in-out infinite alternate</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <table class="compare-table">
+      <tr><th>属性</th><th>作用</th><th>常用值</th></tr>
+      <tr><td><code>animation-name</code></td><td>动画名</td><td>@keyframes 定义的名字</td></tr>
+      <tr><td><code>animation-duration</code></td><td>持续时间</td><td>2s、500ms（必填）</td></tr>
+      <tr><td><code>animation-iteration-count</code></td><td>循环次数</td><td>1（默认）、infinite</td></tr>
+      <tr><td><code>animation-direction</code></td><td>方向</td><td>normal、alternate（往返）</td></tr>
+      <tr><td><code>animation-fill-mode</code></td><td>结束状态</td><td>forwards（停在最后一帧）</td></tr>
+      <tr><td><code>animation-delay</code></td><td>延迟</td><td>1s、-0.5s（提前开始）</td></tr>
+      <tr><td><code>animation-timing-function</code></td><td>速度曲线</td><td>ease、linear、steps(n)</td></tr>
+    </table>
+
+    <div class="tip-box key">
+      <strong>transition vs animation 对比：</strong> transition 需要触发器（如:hover），只有两个状态；animation 自动播放，可以有任意多个关键帧，控制能力更强。
+    </div>
+
+    <h3>5.4 三者的关系：transition + transform + animation</h3>
+    <div class="flow">
+      <div class="step">触发状态变化<br><small>:hover / JS</small></div>
+      <div class="arrow">→</div>
+      <div class="step">transition 控制<br><small>变化过程</small></div>
+      <div class="arrow">→</div>
+      <div class="step">transform 控制<br><small>变形效果</small></div>
+      <div class="arrow">或</div>
+      <div class="step">animation 控制<br><small>完整动画剧本</small></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 六、工程化体系 -->
+  <!-- ============================================================ -->
+  <section class="chapter" id="engineer">
+    <h2>六、工程化体系 —— 怎么写得更好</h2>
+
+    <h3>6.1 CSS 变量（自定义属性）：原生的「变量系统」</h3>
+    <div class="dual">
+      <div>
+        <div class="label">CSS 变量（现代浏览器支持）</div>
+        <div class="code-block">
+          <pre><span class="sel">:root</span> <span class="punct">{</span>
+  <span class="prop">--primary</span><span class="punct">:</span> <span class="val">#3498db</span><span class="punct">;</span>
+  <span class="prop">--spacing</span><span class="punct">:</span> <span class="val">16px</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">.btn</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">var(--primary)</span><span class="punct">;</span>
+  <span class="prop">padding</span><span class="punct">:</span> <span class="val">var(--spacing)</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">Sass 变量（编译后消失）</div>
+        <div class="code-block">
+          <pre><span class="prop">$primary</span><span class="punct">:</span> <span class="val">#3498db</span><span class="punct">;</span>
+<span class="prop">$spacing</span><span class="punct">:</span> <span class="val">16px</span><span class="punct">;</span>
+
+<span class="sel">.btn</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">$primary</span><span class="punct">;</span>
+  <span class="prop">padding</span><span class="punct">:</span> <span class="val">$spacing</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+        </div>
+      </div>
+    </div>
+    <div class="tip-box note">
+      <strong>区别：</strong> CSS 变量是运行时变量（可在 JS 中修改、可继承、可局部覆盖）；Sass 变量是编译期变量（编译后变成固定值，性能更好）。
+    </div>
+
+    <h3>6.2 Sass 核心功能速查</h3>
+    <table class="compare-table">
+      <tr><th>功能</th><th>语法</th><th>作用</th></tr>
+      <tr><td>变量</td><td><code>$name: value;</code></td><td>复用颜色、尺寸等值</td></tr>
+      <tr><td>嵌套</td><td>选择器层级嵌套</td><td>模拟 HTML 结构，减少重复</td></tr>
+      <tr><td>父引用</td><td><code>&amp;</code></td><td>引用父选择器，用于 :hover、::before</td></tr>
+      <tr><td>混合</td><td><code>@mixin / @include</code></td><td>定义可复用的代码块，支持参数</td></tr>
+      <tr><td>继承</td><td><code>@extend</code></td><td>复用已有选择器的样式，编译后合并</td></tr>
+      <tr><td>导入</td><td><code>@import</code></td><td>模块化拆分文件（下划线开头不编译）</td></tr>
+      <tr><td>运算</td><td><code>+ - * /</code></td><td>尺寸计算</td></tr>
+    </table>
+
+    <div class="code-block">
+      <pre><span class="comment">/* Sass 实战：嵌套 + & 父引用 + Mixin */</span>
+<span class="comment">/* 嵌套：模拟 HTML 层级，减少重复写选择器 */</span>
+<span class="sel">.nav</span> <span class="punct">{</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">#333</span><span class="punct">;</span>
+
+  <span class="sel">ul</span> <span class="punct">{</span>                          <span class="comment">/* .nav ul */</span>
+    <span class="prop">list-style</span><span class="punct">:</span> <span class="val">none</span><span class="punct">;</span>
+    <span class="prop">display</span><span class="punct">:</span> <span class="val">flex</span><span class="punct">;</span>
+  <span class="punct">}</span>
+
+  <span class="sel">a</span> <span class="punct">{</span>                           <span class="comment">/* .nav a */</span>
+    <span class="prop">color</span><span class="punct">:</span> <span class="val">#fff</span><span class="punct">;</span>
+    <span class="prop">padding</span><span class="punct">:</span> <span class="val">10px 16px</span><span class="punct">;</span>
+
+    <span class="sel">&amp;:hover</span> <span class="punct">{</span>                   <span class="comment">/* & = 父选择器，编译为 .nav a:hover */</span>
+      <span class="prop">color</span><span class="punct">:</span> <span class="val">#3498db</span><span class="punct">;</span>
+    <span class="punct">}</span>
+
+    <span class="sel">&amp;.active</span> <span class="punct">{</span>                  <span class="comment">/* .nav a.active */</span>
+      <span class="prop">border-bottom</span><span class="punct">:</span> <span class="val">2px solid #3498db</span><span class="punct">;</span>
+    <span class="punct">}</span>
+  <span class="punct">}</span>
+<span class="punct">}</span>
+
+<span class="comment">/* Mixin：带参数的复用代码块 */</span>
+<span class="sel">@mixin flex-center($dir: row)</span> <span class="punct">{</span>
+  <span class="prop">display</span><span class="punct">:</span> <span class="val">flex</span><span class="punct">;</span>
+  <span class="prop">flex-direction</span><span class="punct">:</span> <span class="val">$dir</span><span class="punct">;</span>
+  <span class="prop">justify-content</span><span class="punct">:</span> <span class="val">center</span><span class="punct">;</span>
+  <span class="prop">align-items</span><span class="punct">:</span> <span class="val">center</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="sel">.hero</span> <span class="punct">{</span> <span class="prop">@include</span> <span class="val">flex-center(column)</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="sel">.modal</span> <span class="punct">{</span> <span class="prop">@include</span> <span class="val">flex-center</span><span class="punct">;</span> <span class="punct">}</span>      <span class="comment">/* 默认 row */</span>
+
+<span class="comment">/* @extend：复用已有选择器（编译后合并） */</span>
+<span class="sel">%btn-base</span> <span class="punct">{</span>                    <span class="comment">/* % 占位符，不会被编译输出 */</span>
+  <span class="prop">padding</span><span class="punct">:</span> <span class="val">10px 20px</span><span class="punct">;</span>
+  <span class="prop">border-radius</span><span class="punct">:</span> <span class="val">6px</span><span class="punct">;</span>
+  <span class="prop">cursor</span><span class="punct">:</span> <span class="val">pointer</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="sel">.btn-primary</span> <span class="punct">{</span>
+  <span class="prop">@extend</span> <span class="val">%btn-base</span><span class="punct">;</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">#3498db</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="sel">.btn-danger</span> <span class="punct">{</span>
+  <span class="prop">@extend</span> <span class="val">%btn-base</span><span class="punct">;</span>
+  <span class="prop">background</span><span class="punct">:</span> <span class="val">#e74c3c</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <h3>6.3 Web 字体与图标</h3>
+    <div class="card-group">
+      <div class="mini-card">
+        <h5>@font-face 三步走</h5>
+        <p>1. 下载字体文件 → 2. @font-face 声明 → 3. font-family 使用</p>
+      </div>
+      <div class="mini-card">
+        <h5>字体格式兼容性</h5>
+        <p>WOFF2（最优先）→ WOFF → TTF → EOT（IE）→ SVG（iOS legacy）</p>
+      </div>
+      <div class="mini-card">
+        <h5>图标字体方案</h5>
+        <p>Iconfont（阿里）、Font Awesome、IcoMoon。用 ::before + content 引用最灵活。</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <pre><span class="comment">/* @font-face 跨浏览器兼容写法 */</span>
+<span class="sel">@font-face</span> <span class="punct">{</span>
+  <span class="prop">font-family</span><span class="punct">:</span> <span class="val">'MyFont'</span><span class="punct">;</span>
+  <span class="prop">src</span><span class="punct">:</span> <span class="val">url('myfont.woff2') format('woff2')</span><span class="punct">,</span>   <span class="comment">/* 最优先：现代浏览器 */</span>
+       <span class="val">url('myfont.woff') format('woff')</span><span class="punct">,</span>     <span class="comment">/* 兜底：较老浏览器 */</span>
+       <span class="val">url('myfont.ttf') format('truetype')</span><span class="punct">;</span> <span class="comment">/* 最后兜底 */</span>
+  <span class="prop">font-weight</span><span class="punct">:</span> <span class="val">normal</span><span class="punct">;</span>
+  <span class="prop">font-style</span><span class="punct">:</span> <span class="val">normal</span><span class="punct">;</span>
+  <span class="prop">font-display</span><span class="punct">:</span> <span class="val">swap</span><span class="punct">;</span>              <span class="comment">/* 字体加载前先用系统字体显示，避免空白 */</span>
+<span class="punct">}</span>
+
+<span class="sel">body</span> <span class="punct">{</span>
+  <span class="prop">font-family</span><span class="punct">:</span> <span class="val">'MyFont', 'Microsoft YaHei', sans-serif</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* Iconfont 使用：Unicode 方式 */</span>
+<span class="sel">.icon-home::before</span> <span class="punct">{</span>
+  <span class="prop">font-family</span><span class="punct">:</span> <span class="val">'iconfont'</span><span class="punct">;</span>
+  <span class="prop">content</span><span class="punct">:</span> <span class="val">'\e6b8'</span><span class="punct">;</span>              <span class="comment">/* Unicode 码点 */</span>
+  <span class="prop">font-size</span><span class="punct">:</span> <span class="val">20px</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+    </div>
+
+    <h3>6.4 浏览器兼容性与渐进增强</h3>
+    <table class="compare-table">
+      <tr><th>策略</th><th>含义</th><th>实现方式</th></tr>
+      <tr>
+        <td>渐进增强</td>
+        <td>低版本能正常访问，高版本体验更好</td>
+        <td>先写基础样式，再用新特性覆盖</td>
+      </tr>
+      <tr>
+        <td>优雅降级</td>
+        <td>先为现代浏览器设计，再兼容旧版</td>
+        <td>先写新特性，再提供 fallback</td>
+      </tr>
+      <tr>
+        <td>私有前缀</td>
+        <td>浏览器实验性特性</td>
+        <td><code>-webkit-</code>、<code>-moz-</code>、<code>-ms-</code></td></tr>
+    </table>
+
+    <h3>6.5 CSS 书写规范建议</h3>
+    <div class="code-block">
+      <pre><span class="comment">/* 1. 重置默认样式 */</span>
+<span class="sel">*</span> <span class="punct">{</span> <span class="prop">margin</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span> <span class="prop">padding</span><span class="punct">:</span> <span class="val">0</span><span class="punct">;</span> <span class="prop">box-sizing</span><span class="punct">:</span> <span class="val">border-box</span><span class="punct">;</span> <span class="punct">}</span>
+
+<span class="comment">/* 2. 定义变量（:root 或 Sass） */</span>
+<span class="comment">/* 3. 工具类（复用样式） */</span>
+<span class="comment">/* 4. 布局框架（容器、网格） */</span>
+<span class="comment">/* 5. 组件样式（按钮、卡片、表单） */</span>
+<span class="comment">/* 6. 页面特定样式 */</span>
+<span class="comment">/* 7. 工具/覆盖类（放在最后） */</span></pre>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 附录：六大体系速查总图 -->
+  <!-- ============================================================ -->
+  <section class="chapter">
+    <h2>附录：六大体系速查总图</h2>
+    <div class="tree" style="font-size:15px;line-height:2.4;">
+      <div style="padding:10px 16px;background:#667eea;color:#fff;border-radius:6px;display:inline-block;font-weight:bold;">CSS 知识地图</div>
+      <div class="branch">
+        <div class="leaf" style="background:#e3f2fd;"><strong>一、选择器</strong> → 怎么找到元素</div>
+        <div class="branch">
+          <div class="leaf">基础：标签 .class #id *</div>
+          <div class="leaf">组合：后代 子代 相邻兄弟 通用兄弟</div>
+          <div class="leaf">伪类：:hover :focus :nth-child :first-of-type</div>
+          <div class="leaf">伪元素：::before ::after ::selection</div>
+          <div class="leaf">属性：[attr] [attr^=] [attr$=] [attr*=]</div>
+        </div>
+        <div class="leaf" style="background:#e8f5e9;"><strong>二、盒模型</strong> → 占多大空间</div>
+        <div class="branch">
+          <div class="leaf">content + padding + border + margin</div>
+          <div class="leaf">box-sizing: border-box（强烈推荐）</div>
+          <div class="leaf">margin 塌陷与穿透</div>
+        </div>
+        <div class="leaf" style="background:#fff3e0;"><strong>三、视觉表现</strong> → 长什么样</div>
+        <div class="branch">
+          <div class="leaf">颜色：color / background / linear-gradient</div>
+          <div class="leaf">文字：font / line-height / text-align</div>
+          <div class="leaf">边框：border / border-radius / box-shadow / outline</div>
+          <div class="leaf">可见性：display / visibility / opacity</div>
+        </div>
+        <div class="leaf" style="background:#fce4ec;"><strong>四、布局</strong> → 放在哪里</div>
+        <div class="branch">
+          <div class="leaf">文档流：block / inline / inline-block</div>
+          <div class="leaf">浮动：float + clear（逐步淘汰）</div>
+          <div class="leaf">定位：relative / absolute / fixed / sticky</div>
+          <div class="leaf">Flex：一维排列首选</div>
+          <div class="leaf">Grid：二维排列首选</div>
+          <div class="leaf">响应式：@media 移动优先</div>
+        </div>
+        <div class="leaf" style="background:#f3e5f5;"><strong>五、动画交互</strong> → 怎么动</div>
+        <div class="branch">
+          <div class="leaf">transition：状态变化时的过渡</div>
+          <div class="leaf">transform：位移/缩放/旋转/倾斜</div>
+          <div class="leaf">animation：@keyframes 关键帧动画</div>
+        </div>
+        <div class="leaf" style="background:#e0f2f1;"><strong>六、工程化</strong> → 怎么写得更好</div>
+        <div class="branch">
+          <div class="leaf">CSS 变量：--name + var()</div>
+          <div class="leaf">Sass：嵌套 / Mixin / 继承 / 导入</div>
+          <div class="leaf">Web 字体：@font-face / Iconfont</div>
+          <div class="leaf">兼容性：渐进增强 / 私有前缀</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

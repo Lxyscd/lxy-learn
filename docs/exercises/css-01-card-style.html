@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>练习4：卡片样式美化</title>
+  <style>
+    /* 全局重置 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f5f5f5; font-family: sans-serif; padding: 40px; }
+
+    /* 卡片容器 */
+    .store-card {
+      width: 400px;
+      margin: 0 auto;           /* 水平居中 */
+      background: white;
+      border-radius: 12px;      /* 圆角 */
+      overflow: hidden;         /* 图片不超出圆角 */
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);  /* 阴影 */
+    }
+
+    /* 图片：宽度撑满，上方圆角 */
+    .store-card img {
+      width: 100%;
+      display: block;
+    }
+
+    /* 头部 */
+    .store-card header {
+      padding: 20px 20px 10px;
+    }
+
+    /* 标题：绿色 */
+    .store-card h1 {
+      color: #4fc08d;
+      font-size: 20px;
+    }
+
+    /* 内容区域 */
+    .store-card section {
+      padding: 0 20px 20px;
+    }
+
+    /* 段落：灰色文字 */
+    .store-card p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* 营业状态：绿色加粗 */
+    .store-card .status {
+      color: #4fc08d;
+      font-weight: bold;
+    }
+
+    /* 底部：上边框分隔 */
+    .store-card footer {
+      padding: 16px 20px;
+      border-top: 1px solid #eee;
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <article class="store-card">
+    <header>
+      <h1>小象超市·朝阳店</h1>
+    </header>
+    <main>
+      <section>
+        <img src="https://via.placeholder.com/400x200/4fc08d/ffffff?text=Store+Photo" alt="门店照片">
+        <p><strong>地址：</strong>北京市朝阳区建国路88号</p>
+        <p><strong>营业状态：</strong><span class="status">营业中</span></p>
+        <p><strong>营业时间：</strong>07:00 - 22:00</p>
+      </section>
+    </main>
+    <footer>
+      <p>联系电话：010-12345678</p>
+    </footer>
+  </article>
+
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>CSS3 动画详解 - 学习笔记</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Microsoft YaHei', sans-serif; background: #F7F7F7; padding-bottom: 50px; }
+    .wrapper { width: 1024px; margin: 0 auto; }
+    .wrapper > header { text-align: center; padding: 30px; font-size: 32px; color: #333; }
+    .section { min-height: 200px; margin-bottom: 30px; box-shadow: 1px 1px 4px #DDD; background: #FFF; border-radius: 4px; }
+    .section > header { padding: 15px 20px; font-size: 20px; color: #333; background: #EEE; border-radius: 4px 4px 0 0; }
+    .section > header code { background: #333; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 16px; }
+    .wrap-box { padding: 20px; }
+    .desc { color: #666; margin-bottom: 15px; font-size: 14px; }
+    .code-block { background: #282c34; color: #abb2bf; padding: 15px 20px; border-radius: 6px; margin: 15px 0; overflow-x: auto; }
+    .code-block pre { margin: 0; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.6; }
+    .code-block .selector { color: #e06c75; } .code-block .property { color: #d19a66; }
+    .code-block .value { color: #98c379; } .code-block .punct { color: #abb2bf; }
+    .result-label { font-size: 12px; color: #999; margin: 10px 0 5px; border-top: 1px dashed #ddd; padding-top: 10px; }
+    .demo-box { padding: 15px; margin: 10px 0; background: #f9f9f9; border-radius: 6px; border: 1px solid #eee; }
+
+    /* ========== 过渡 Transition ========== */
+    .trans-box { width: 100px; height: 100px; background: #e74c3c; transition: all 2s; }
+    .trans-box:hover { width: 200px; background: #3498db; border-radius: 50%; }
+    .trans-width { width: 100px; height: 100px; background: #e74c3c; transition: width 2s; }
+    .trans-width:hover { width: 300px; }
+
+    /* ========== 2D 转换 ========== */
+    .scale-box { width: 100px; height: 100px; background: #e74c3c; margin: 20px; display: inline-block; transition: transform 1s; color: #fff; text-align: center; line-height: 100px; }
+    .scale-box:hover { transform: scale(1.5, 0.5); }
+    .translate-box { width: 100px; height: 100px; background: #3498db; margin: 20px; display: inline-block; transition: transform 1s; color: #fff; text-align: center; line-height: 100px; }
+    .translate-box:hover { transform: translate(50px, 30px); }
+    .rotate-box { width: 100px; height: 100px; background: #2ecc71; margin: 20px; display: inline-block; transition: transform 2s; color: #fff; text-align: center; line-height: 100px; }
+    .rotate-box:hover { transform: rotate(360deg); }
+    .center-box { width: 200px; height: 60px; background: #9b59b6; position: relative; left: 50%; transform: translateX(-50%); color: #fff; text-align: center; line-height: 60px; margin: 10px 0; }
+
+    /* ========== 3D 转换 ========== */
+    .perspective-container { perspective: 200px; margin: 20px 0; }
+    .rotate3d-box { width: 100px; height: 100px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 20px auto; transition: transform 2s; color: #fff; text-align: center; line-height: 100px; }
+    .rotate3d-box:hover { transform: rotateY(360deg); }
+    .rotatex-box { width: 100px; height: 100px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin: 20px auto; transition: transform 2s; color: #fff; text-align: center; line-height: 100px; }
+    .rotatex-box:hover { transform: rotateX(360deg); }
+
+    /* ========== 动画 Animation ========== */
+    @keyframes move1 {
+      from { transform: translateX(0) rotate(0deg); }
+      to { transform: translateX(200px) rotate(360deg); }
+    }
+    .anim-move1 { width: 60px; height: 60px; background: #e74c3c; animation: move1 2s infinite alternate; }
+
+    @keyframes move2 {
+      0% { transform: translate(0,0); background: #e74c3c; border-radius: 0; }
+      25% { transform: translate(200px,0); }
+      50% { transform: translate(200px,100px); background: #2ecc71; border-radius: 50%; }
+      75% { transform: translate(0,100px); }
+      100% { transform: translate(0,0); background: #e74c3c; border-radius: 0; }
+    }
+    .anim-move2 { width: 60px; height: 60px; background: #e74c3c; animation: move2 4s infinite; }
+
+    @keyframes steps-demo {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .steps-hand { width: 3px; height: 80px; background: #333; margin: 30px auto; transform-origin: center bottom; animation: steps-demo 60s steps(60) infinite; }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+    }
+    .anim-pulse { width: 80px; height: 80px; background: #3498db; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; margin: 20px auto; }
+
+    /* 卡片翻转 */
+    .flip-container { width: 120px; height: 120px; margin: 20px; perspective: 300px; display: inline-block; }
+    .flipper { width: 100%; height: 100%; position: relative; transition: transform 1s; transform-style: preserve-3d; }
+    .flip-container:hover .flipper { transform: rotateY(180deg); }
+    .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; border-radius: 8px; }
+    .flip-front { background: #3498db; }
+    .flip-back { background: #e74c3c; transform: rotateY(180deg); }
+
+    .anchor-nav { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .anchor-nav h4 { margin-bottom: 10px; font-size: 14px; }
+    .anchor-nav a { display: block; padding: 4px 0; font-size: 13px; color: #666; text-decoration: none; }
+    .anchor-nav a:hover { color: #3498db; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>CSS3 动画详解 - 学习笔记</header>
+
+    <!-- ========== 一、过渡 Transition ========== -->
+    <div class="section" id="transition">
+      <header>一、过渡 <code>transition</code></header>
+      <div class="wrap-box">
+        <p class="desc">实现元素不同状态间的平滑过渡（补间动画），不用管中间状态</p>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>transition</code> 基本语法</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">.box</span> <span class="punct">{</span>
+  <span class="comment">/* 综合写法：属性 持续时间 运动曲线 延迟 */</span>
+  <span class="property">transition</span><span class="punct">:</span> <span class="value">all 2s ease 0s</span><span class="punct">;</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 拆分写法 */</span>
+<span class="property">transition-property</span><span class="punct">:</span> <span class="value">all</span><span class="punct">;</span>      <span class="comment">/* 哪些属性过渡 */</span>
+<span class="property">transition-duration</span><span class="punct">:</span> <span class="value">1s</span><span class="punct">;</span>       <span class="comment">/* 持续时间 */</span>
+<span class="property">transition-timing-function</span><span class="punct">:</span> <span class="value">ease</span><span class="punct">;</span>  <span class="comment">/* linear ease ease-in ease-out */</span>
+<span class="property">transition-delay</span><span class="punct">:</span> <span class="value">0s</span><span class="punct">;</span>          <span class="comment">/* 延迟执行 */</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>transition: all</code> - 所有属性都过渡</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">.trans-box</span> <span class="punct">{</span>
+  <span class="property">width</span><span class="punct">:</span> <span class="value">100px</span><span class="punct">;</span>
+  <span class="property">height</span><span class="punct">:</span> <span class="value">100px</span><span class="punct">;</span>
+  <span class="property">background</span><span class="punct">:</span> <span class="value">#e74c3c</span><span class="punct">;</span>
+  <span class="property">transition</span><span class="punct">:</span> <span class="value">all 2s</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.trans-box:hover</span> <span class="punct">{</span>
+  <span class="property">width</span><span class="punct">:</span> <span class="value">200px</span><span class="punct">;</span>
+  <span class="property">background</span><span class="punct">:</span> <span class="value">#3498db</span><span class="punct">;</span>
+  <span class="property">border-radius</span><span class="punct">:</span> <span class="value">50%</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（鼠标悬停）：</p>
+            <div class="trans-box"></div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>transition: width</code> - 只过渡宽度</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">.trans-width</span> <span class="punct">{</span>
+  <span class="property">width</span><span class="punct">:</span> <span class="value">100px</span><span class="punct">;</span>
+  <span class="property">transition</span><span class="punct">:</span> <span class="value">width 2s</span><span class="punct">;</span>  <span class="comment">/* 只有宽度变化时有动画 */</span>
+<span class="punct">}</span>
+<span class="selector">.trans-width:hover</span> <span class="punct">{</span>
+  <span class="property">width</span><span class="punct">:</span> <span class="value">300px</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（鼠标悬停）：</p>
+            <div class="trans-width"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 二、2D 转换 ========== -->
+    <div class="section" id="transform2d">
+      <header>二、2D 转换 <code>transform</code></header>
+      <div class="wrap-box">
+        <p class="desc">实现元素的位移、旋转、缩放</p>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>transform: scale(x, y)</code> - 缩放</header>
+          <div class="wrap-box">
+            <p class="desc">大于1放大，小于1缩小；只写一个值表示等比例缩放</p>
+            <div class="code-block">
+              <pre><span class="selector">.scale-box</span> <span class="punct">{</span>
+  <span class="property">transition</span><span class="punct">:</span> <span class="value">transform 1s</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.scale-box:hover</span> <span class="punct">{</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">scale(1.5, 0.5)</span><span class="punct">;</span>  <span class="comment">/* 水平放大1.5倍，垂直缩小一半 */</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（鼠标悬停）：</p>
+            <div class="scale-box">缩放</div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>transform: translate(x, y)</code> - 位移</header>
+          <div class="wrap-box">
+            <p class="desc">参数为百分比时，相对于自身移动；正值向右/下，负值向左/上</p>
+            <div class="code-block">
+              <pre><span class="selector">.translate-box</span> <span class="punct">{</span>
+  <span class="property">transition</span><span class="punct">:</span> <span class="value">transform 1s</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.translate-box:hover</span> <span class="punct">{</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">translate(50px, 30px)</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（鼠标悬停）：</p>
+            <div class="translate-box">位移</div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>transform: rotate(deg)</code> - 旋转</header>
+          <div class="wrap-box">
+            <p class="desc">正值顺时针，负值逆时针</p>
+            <div class="code-block">
+              <pre><span class="selector">.rotate-box</span> <span class="punct">{</span>
+  <span class="property">transition</span><span class="punct">:</span> <span class="value">transform 2s</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.rotate-box:hover</span> <span class="punct">{</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">rotate(360deg)</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（鼠标悬停）：</p>
+            <div class="rotate-box">旋转</div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>经典应用：绝对定位居中</header>
+          <div class="wrap-box">
+            <p class="desc">利用 translate(-50%) 让绝对定位元素在父容器中水平居中（无需知道自身宽度）</p>
+            <div class="code-block">
+              <pre><span class="selector">.center</span> <span class="punct">{</span>
+  <span class="property">position</span><span class="punct">:</span> <span class="value">absolute</span><span class="punct">;</span>
+  <span class="property">left</span><span class="punct">:</span> <span class="value">50%</span><span class="punct">;</span>              <span class="comment">/* 左边线居中 */</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">translateX(-50%)</span><span class="punct">;</span>  <span class="comment">/* 往左移自身宽度的一半 */</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <div style="position:relative;height:80px;background:#ecf0f1;border-radius:6px;">
+              <div class="center-box">我在中间</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 三、3D 转换 ========== -->
+    <div class="section" id="transform3d">
+      <header>三、3D 转换</header>
+      <div class="wrap-box">
+        <div class="section" style="margin-bottom:15px">
+          <header><code>perspective</code> - 透视</header>
+          <div class="wrap-box">
+            <p class="desc">设置用户眼睛到平面的距离，让3D效果更明显。必须加给父元素。</p>
+            <div class="code-block">
+              <pre><span class="selector">.parent</span> <span class="punct">{</span>
+  <span class="property">perspective</span><span class="punct">:</span> <span class="value">200px</span><span class="punct">;</span>  <span class="comment">/* 值越小，透视效果越强 */</span>
+<span class="punct">}</span>
+<span class="selector">.child:hover</span> <span class="punct">{</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">rotateY(360deg)</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>rotateY</code> - 绕 Y 轴旋转</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">.box:hover</span> <span class="punct">{</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">rotateY(360deg)</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（鼠标悬停）：</p>
+            <div class="perspective-container">
+              <div class="rotate3d-box">rotateY</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>rotateX</code> - 绕 X 轴旋转</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">.box:hover</span> <span class="punct">{</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">rotateX(360deg)</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（鼠标悬停）：</p>
+            <div class="perspective-container">
+              <div class="rotatex-box">rotateX</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>案例：卡片翻转效果</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">.flipper</span> <span class="punct">{</span>
+  <span class="property">transform-style</span><span class="punct">:</span> <span class="value">preserve-3d</span><span class="punct">;</span>
+  <span class="property">transition</span><span class="punct">:</span> <span class="value">transform 1s</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.flip-container:hover .flipper</span> <span class="punct">{</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">rotateY(180deg)</span><span class="punct">;</span>
+<span class="punct">}</span>
+<span class="selector">.flip-back</span> <span class="punct">{</span>
+  <span class="property">transform</span><span class="punct">:</span> <span class="value">rotateY(180deg)</span><span class="punct">;</span>
+  <span class="property">backface-visibility</span><span class="punct">:</span> <span class="value">hidden</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（鼠标悬停）：</p>
+            <div class="flip-container">
+              <div class="flipper">
+                <div class="flip-front">正面</div>
+                <div class="flip-back">背面</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 四、动画 Animation ========== -->
+    <div class="section" id="animation">
+      <header>四、动画 <code>@keyframes</code></header>
+      <div class="wrap-box">
+        <p class="desc">通过设置多个节点精确控制动画，比 transition 更强大</p>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>定义动画的步骤</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="comment">/* 1. 定义动画 */</span>
+<span class="selector">@keyframes 动画名</span> <span class="punct">{</span>
+  <span class="selector">from</span> <span class="punct">{</span> <span class="property">初始状态</span> <span class="punct">}</span>
+  <span class="selector">to</span> <span class="punct">{</span> <span class="property">结束状态</span> <span class="punct">}</span>
+<span class="punct">}</span>
+
+<span class="comment">/* 2. 调用动画 */</span>
+<span class="selector">.box</span> <span class="punct">{</span>
+  <span class="property">animation</span><span class="punct">:</span> <span class="value">动画名 持续时间 执行次数 是否反向 运动曲线 延迟</span><span class="punct">;</span>
+  <span class="property">animation</span><span class="punct">:</span> <span class="value">move 2s infinite alternate ease-in-out 0s</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>简单动画：移动 + 旋转</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">@keyframes move1</span> <span class="punct">{</span>
+  <span class="selector">from</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">translateX(0) rotate(0deg)</span><span class="punct">;</span> <span class="punct">}</span>
+  <span class="selector">to</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">translateX(200px) rotate(360deg)</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="punct">}</span>
+<span class="selector">.anim-move1</span> <span class="punct">{</span>
+  <span class="property">animation</span><span class="punct">:</span> <span class="value">move1 2s infinite alternate</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（自动播放）：</p>
+            <div class="demo-box">
+              <div class="anim-move1"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>多阶段动画：方形变圆形走一圈</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">@keyframes move2</span> <span class="punct">{</span>
+  <span class="selector">0%</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">translate(0,0)</span><span class="punct">;</span> <span class="property">background</span><span class="punct">:</span> <span class="value">red</span><span class="punct">;</span> <span class="property">border-radius</span><span class="punct">:</span> <span class="value">0</span><span class="punct">;</span> <span class="punct">}</span>
+  <span class="selector">25%</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">translate(200px,0)</span><span class="punct">;</span> <span class="punct">}</span>
+  <span class="selector">50%</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">translate(200px,100px)</span><span class="punct">;</span> <span class="property">background</span><span class="punct">:</span> <span class="value">green</span><span class="punct">;</span> <span class="property">border-radius</span><span class="punct">:</span> <span class="value">50%</span><span class="punct">;</span> <span class="punct">}</span>
+  <span class="selector">75%</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">translate(0,100px)</span><span class="punct">;</span> <span class="punct">}</span>
+  <span class="selector">100%</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">translate(0,0)</span><span class="punct">;</span> <span class="property">background</span><span class="punct">:</span> <span class="value">red</span><span class="punct">;</span> <span class="property">border-radius</span><span class="punct">:</span> <span class="value">0</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（自动播放）：</p>
+            <div class="demo-box" style="height:180px;">
+              <div class="anim-move2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>animation</code> 属性详解</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="property">animation-name</span><span class="punct">:</span> <span class="value">move</span><span class="punct">;</span>           <span class="comment">/* 动画名称 */</span>
+<span class="property">animation-duration</span><span class="punct">:</span> <span class="value">4s</span><span class="punct">;</span>          <span class="comment">/* 持续时间（必填） */</span>
+<span class="property">animation-iteration-count</span><span class="punct">:</span> <span class="value">infinite</span><span class="punct">;</span> <span class="comment">/* 执行次数：1 / infinite */</span>
+<span class="property">animation-direction</span><span class="punct">:</span> <span class="value">alternate</span><span class="punct">;</span>  <span class="comment">/* 方向：normal / alternate(往返) */</span>
+<span class="property">animation-delay</span><span class="punct">:</span> <span class="value">1s</span><span class="punct">;</span>             <span class="comment">/* 延迟执行 */</span>
+<span class="property">animation-fill-mode</span><span class="punct">:</span> <span class="value">forwards</span><span class="punct">;</span>   <span class="comment">/* 结束后状态：forwards / backwards */</span>
+<span class="property">animation-timing-function</span><span class="punct">:</span> <span class="value">ease</span><span class="punct">;</span>  <span class="comment">/* 运动曲线 */</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header><code>steps()</code> - 分步动画</header>
+          <div class="wrap-box">
+            <p class="desc">steps(n) 将动画分成 n 步执行，实现不连续的动画效果（如时钟）</p>
+            <div class="code-block">
+              <pre><span class="selector">.hand</span> <span class="punct">{</span>
+  <span class="property">width</span><span class="punct">:</span> <span class="value">3px</span><span class="punct">;</span>
+  <span class="property">height</span><span class="punct">:</span> <span class="value">80px</span><span class="punct">;</span>
+  <span class="property">background</span><span class="punct">:</span> <span class="value">#333</span><span class="punct">;</span>
+  <span class="property">transform-origin</span><span class="punct">:</span> <span class="value">center bottom</span><span class="punct">;</span>
+  <span class="property">animation</span><span class="punct">:</span> <span class="value">tick 60s steps(60) infinite</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果（时钟秒针，每格跳动）：</p>
+            <div class="demo-box">
+              <div class="steps-hand"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:15px">
+          <header>案例：呼吸灯效果</header>
+          <div class="wrap-box">
+            <div class="code-block">
+              <pre><span class="selector">@keyframes pulse</span> <span class="punct">{</span>
+  <span class="selector">0%, 100%</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">scale(1)</span><span class="punct">;</span> <span class="property">opacity</span><span class="punct">:</span> <span class="value">1</span><span class="punct">;</span> <span class="punct">}</span>
+  <span class="selector">50%</span> <span class="punct">{</span> <span class="property">transform</span><span class="punct">:</span> <span class="value">scale(1.2)</span><span class="punct">;</span> <span class="property">opacity</span><span class="punct">:</span> <span class="value">0.7</span><span class="punct">;</span> <span class="punct">}</span>
+<span class="punct">}</span>
+<span class="selector">.pulse</span> <span class="punct">{</span>
+  <span class="property">animation</span><span class="punct">:</span> <span class="value">pulse 1.5s ease-in-out infinite</span><span class="punct">;</span>
+<span class="punct">}</span></pre>
+            </div>
+            <p class="result-label">效果：</p>
+            <div class="anim-pulse"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="anchor-nav">
+    <h4>快速导航</h4>
+    <a href="#transition">一、过渡</a>
+    <a href="#transform2d">二、2D转换</a>
+    <a href="#transform3d">三、3D转换</a>
+    <a href="#animation">四、动画</a>
+  </nav>
+</body>
+</html>

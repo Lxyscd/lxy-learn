@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>练习10：门店搜索器</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f5f5f5; padding: 40px; }
+
+    .container { max-width: 800px; margin: 0 auto; }
+
+    h1 { color: #2c3e50; margin-bottom: 20px; }
+
+    /* 搜索栏 */
+    .search-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+    }
+    .search-bar input:focus { border-color: #4fc08d; }
+    .search-bar button {
+      padding: 10px 24px;
+      background: #4fc08d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .search-bar button:hover { background: #42b983; }
+
+    /* 结果区域 */
+    .results { display: flex; flex-direction: column; gap: 12px; }
+    .store-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 4px solid #4fc08d;
+    }
+    .store-card h3 { color: #333; margin-bottom: 8px; }
+    .store-card p { color: #666; font-size: 14px; line-height: 1.8; }
+    .status-open { color: #2e7d32; font-weight: bold; }
+    .status-closed { color: #c62828; font-weight: bold; }
+
+    /* 空状态 */
+    .empty {
+      text-align: center;
+      color: #999;
+      padding: 60px 20px;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🏪 门店搜索器</h1>
+
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="输入城市名（如：北京、上海、广州）"
+        onkeypress="handleKeyPress(event)"
+      >
+      <button onclick="searchStores()">搜索</button>
+    </div>
+
+    <!-- 结果区域 -->
+    <div class="results" id="results">
+      <div class="empty">输入城市名，查看门店列表</div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // 门店数据
+    // ============================================================
+    const stores = [
+      { id: 1, name: '小象超市·朝阳店', city: '北京', district: '朝阳区', sales: 12000, status: '营业中' },
+      { id: 2, name: '小象超市·海淀店', city: '北京', district: '海淀区', sales: 15000, status: '营业中' },
+      { id: 3, name: '小象超市·浦东店', city: '上海', district: '浦东新区', sales: 18000, status: '营业中' },
+      { id: 4, name: '小象超市·静安店', city: '上海', district: '静安区', sales: 9000, status: '休息中' },
+      { id: 5, name: '小象超市·天河店', city: '广州', district: '天河区', sales: 11000, status: '营业中' },
+      { id: 6, name: '小象超市·越秀店', city: '广州', district: '越秀区', sales: 7500, status: '休息中' },
+      { id: 7, name: '小象超市·南山店', city: '深圳', district: '南山区', sales: 22000, status: '营业中' }
+    ];
+
+    // ============================================================
+    // 搜索函数
+    // ============================================================
+    function searchStores() {
+      // 1. 获取输入框的值
+      const input = document.getElementById('searchInput');
+      const keyword = input.value.trim();  // trim() 去首尾空格
+
+      // 2. 获取结果容器
+      const resultsDiv = document.getElementById('results');
+
+      // 3. 如果输入为空，提示
+      if (!keyword) {
+        resultsDiv.innerHTML = '<div class="empty">请输入城市名</div>';
+        return;
+      }
+
+      // 4. 用 filter 筛选匹配的门店
+      const matched = stores.filter(s =>
+        s.city.includes(keyword) || s.district.includes(keyword)
+      );
+
+      // 5. 渲染结果
+      if (matched.length === 0) {
+        // 没有匹配结果
+        resultsDiv.innerHTML = '<div class="empty">😢 未找到"' + keyword + '"的门店</div>';
+      } else {
+        // 有匹配结果：用 map 生成 HTML，用 join 拼接
+        resultsDiv.innerHTML = matched.map(store => `
+          <div class="store-card">
+            <h3>${store.name}</h3>
+            <p>📍 ${store.city} · ${store.district}</p>
+            <p>💰 月销售额：¥${store.sales.toLocaleString()}</p>
+            <p>📊 状态：<span class="${store.status === '营业中' ? 'status-open' : 'status-closed'}">${store.status}</span></p>
+          </div>
+        `).join('');
+      }
+    }
+
+    // ============================================================
+    // 回车键触发搜索
+    // ============================================================
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        searchStores();
+      }
+    }
+  </script>
+</body>
+</html>

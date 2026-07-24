@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>练习8：对象与解构</title>
+</head>
+<body>
+  <h1>练习8：对象与解构</h1>
+  <p>打开浏览器控制台（F12 → Console）查看输出结果</p>
+
+  <script>
+    // ============================================================
+    // 原始数据
+    // ============================================================
+    const projectDetail = {
+      projectId: 1001,
+      projectName: '小象超市·朝阳店',
+      address: {
+        city: '北京',
+        district: '朝阳区',
+        street: '建国路88号'
+      },
+      contact: {
+        name: '张三',
+        phone: '13800138000'
+      },
+      monthlySales: [12000, 15000, 13000, 16000]
+    };
+
+    console.log('========== 原始数据 ==========');
+    console.log(projectDetail);
+
+    // ============================================================
+    // 1. 基础解构：提取 projectId 和 projectName
+    // ============================================================
+    const { projectId, projectName } = projectDetail;
+    console.log('\n========== 1. 基础解构 ==========');
+    console.log('projectId:', projectId);       // 1001
+    console.log('projectName:', projectName);   // '小象超市·朝阳店'
+
+    // ============================================================
+    // 2. 嵌套解构：提取 address 中的 city 和 district
+    // ============================================================
+    const { address: { city, district } } = projectDetail;
+    console.log('\n========== 2. 嵌套解构 ==========');
+    console.log('city:', city);                 // '北京'
+    console.log('district:', district);         // '朝阳区'
+
+    // ============================================================
+    // 3. 重命名解构：提取 contact.name，重命名为 contactName
+    // ============================================================
+    const { contact: { name: contactName } } = projectDetail;
+    console.log('\n========== 3. 重命名解构 ==========');
+    console.log('contactName:', contactName);   // '张三'
+
+    // ============================================================
+    // 4. 计算月均销售额（reduce）
+    // ============================================================
+    const { monthlySales } = projectDetail;
+    const avgSales = monthlySales.reduce((sum, val) => sum + val, 0) / monthlySales.length;
+    console.log('\n========== 4. 月均销售额 ==========');
+    console.log('月销售额数组:', monthlySales);           // [12000, 15000, 13000, 16000]
+    console.log('月均销售额:', avgSales);                 // 14000
+
+    // ============================================================
+    // 5. 展开运算符：复制并添加 email 字段
+    // ============================================================
+    const projectWithExtra = {
+      ...projectDetail,
+      email: 'zhangsan@meituan.com',
+      // 也可以展开嵌套对象并修改
+      contact: {
+        ...projectDetail.contact,
+        email: 'contact@store.com'
+      }
+    };
+    console.log('\n========== 5. 展开运算符添加字段 ==========');
+    console.log(projectWithExtra);
+
+    // ============================================================
+    // 附加练习
+    // ============================================================
+    // 6. 用 Object.keys 获取所有顶层属性名
+    const keys = Object.keys(projectDetail);
+    console.log('\n========== 附加 6. 所有属性名 ==========');
+    console.log(keys);  // ['projectId', 'projectName', 'address', 'contact', 'monthlySales']
+
+    // 7. 用 Object.values 获取所有顶层属性值
+    const values = Object.values(projectDetail);
+    console.log('\n========== 附加 7. 所有属性值 ==========');
+    console.log(values);
+
+    // 8. 用 Object.entries 遍历
+    console.log('\n========== 附加 8. entries 遍历 ==========');
+    Object.entries(projectDetail).forEach(([key, value]) => {
+      console.log(`${key}:`, value);
+    });
+
+    // 9. 可选链：安全访问深层属性
+    const userEmail = projectDetail?.contact?.email ?? '未设置邮箱';
+    console.log('\n========== 附加 9. 可选链 ==========');
+    console.log('contact.email:', userEmail);  // '未设置邮箱'（因为原始对象没有 email）
+
+    // 10. 解构数组
+    const [jan, feb, mar, apr] = monthlySales;
+    console.log('\n========== 附加 10. 数组解构 ==========');
+    console.log('1月:', jan, '2月:', feb, '3月:', mar, '4月:', apr);
+  </script>
+</body>
+</html>

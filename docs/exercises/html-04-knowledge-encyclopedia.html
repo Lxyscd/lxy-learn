@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 知识大全 | 每一个标签 + 详细注释</title>
+
+  <!--
+    ============================================================
+    这份文件是什么？
+    ============================================================
+    这是一份"可以在浏览器里直接打开阅读、也可以当字典查"的 HTML 知识大全。
+    内容整理自：
+      1）本项目 docs/ 目录下已有的教学笔记和练习文件；
+      2）千古前端图文教程《01-HTML》系列文章（04~12 篇），
+         网站地址：https://web.qianguyihao.com
+
+    组织方式：
+      - 每一大类知识点用一个 <section> 包裹，并配一个编号标题；
+      - 每个标签举例都写在小卡片里：左边是"效果预览"，右边是"源码 + 注释"；
+      - 所有源码用 <pre><code> 展示为纯文本（不会被浏览器当成真标签解析）；
+      - 页面本身也大量使用语义化标签（header / nav / main / section / article / aside / footer），
+        既是教程，也是活的示例。
+
+    怎么读这份文件：
+      - 可以直接拖到浏览器里打开，点左侧目录跳转到对应章节；
+      - 也可以用编辑器打开源码，标签几乎每一行都配了中文注释；
+      - 建议配合 docs/01-HTML基础语法.md 一起看，那份是精简版，这份是详尽版。
+    ============================================================
+  -->
+
+  <style>
+    /* ============ 全局样式：只为了让这份"字典"读起来舒服，不是本文重点 ============ */
+    * { box-sizing: border-box; }
+
+    :root {
+      --primary: #4fc08d;      /* 主题绿色，呼应 Vue 项目配色 */
+      --primary-dark: #3aa876;
+      --text: #2c3e50;
+      --text-light: #666;
+      --border: #e6e6e6;
+      --bg-code: #282c34;
+      --bg-code-text: #abb2bf;
+      --warn: #e6a23c;
+      --danger: #f56c6c;
+    }
+
+    html { scroll-behavior: smooth; } /* 点目录锚点时平滑滚动 */
+
+    body {
+      margin: 0;
+      font-family: -apple-system, "Microsoft Yahei", "PingFang SC", sans-serif;
+      color: var(--text);
+      line-height: 1.7;
+      background: #fafafa;
+    }
+
+    /* ---- 顶部页眉：header 语义标签，放网站/文档级别的头部信息 ---- */
+    .site-header {
+      background: linear-gradient(120deg, var(--primary), #3aa8a0);
+      color: #fff;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .site-header h1 { margin: 0 0 8px; font-size: 28px; }
+    .site-header p { margin: 0; opacity: .9; font-size: 14px; }
+
+    /* ---- 页面整体布局：左侧目录 nav + 右侧正文 main ---- */
+    .layout {
+      display: flex;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 16px;
+      flex: 0 0 240px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+    }
+    .site-nav h2 { font-size: 14px; color: var(--text-light); margin: 0 0 8px; }
+    .site-nav ul { list-style: none; margin: 0; padding: 0; }
+    .site-nav li { margin: 2px 0; }
+    .site-nav a {
+      display: block;
+      padding: 6px 8px;
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .site-nav a:hover { background: #eefaf4; color: var(--primary-dark); }
+
+    main.content { flex: 1 1 auto; min-width: 0; }
+
+    /* ---- 每个大章节 section 的样式 ---- */
+    section.chapter {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      scroll-margin-top: 16px; /* 锚点跳转时留出顶部间距 */
+    }
+    section.chapter > h2 {
+      margin-top: 0;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--primary);
+      color: var(--primary-dark);
+    }
+    section.chapter h3 {
+      margin-top: 28px;
+      color: var(--text);
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+    }
+    section.chapter h4 { color: var(--text-light); margin-bottom: 6px; }
+
+    /* ---- 知识点卡片：左边效果，右边源码 ---- */
+    .demo-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin: 14px 0 22px;
+      background: #fcfcfc;
+    }
+    .demo-preview, .demo-code {
+      flex: 1 1 320px;
+      min-width: 280px;
+    }
+    .demo-preview {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      background: #fff;
+    }
+    .demo-preview .demo-label,
+    .demo-code .demo-label {
+      display: block;
+      font-size: 12px;
+      color: #fff;
+      background: var(--primary);
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .demo-code .demo-label { background: #555; }
+
+    pre {
+      margin: 0;
+      background: var(--bg-code);
+      color: var(--bg-code-text);
+      padding: 12px 14px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    code { font-family: "Fira Code", Consolas, Monaco, monospace; }
+    .demo-preview code.inline,
+    p code, li code, td code {
+      background: #f1f1f1;
+      color: #c7254e;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 90%;
+    }
+
+    /* 代码里的注释高亮（纯 CSS 视觉提示，不是真语法高亮） */
+    .cm { color: #7f848e; font-style: italic; }
+
+    table.ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 14px;
+    }
+    table.ref-table th, table.ref-table td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.ref-table th { background: #f5faf8; color: var(--primary-dark); }
+    table.ref-table tr:nth-child(even) { background: #fafafa; }
+
+    .tip, .warn, .danger {
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin: 12px 0;
+      font-size: 14px;
+    }
+    .tip { background: #eefaf4; border-left: 4px solid var(--primary); }
+    .warn { background: #fdf6ec; border-left: 4px solid var(--warn); }
+    .danger { background: #fef0f0; border-left: 4px solid var(--danger); }
+
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      padding: 1px 8px;
+      border-radius: 10px;
+      background: #eee;
+      color: #555;
+      margin-left: 6px;
+    }
+    .badge.deprecated { background: #fef0f0; color: var(--danger); }
+    .badge.h5 { background: #eefaf4; color: var(--primary-dark); }
+
+    /* 一些"效果预览"里要用到的小样式 */
+    .preview-sample .box-demo { width: 80px; height: 80px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+    .preview-sample .span-demo { background: #ffe58f; padding: 0 4px; }
+
+    footer.site-footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    @media (max-width: 860px) {
+      .layout { flex-direction: column; }
+      .site-nav { position: static; width: 100%; max-height: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============ 页眉：header 语义标签，放整个页面的标题和简介 ============ -->
+  <header class="site-header">
+    <h1>📖 HTML 知识大全（超详解版）</h1>
+    <p>覆盖排版 / 字体 / 链接 / 图片 / 列表 / 表格 / 表单 / 框架 / 多媒体 / HTML5 新特性 / DOM 与存储 API，每个标签都配中文注释</p>
+  </header>
+
+  <div class="layout">
+
+    <!-- ============ 左侧目录：nav 语义标签，专门放导航链接 ============ -->
+    <nav class="site-nav" aria-label="章节目录">
+      <h2>目录</h2>
+      <ul>
+        <li><a href="#ch-basic">0. HTML 是什么 / 基本结构</a></li>
+        <li><a href="#ch-rule">1. 标签语法规则</a></li>
+        <li><a href="#ch-layout">2. 排版标签</a></li>
+        <li><a href="#ch-font">3. 字体标签 &amp; 特殊字符</a></li>
+        <li><a href="#ch-link">4. 超链接 a</a></li>
+        <li><a href="#ch-img">5. 图片标签 img</a></li>
+        <li><a href="#ch-list">6. 列表标签 ul/ol/dl</a></li>
+        <li><a href="#ch-table">7. 表格标签 table</a></li>
+        <li><a href="#ch-frame">8. 框架标签 frame/iframe</a></li>
+        <li><a href="#ch-form">9. 表单标签 form</a></li>
+        <li><a href="#ch-semantic">10. HTML5 语义化标签</a></li>
+        <li><a href="#ch-h5form">11. HTML5 新表单类型/属性</a></li>
+        <li><a href="#ch-media">12. HTML5 多媒体 audio/video</a></li>
+        <li><a href="#ch-dom">13. HTML5 DOM 操作</a></li>
+        <li><a href="#ch-drag">14. HTML5 拖拽</a></li>
+        <li><a href="#ch-geo">15. 历史 / 地理定位 / 全屏</a></li>
+        <li><a href="#ch-storage">16. Web 存储 / 网络状态 / 离线缓存</a></li>
+        <li><a href="#ch-comment">17. 注释与转义字符总表</a></li>
+        <li><a href="#ch-summary">18. 标签速查总表</a></li>
+      </ul>
+    </nav>
+
+    <!-- ============ 正文：main 语义标签，一个页面只能有一个 main ============ -->
+    <main class="content">
+
+      <!-- ================================================================ -->
+      <!-- 0. HTML 是什么 / 基本结构                                          -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-basic">
+        <h2>0. HTML 是什么 / 页面基本结构</h2>
+
+        <p>
+          HTML（HyperText Markup Language，超文本标记语言）不是编程语言，而是<strong>标记语言</strong>，
+          用一组"标签"描述网页的内容结构。类比：网页是一栋楼，HTML 是钢筋骨架，CSS 是装修，JavaScript 是水电和电梯。
+        </p>
+
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 一个最简单、最标准的 HTML5 页面骨架 --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;!-- 上面这行：告诉浏览器"我是 HTML5 文档"。必须写在第一行，固定写法，直接背下来 --&gt;
+
+&lt;html lang="zh-CN"&gt;
+&lt;!-- html：根标签，全部内容都要放在它里面。lang 属性表示网页的语言，"zh-CN"表示简体中文 --&gt;
+
+&lt;head&gt;
+  &lt;!-- head：头部区域，放"看不见"的元信息，比如标题、字符集、外链的css/js --&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;!-- 字符编码设为 UTF-8，避免中文乱码，这是所有网页的必备第一行配置 --&gt;
+
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;!-- 移动端适配：让页面宽度等于设备宽度，初始缩放比例为1，做响应式网页必写 --&gt;
+
+  &lt;title&gt;我的第一个网页&lt;/title&gt;
+  &lt;!-- 浏览器标签页上显示的标题，也是收藏夹里显示的名字 --&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;!-- body：主体区域，放用户在页面上能"看得见"的所有内容。一个页面只能有一个 body --&gt;
+  &lt;h1&gt;你好，世界！&lt;/h1&gt;
+  &lt;p&gt;这是一个段落。&lt;/p&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">逐行含义速查表</span>
+            <table class="ref-table">
+              <thead><tr><th>代码</th><th>含义</th></tr></thead>
+              <tbody>
+                <tr><td><code class="inline">&lt;!DOCTYPE html&gt;</code></td><td>声明这是 HTML5 文档（固定写法）</td></tr>
+                <tr><td><code class="inline">&lt;html lang="zh-CN"&gt;</code></td><td>根标签，lang 表示语言</td></tr>
+                <tr><td><code class="inline">&lt;head&gt;</code></td><td>头部区域，元信息</td></tr>
+                <tr><td><code class="inline">&lt;meta charset="UTF-8"&gt;</code></td><td>字符编码，防止乱码</td></tr>
+                <tr><td><code class="inline">&lt;title&gt;</code></td><td>标签页标题</td></tr>
+                <tr><td><code class="inline">&lt;body&gt;</code></td><td>页面主体，看得见的内容</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 1. 标签语法规则                                                    -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-rule">
+        <h2>1. 标签语法规则</h2>
+
+        <h3>1.1 标签成对出现 / 自闭合标签</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 大多数标签成对出现，用 / 表示结束 --&gt;
+&lt;p&gt;内容&lt;/p&gt;
+
+&lt;!-- 部分标签没有结束标签，自己就闭合了，叫"自闭合标签"/"单标签" --&gt;
+&lt;br&gt;      &lt;!-- 换行，不需要 &lt;/br&gt; --&gt;
+&lt;hr&gt;      &lt;!-- 水平线 --&gt;
+&lt;img src="logo.png"&gt;   &lt;!-- 图片 --&gt;
+&lt;input type="text"&gt;    &lt;!-- 输入框 --&gt;
+&lt;meta charset="UTF-8"&gt; &lt;!-- 元信息 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <p>内容</p>
+            <br>
+            <hr>
+            <p>（br 换行、hr 水平线，效果看本卡片间距和分割线）</p>
+          </div>
+        </div>
+
+        <h3>1.2 标签可以嵌套，但不能交叉</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- ✅ 正确：正确嵌套，谁先开始谁后结束（先进后出，像叠盘子） --&gt;
+&lt;div&gt;
+  &lt;p&gt;段落中的&lt;span&gt;强调&lt;/span&gt;文字&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- ❌ 错误：标签交叉了，div 还没关闭 p 先关了 --&gt;
+&lt;!-- &lt;p&gt;段落中的&lt;div&gt;文字&lt;/p&gt;&lt;/div&gt; --&gt;
+&lt;!-- 浏览器会自动"纠正"交叉的标签，但写法本身是不规范的，要避免 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <div>
+              <p>段落中的<span class="span-demo">强调</span>文字</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>1.3 文本级标签 vs 容器级标签</h3>
+        <p>
+          HTML 标签按能放的内容分为两大类，这个概念非常重要，贯穿整个 HTML 学习：
+        </p>
+        <table class="ref-table">
+          <thead><tr><th>类型</th><th>举例</th><th>规则</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>文本级标签</strong></td>
+              <td><code class="inline">p</code>、<code class="inline">span</code>、<code class="inline">a</code>、<code class="inline">b</code>、<code class="inline">i</code>、<code class="inline">u</code>、<code class="inline">em</code>、<code class="inline">strong</code></td>
+              <td>里面只能放<strong>文字、图片、表单元素</strong>。例如 <code class="inline">p</code> 标签里不能放 <code class="inline">h1</code>、<code class="inline">div</code>，浏览器会自动把它们拆开或忽略嵌套关系。</td>
+            </tr>
+            <tr>
+              <td><strong>容器级标签</strong></td>
+              <td><code class="inline">div</code>、<code class="inline">h1~h6</code>、<code class="inline">li</code>、<code class="inline">dt</code>、<code class="inline">dd</code>、<code class="inline">section</code></td>
+              <td>里面可以放置任何东西，包括别的容器级标签。</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="danger">
+          <strong>常见错误：</strong>把 <code class="inline">h1</code>（容器级）塞进 <code class="inline">p</code>（文本级）里，浏览器会自动把 <code class="inline">p</code> 提前闭合，不允许包裹。
+        </div>
+
+        <h3>1.4 标签可以有属性</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 属性写在开始标签里，格式：属性名="属性值"，多个属性用空格隔开 --&gt;
+&lt;a href="https://www.meituan.com" target="_blank"&gt;点击跳转美团&lt;/a&gt;
+&lt;!--  属性1：跳转地址        属性2：新标签页打开   --&gt;
+
+&lt;img src="photo.jpg" alt="一张照片" width="200"&gt;
+&lt;!--   属性1：图片路径   属性2：替代文字   属性3：宽度 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <a href="https://www.meituan.com" target="_blank">点击跳转美团（新标签页）</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 2. 排版标签                                                       -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-layout">
+        <h2>2. 排版标签</h2>
+        <p>本章标签：<code class="inline">h1~h6</code>、<code class="inline">p</code>、<code class="inline">hr</code>、<code class="inline">br</code>、<code class="inline">div</code>、<code class="inline">span</code>、<code class="inline">center</code>（已废弃）、<code class="inline">pre</code></p>
+
+        <h3>2.1 标题标签 h1~h6</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- h：heading"标题"的缩写。h1最大、h6最小，数字越大字号越小 --&gt;
+&lt;!-- align属性（已废弃）：可选 left/center/right，现在改用 css 的 text-align --&gt;
+&lt;h1&gt;H1：一级标题（最大，一个页面建议只用一次，利于SEO）&lt;/h1&gt;
+&lt;h2&gt;H2：二级标题&lt;/h2&gt;
+&lt;h3&gt;H3：三级标题&lt;/h3&gt;
+&lt;h4&gt;H4：四级标题&lt;/h4&gt;
+&lt;h5&gt;H5：五级标题&lt;/h5&gt;
+&lt;h6&gt;H6：六级标题（最小）&lt;/h6&gt;</code></pre>
+          </div>
+          <div class="demo-preview preview-sample">
+            <span class="demo-label">效果</span>
+            <h1 style="margin:4px 0;font-size:24px;">H1：一级标题</h1>
+            <h2 style="margin:4px 0;font-size:20px;">H2：二级标题</h2>
+            <h3 style="margin:4px 0;font-size:17px;">H3：三级标题</h3>
+            <h4 style="margin:4px 0;font-size:15px;">H4：四级标题</h4>
+            <h5 style="margin:4px 0;font-size:13px;">H5：五级标题</h5>
+            <h6 style="margin:4px 0;font-size:11px;">H6：六级标题</h6>
+          </div>
+        </div>
+
+        <h3>2.2 段落标签 &lt;p&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- p：paragraph"段落"缩写。作用：把文档分割成若干段落 --&gt;
+&lt;!-- p 是"文本级标签"，里面只能放文字、图片、表单元素，不能放 div/h1 等容器级标签 --&gt;
+&lt;p&gt;This is a paragraph&lt;/p&gt;
+&lt;p&gt;This is another paragraph&lt;/p&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <p style="margin:4px 0;">This is a paragraph</p>
+            <p style="margin:4px 0;">This is another paragraph</p>
+          </div>
+        </div>
+
+        <h3>2.3 水平线标签 &lt;hr&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- hr：horizontal rule，"水平分隔线"，单标签，用于区分段落层次 --&gt;
+&lt;p&gt;自古情深留不住&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;总是套路得人心&lt;/p&gt;
+
+&lt;!-- 常见已废弃属性（现在都用 css 代替）：
+     align：line位置（left/right/center）
+     size：线条粗细（像素）
+     width：线条长度（像素或百分比）
+     color：线条颜色
+     noshade：不要阴影，平面显示 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <p style="margin:4px 0;">自古情深留不住</p>
+            <hr>
+            <p style="margin:4px 0;">总是套路得人心</p>
+          </div>
+        </div>
+
+        <h3>2.4 换行标签 &lt;br&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- br：break，强制换行。注意：不要用一堆 br 来做"段落间距"，那是css的活 --&gt;
+This &lt;br&gt; is a para&lt;br&gt;graph with line breaks</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            This <br> is a para<br>graph with line breaks
+          </div>
+        </div>
+
+        <h3>2.5 &lt;div&gt; 和 &lt;span&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- div：division"分割"，容器级标签，独占一行，是"块级"的盒子 --&gt;
+&lt;!-- span：范围/跨度，文本级标签，不换行，是"行内"的盒子 --&gt;
+&lt;!-- 二者本身在浏览器里没有任何默认样式效果，专为配合 CSS 使用（"div+css布局"） --&gt;
+
+&lt;div class="header"&gt;
+  &lt;div class="logo"&gt;&lt;/div&gt;
+  &lt;div class="nav"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+  简介简介简介简介
+  &lt;span&gt;
+    &lt;a href="#"&gt;详细信息&lt;/a&gt;
+    &lt;a href="#"&gt;购买&lt;/a&gt;
+  &lt;/span&gt;
+&lt;/p&gt;
+&lt;!-- span 里面只能放文字、图片、表单元素，不能放 p、h、ul、div 等 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview preview-sample">
+            <span class="demo-label">效果</span>
+            <div class="box-demo">div 独占一行</div>
+            <p style="margin-top:8px;">简介简介简介<span class="span-demo">span 不换行</span>继续文字</p>
+          </div>
+        </div>
+
+        <h3>2.6 内容居中标签 &lt;center&gt; <span class="badge deprecated">已废弃</span></h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- center 标签内的内容都会居中显示。HTML5 不建议使用，应改用 css：
+     text-align: center;（文字居中） 或 margin: 0 auto;（块级元素水平居中） --&gt;
+&lt;center&gt;我是居中的内容（不推荐这样写）&lt;/center&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <p style="text-align:center;">我是居中的内容（用 CSS text-align 实现的效果）</p>
+          </div>
+        </div>
+
+        <h3>2.7 预格式化标签 &lt;pre&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- pre：preformatted，保留标签内所有空白字符（空格、换行），原样输出 --&gt;
+&lt;!-- 实际排版几乎不用，但展示代码、诗歌、ASCII图等格式要求严格的文本时很有用 --&gt;
+&lt;pre&gt;
+    这是   保留了
+        缩进和换行
+    的文字
+&lt;/pre&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <pre style="background:#f5f5f5;color:#333;">
+    这是   保留了
+        缩进和换行
+    的文字
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 3. 字体标签 & 特殊字符                                             -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-font">
+        <h2>3. 字体标签 &amp; 特殊字符（转义字符）</h2>
+
+        <h3>3.1 特殊字符 / 转义字符</h3>
+        <p>
+          有些字符在 HTML 里有特殊含义（比如 <code class="inline">&lt;</code>、<code class="inline">&gt;</code>），
+          如果想把它们当普通文字显示，必须用"转义字符"（也叫 HTML 实体）代替。
+        </p>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 想把 &amp;lt;p&amp;gt; 当文字显示，不能直接写 &lt;p&gt;，要用转义字符 --&gt;
+&lt;p&gt;这是一个HTML语言的&amp;lt;p&amp;gt;标签&lt;/p&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <p>这是一个HTML语言的&lt;p&gt;标签</p>
+          </div>
+        </div>
+        <table class="ref-table">
+          <thead><tr><th>显示效果</th><th>描述</th><th>转义代码</th></tr></thead>
+          <tbody>
+            <tr><td>（空格）</td><td>不断行空格</td><td><code class="inline">&amp;nbsp;</code></td></tr>
+            <tr><td>&lt;</td><td>小于号</td><td><code class="inline">&amp;lt;</code></td></tr>
+            <tr><td>&gt;</td><td>大于号</td><td><code class="inline">&amp;gt;</code></td></tr>
+            <tr><td>&amp;</td><td>和号</td><td><code class="inline">&amp;amp;</code></td></tr>
+            <tr><td>"</td><td>双引号</td><td><code class="inline">&amp;quot;</code></td></tr>
+            <tr><td>¥</td><td>人民币</td><td><code class="inline">&amp;yen;</code></td></tr>
+            <tr><td>©</td><td>版权</td><td><code class="inline">&amp;copy;</code></td></tr>
+            <tr><td>®</td><td>注册商标</td><td><code class="inline">&amp;reg;</code></td></tr>
+            <tr><td>™</td><td>商标</td><td><code class="inline">&amp;trade;</code></td></tr>
+            <tr><td>°</td><td>摄氏度</td><td><code class="inline">&amp;deg;</code></td></tr>
+            <tr><td>±</td><td>正负号</td><td><code class="inline">&amp;plusmn;</code></td></tr>
+            <tr><td>×</td><td>乘号</td><td><code class="inline">&amp;times;</code></td></tr>
+            <tr><td>÷</td><td>除号</td><td><code class="inline">&amp;divide;</code></td></tr>
+            <tr><td>²</td><td>平方（上标2）</td><td><code class="inline">&amp;sup2;</code></td></tr>
+            <tr><td>³</td><td>立方（上标3）</td><td><code class="inline">&amp;sup3;</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>3.2 下划线 / 删除线 / 斜体</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;u&gt;下划线标记&lt;/u&gt;
+&lt;s&gt;中划线（删除线）标记&lt;/s&gt;
+&lt;del&gt;同样表示删除线，语义是"被删除的内容"&lt;/del&gt;
+&lt;i&gt;斜体标记，纯样式&lt;/i&gt;
+&lt;em&gt;斜体标记，语义是"强调"&lt;/em&gt;
+&lt;!-- 小知识：很多网站图标（比如京东箭头图标）用的就是 &lt;i&gt; 标签配合字体图标库实现 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <u>下划线标记</u>　
+            <s>中划线（删除线）</s>　
+            <del>del删除线</del>　
+            <i>斜体i</i>　
+            <em>斜体强调em</em>
+          </div>
+        </div>
+
+        <h3>3.3 粗体标签 &lt;b&gt; / &lt;strong&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;b&gt;b标签：纯样式加粗，无语义&lt;/b&gt;
+&lt;strong&gt;strong标签：加粗 + 语义"重要"，更推荐使用&lt;/strong&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <b>b标签加粗</b>　<strong>strong标签加粗（有语义）</strong>
+          </div>
+        </div>
+
+        <h3>3.4 字体标签 &lt;font&gt; <span class="badge deprecated">已废弃</span></h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- font 已废弃，仅作了解，现在都用 css 的 color/font-size/font-family --&gt;
+&lt;!-- color：颜色，可写单词/十六进制/rgb --&gt;
+&lt;!-- size：字号，取值 1~7 --&gt;
+&lt;!-- face：字体名称 --&gt;
+&lt;font face="微软雅黑" color="#FF0000" size="5"&gt;vae（已废弃写法）&lt;/font&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <span style="font-family:'Microsoft Yahei';color:#FF0000;font-size:22px;">vae（用 CSS 模拟效果）</span>
+          </div>
+        </div>
+
+        <h3>3.5 上标 &lt;sup&gt; / 下标 &lt;sub&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 记忆技巧：sub 的 b 是 bottom"底部"的意思，所以 sub 是下标 --&gt;
+O&lt;sup&gt;2&lt;/sup&gt;（表示 O 的平方，如 O²）
+5&lt;sub&gt;3&lt;/sub&gt;（表示 5 的下标 3，如化学式）</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            O<sup>2</sup>　　5<sub>3</sub>
+          </div>
+        </div>
+
+        <h3>3.6 mark 高亮 / code 代码</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;mark&gt;高亮文字（HTML5新增，黄色背景）&lt;/mark&gt;
+&lt;code&gt;console.log('这是代码片段')&lt;/code&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <mark>高亮文字</mark>　<code class="inline">console.log('代码片段')</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 4. 超链接                                                         -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-link">
+        <h2>4. 超链接 &lt;a&gt;</h2>
+        <p>
+          <code class="inline">a</code> 是英文 <code class="inline">anchor</code>（锚）的意思，是一个<strong>文本级标签</strong>。
+          <code class="inline">href</code>（hypertext reference，超文本地址）是它最核心的属性。
+        </p>
+
+        <h3>4.1 外部链接：链接到别的页面/网站</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;a href="02页面.html"&gt;点击进入另外一个文件&lt;/a&gt;
+&lt;a href="http://www.baidu.com" target="_blank"&gt;点我跳转百度（新标签页）&lt;/a&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <a href="https://www.baidu.com" target="_blank">点我跳转百度</a>
+          </div>
+        </div>
+
+        <h3>4.2 锚链接：跳转到页面内的某个位置</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 第一步：用 id（推荐）或 name 给目标位置起个名字，作为"锚点" --&gt;
+&lt;h2 id="top-anchor"&gt;顶部&lt;/h2&gt;
+
+&lt;!-- 第二步：href 前面加 # + 锚点名，点击后跳到该位置 --&gt;
+&lt;a href="#top-anchor"&gt;回到顶部&lt;/a&gt;
+
+&lt;!-- 如果要跳转到"其他页面"里的某个锚点，写法是： --&gt;
+&lt;a href="a.html#top-anchor"&gt;跳到a.html页面的顶部锚点&lt;/a&gt;
+&lt;!-- 注意：# 号不能丢，丢了就变成跳到名为 top-anchor 的文件/文件夹了 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <a href="#ch-link">点击跳到本章开头（本页锚点跳转示例）</a>
+          </div>
+        </div>
+
+        <h3>4.3 邮件链接</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;a href="mailto:xxx@163.com"&gt;点击进入我的邮箱&lt;/a&gt;
+&lt;!-- 效果：点击后会弹出系统默认邮件客户端（如 Outlook），实际项目中用得不多 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <a href="mailto:test@example.com">点击发邮件</a>
+          </div>
+        </div>
+
+        <h3>4.4 超链接常用属性</h3>
+        <table class="ref-table">
+          <thead><tr><th>属性</th><th>含义</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">href</code></td><td>目标 URL（hypertext reference）</td></tr>
+            <tr><td><code class="inline">title</code></td><td>悬停提示文本，鼠标停留时出现</td></tr>
+            <tr><td><code class="inline">name</code>（旧） / <code class="inline">id</code>（新）</td><td>给锚点起名字</td></tr>
+            <tr><td><code class="inline">target="_self"</code></td><td>默认值，在当前标签页打开</td></tr>
+            <tr><td><code class="inline">target="_blank"</code></td><td>在新标签页打开</td></tr>
+            <tr><td><code class="inline">target="_parent"</code></td><td>在父级窗口打开（配合 frame 使用）</td></tr>
+            <tr><td><code class="inline">target="_top"</code></td><td>在最顶层窗口打开</td></tr>
+          </tbody>
+        </table>
+
+        <div class="tip">
+          <strong>使用规范：</strong>a 标签的语义"小于" p，正确写法是 <code class="inline">&lt;p&gt;&lt;a&gt;文字&lt;/a&gt;&lt;/p&gt;</code>，
+          而不是用 a 包裹 p。同理，a 标签里不能再放 a 或 input。
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 5. 图片标签                                                       -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-img">
+        <h2>5. 图片标签 &lt;img&gt;</h2>
+        <p>img 是单标签，能插入 jpg/jpeg、png、gif、bmp、webp 等格式，不能直接插入 psd、ai 等设计源文件格式。</p>
+
+        <h3>5.1 图片路径：相对路径 vs 绝对路径</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 相对路径：相对"当前页面"所在文件夹去找 --&gt;
+&lt;img src="2.jpg"&gt;         &lt;!-- 当前目录下的图片 --&gt;
+&lt;img src="./2.jpg"&gt;       &lt;!-- 同上，./ 可省略 --&gt;
+&lt;img src="../2.jpg"&gt;      &lt;!-- 上一级目录的图片 --&gt;
+&lt;img src="images/1.jpg"&gt;  &lt;!-- 当前目录下 images 文件夹里的图片 --&gt;
+
+&lt;!-- 绝对路径写法一：本地磁盘路径（几乎不用，仅本机能访问）--&gt;
+&lt;img src="C:\Users\xxx\Desktop\1.jpg"&gt;
+
+&lt;!-- 绝对路径写法二：网络地址，以 http:// 或 https:// 开头（最常用）--&gt;
+&lt;img src="https://web.qianguyihao.com/img/logo.png"&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">路径面试题</span>
+            <p>已知目录结构：<code class="inline">document/work/myweb/index.html</code> 和 <code class="inline">document/photo/1.png</code>，
+            在 index.html 中插入 1.png 该怎么写？</p>
+            <p>答案：<code class="inline">&lt;img src="../../photo/1.png"&gt;</code>（先从 myweb 回退两级到 document，再进入 photo）</p>
+          </div>
+        </div>
+
+        <h3>5.2 img 的常用属性</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;img
+  src="https://via.placeholder.com/160x90/4fc08d/ffffff?text=Demo"
+  alt="占位图"          &lt;!-- 图片加载失败时显示的替代文字，也利于SEO和无障碍访问 --&gt;
+  title="鼠标悬停提示"   &lt;!-- 鼠标悬停时出现的提示文本 --&gt;
+  width="160"           &lt;!-- 宽度。只设置宽或高其中一个，可实现等比例缩放 --&gt;
+  height="90"            &lt;!-- 高度 --&gt;
+&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <img src="https://via.placeholder.com/160x90/4fc08d/ffffff?text=Demo" alt="占位图" title="鼠标悬停试试" width="160" height="90">
+          </div>
+        </div>
+
+        <table class="ref-table">
+          <thead><tr><th>属性</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">src</code></td><td>source，图片路径，必填</td></tr>
+            <tr><td><code class="inline">alt</code></td><td>alternate替代，图片无法显示时的文字</td></tr>
+            <tr><td><code class="inline">title</code></td><td>鼠标悬停提示文本</td></tr>
+            <tr><td><code class="inline">width</code> / <code class="inline">height</code></td><td>宽高，只设置一个可等比缩放</td></tr>
+            <tr><td><code class="inline">align</code> <span class="badge deprecated">已废弃</span></td><td>图片和文字的相对位置，现在用 CSS float / vertical-align 代替</td></tr>
+            <tr><td><code class="inline">border</code> <span class="badge deprecated">已废弃</span></td><td>图片边框，现在用 CSS border 代替</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 6. 列表标签                                                       -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-list">
+        <h2>6. 列表标签 ul / ol / dl</h2>
+
+        <h3>6.1 无序列表 &lt;ul&gt;（unordered list）</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- ul：unordered list "无序列表"。li：list item "列表项" --&gt;
+&lt;!-- 重要规则：ul 的儿子只能是 li；反过来 li 可以放任何东西，包括再嵌套一个 ul --&gt;
+&lt;ul&gt;
+  &lt;li&gt;苹果&lt;/li&gt;
+  &lt;li&gt;香蕉&lt;/li&gt;
+  &lt;li&gt;橘子&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- 列表可以嵌套，常用来做省市区多级结构 --&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;b&gt;北京市&lt;/b&gt;
+    &lt;ul&gt;
+      &lt;li&gt;海淀区&lt;/li&gt;
+      &lt;li&gt;朝阳区&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- type 属性（现在多用css的list-style-type）：disc实心圆点(默认)、square实心方点、circle空心圆 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <ul>
+              <li>苹果</li>
+              <li>香蕉</li>
+              <li><b>北京市</b>
+                <ul>
+                  <li>海淀区</li>
+                  <li>朝阳区</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>6.2 有序列表 &lt;ol&gt;（ordered list）</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- ol：Ordered List，和 ul 用法完全一样，只是语义变成"有顺序" --&gt;
+&lt;!-- type 属性值：1(阿拉伯数字,默认)、a、A、i、I；配合 start 属性可指定起始值 --&gt;
+&lt;ol type="1"&gt;
+  &lt;li&gt;第一步：打开浏览器&lt;/li&gt;
+  &lt;li&gt;第二步：输入网址&lt;/li&gt;
+  &lt;li&gt;第三步：回车&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ol type="a" start="3"&gt;
+  &lt;li&gt;从字母 c 开始&lt;/li&gt;
+  &lt;li&gt;继续 d&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <ol>
+              <li>第一步：打开浏览器</li>
+              <li>第二步：输入网址</li>
+              <li>第三步：回车</li>
+            </ol>
+            <ol type="a" start="3">
+              <li>从字母 c 开始</li>
+              <li>继续 d</li>
+            </ol>
+          </div>
+        </div>
+
+        <h3>6.3 定义列表 &lt;dl&gt;（definition list）</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- dl 的子元素只能是 dt 和 dd，语义是"一个术语 + 若干条描述" --&gt;
+&lt;!-- dt: definition title 标题；dd: definition description 描述项 --&gt;
+&lt;!-- 常见真实案例：京东网站底部的"购物指南/配送方式"分类就是用 dl 实现的 --&gt;
+&lt;dl&gt;
+  &lt;dt&gt;北京&lt;/dt&gt;
+  &lt;dd&gt;国家首都，政治文化中心&lt;/dd&gt;
+  &lt;dd&gt;人口密集，交通发达&lt;/dd&gt;
+
+  &lt;dt&gt;上海&lt;/dt&gt;
+  &lt;dd&gt;魔都，有外滩、东方明珠塔&lt;/dd&gt;
+&lt;/dl&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <dl>
+              <dt>北京</dt>
+              <dd>国家首都，政治文化中心</dd>
+              <dd>人口密集，交通发达</dd>
+              <dt>上海</dt>
+              <dd>魔都，有外滩、东方明珠塔</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 7. 表格标签                                                       -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-table">
+        <h2>7. 表格标签 &lt;table&gt;</h2>
+        <p>
+          记住一句话：<strong>表格是由"行"组成的，行是由"列（单元格）"组成的</strong>，而不是"行和列直接组成表格"。
+        </p>
+
+        <h3>7.1 基本结构：table / thead / tbody / tr / th / td</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;table border="1" cellpadding="8" cellspacing="0"&gt;
+  &lt;!-- caption：表格标题，要和 thead/tbody 并列写 --&gt;
+  &lt;caption&gt;门店销售数据&lt;/caption&gt;
+
+  &lt;thead&gt;
+    &lt;!-- thead：表头区域 --&gt;
+    &lt;tr&gt;
+      &lt;!-- tr：table row 一行 --&gt;
+      &lt;th&gt;门店名称&lt;/th&gt;  &lt;!-- th：表头单元格，默认加粗居中，相当于 td+b --&gt;
+      &lt;th&gt;城市&lt;/th&gt;
+      &lt;th&gt;月销售额&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+
+  &lt;tbody&gt;
+    &lt;!-- tbody：表体区域，放真正的数据行 --&gt;
+    &lt;tr&gt;
+      &lt;td&gt;小象超市·朝阳店&lt;/td&gt;  &lt;!-- td：table data 普通单元格 --&gt;
+      &lt;td&gt;北京&lt;/td&gt;
+      &lt;td&gt;¥12,000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;小象超市·浦东店&lt;/td&gt;
+      &lt;td&gt;上海&lt;/td&gt;
+      &lt;td&gt;¥15,000&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;!-- 备注：写了 thead/tbody/tfoot 后，浏览器渲染顺序固定按 thead→tbody→tfoot，
+     和源码书写顺序无关；数据量大时还能边获取边显示，提升体验 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;">
+              <caption>门店销售数据</caption>
+              <thead>
+                <tr><th>门店名称</th><th>城市</th><th>月销售额</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>小象超市·朝阳店</td><td>北京</td><td>¥12,000</td></tr>
+                <tr><td>小象超市·浦东店</td><td>上海</td><td>¥15,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3>7.2 单元格合并：colspan / rowspan</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- colspan：横向合并，占据几个列的位置 --&gt;
+&lt;!-- rowspan：纵向合并，占据几个行的位置 --&gt;
+&lt;table border="1" style="border-collapse:collapse;"&gt;
+  &lt;tr&gt;
+    &lt;td colspan="2"&gt;横向合并了2列&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td rowspan="2"&gt;纵向合并2行&lt;/td&gt;
+    &lt;td&gt;普通格&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;普通格&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <table border="1" style="border-collapse:collapse;width:100%;text-align:center;">
+              <tr><td colspan="2">横向合并了2列</td></tr>
+              <tr><td rowspan="2">纵向合并2行</td><td>普通格</td></tr>
+              <tr><td>普通格</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <h3>7.3 table 常用属性总表</h3>
+        <table class="ref-table">
+          <thead><tr><th>标签/属性</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">border</code></td><td>表格边框粗细（像素）</td></tr>
+            <tr><td><code class="inline">cellpadding</code></td><td>单元格内容到边框的距离</td></tr>
+            <tr><td><code class="inline">cellspacing</code></td><td>单元格之间的间距</td></tr>
+            <tr><td><code class="inline">style="border-collapse:collapse;"</code></td><td>合并表格与单元格的边框线，做"细线表格"必备</td></tr>
+            <tr><td><code class="inline">&lt;th&gt;</code></td><td>表头单元格，默认加粗居中</td></tr>
+            <tr><td><code class="inline">&lt;caption&gt;</code></td><td>表格标题</td></tr>
+            <tr><td><code class="inline">&lt;thead&gt;/&lt;tbody&gt;/&lt;tfoot&gt;</code></td><td>表头/表体/表尾分组，与源码顺序无关，按语义顺序渲染</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 8. 框架标签                                                       -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-frame">
+        <h2>8. 框架标签 frame / iframe</h2>
+        <div class="warn">
+          <strong>提示：</strong><code class="inline">&lt;frameset&gt;</code>、<code class="inline">&lt;frame&gt;</code> 已从 Web 标准中删除，
+          现代开发只用 <code class="inline">&lt;iframe&gt;</code>（内嵌框架）。这里保留讲解，方便理解老代码和面试题。
+        </div>
+
+        <h3>8.1 frameset / frame <span class="badge deprecated">已废弃</span></h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码（仅供了解）</span>
+            <pre><code>&lt;!-- frameset 不能和 body 共存，一个页面里只能有一个 --&gt;
+&lt;!-- rows：水平分割成上下几块；cols：垂直分割成左右几块 --&gt;
+&lt;frameset rows="200,*"&gt;
+  &lt;frame src="top.html" noresize&gt;
+  &lt;frame src="bottom.html"&gt;
+&lt;/frameset&gt;
+&lt;!-- noresize：禁止拖动改变框架大小
+     scrolling="no"：不显示滚动条
+     name：给框架起名字，方便超链接的 target 属性定向打开 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">说明</span>
+            <p>frameset 会把一个浏览器窗口拆成多个独立的"小窗口"，每个小窗口各自加载一个页面，现代网站几乎不用。</p>
+          </div>
+        </div>
+
+        <h3>8.2 内嵌框架 &lt;iframe&gt;（现代常用）</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- iframe 是 body 的子标签，可以在一个页面里嵌入另一个页面 --&gt;
+&lt;iframe
+  src="https://www.example.com"
+  width="100%"
+  height="200"
+  scrolling="auto"
+  name="myFrame"
+&gt;
+&lt;/iframe&gt;
+
+&lt;!-- 结合 a 标签的 target 属性，可以在 iframe 里切换显示不同页面： --&gt;
+&lt;a href="page1.html" target="myFrame"&gt;显示页面1&lt;/a&gt;
+&lt;a href="page2.html" target="myFrame"&gt;显示页面2&lt;/a&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <iframe src="https://web.qianguyihao.com" width="100%" height="180" title="千古前端教程内嵌预览"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 9. 表单标签                                                       -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-form">
+        <h2>9. 表单标签 &lt;form&gt;（重点！）</h2>
+        <p>表单是收集用户输入的界面，前端最常打交道的元素之一。</p>
+
+        <h3>9.1 form 的属性</h3>
+        <table class="ref-table">
+          <thead><tr><th>属性</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">action</code></td><td>表单提交的目标地址，如 <code class="inline">action="/api/submit"</code></td></tr>
+            <tr><td><code class="inline">method</code></td><td>提交方式：<code class="inline">get</code>（默认，拼在URL后面，不安全、有长度限制）或 <code class="inline">post</code>（放在请求体里，可传大量数据）</td></tr>
+            <tr><td><code class="inline">name</code> / <code class="inline">id</code></td><td>供 JS 操作表单时使用</td></tr>
+            <tr><td><code class="inline">enctype</code></td><td>编码方式，上传文件时必须写 <code class="inline">multipart/form-data</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>9.2 input 输入框：type 属性详解</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;form action="/api/submit" method="POST"&gt;
+
+  &lt;!-- 文本输入（默认类型） --&gt;
+  &lt;label for="username"&gt;用户名&lt;/label&gt;
+  &lt;input type="text" id="username" name="username" placeholder="请输入用户名"&gt;
+
+  &lt;!-- 密码输入：内容会被 ●●● 遮挡 --&gt;
+  &lt;label for="password"&gt;密码&lt;/label&gt;
+  &lt;input type="password" id="password" name="password"&gt;
+
+  &lt;!-- 单选按钮：name 属性值相同的按钮才会互斥（同组只能选一个）--&gt;
+  &lt;label&gt;性别&lt;/label&gt;
+  &lt;input type="radio" name="gender" value="male" checked&gt; 男
+  &lt;input type="radio" name="gender" value="female"&gt; 女
+
+  &lt;!-- 多选框：可以同时选中多个 --&gt;
+  &lt;label&gt;爱好&lt;/label&gt;
+  &lt;input type="checkbox" name="hobby" value="reading"&gt; 阅读
+  &lt;input type="checkbox" name="hobby" value="music"&gt; 音乐
+
+  &lt;!-- 文件选择 --&gt;
+  &lt;input type="file"&gt;
+
+  &lt;!-- 隐藏域：用户看不见，用来提交隐藏数据（比如用户ID）--&gt;
+  &lt;input type="hidden" name="userId" value="10086"&gt;
+
+  &lt;!-- 四种按钮 --&gt;
+  &lt;input type="button" value="普通按钮"&gt;   &lt;!-- 需配合JS使用，本身无功能 --&gt;
+  &lt;input type="submit" value="提交按钮"&gt;   &lt;!-- 点击后提交整个表单 --&gt;
+  &lt;input type="reset" value="重置按钮"&gt;    &lt;!-- 点击后清空并还原默认值 --&gt;
+  &lt;input type="image" src="btn.png"&gt;      &lt;!-- 图片按钮，效果同提交按钮 --&gt;
+
+&lt;/form&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <form onsubmit="return false;">
+              <label for="demo-username">用户名</label><br>
+              <input type="text" id="demo-username" placeholder="请输入用户名"><br><br>
+              <label for="demo-pwd">密码</label><br>
+              <input type="password" id="demo-pwd"><br><br>
+              性别：
+              <label><input type="radio" name="demo-gender" checked> 男</label>
+              <label><input type="radio" name="demo-gender"> 女</label><br><br>
+              爱好：
+              <label><input type="checkbox"> 阅读</label>
+              <label><input type="checkbox"> 音乐</label><br><br>
+              <input type="button" value="普通按钮">
+              <input type="submit" value="提交按钮">
+              <input type="reset" value="重置按钮">
+            </form>
+          </div>
+        </div>
+
+        <table class="ref-table">
+          <thead><tr><th>type 值</th><th>效果</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">text</code></td><td>文本框（默认）</td><td>普通文字输入</td></tr>
+            <tr><td><code class="inline">password</code></td><td>密码框</td><td>输入内容被遮挡</td></tr>
+            <tr><td><code class="inline">radio</code></td><td>单选按钮</td><td>name相同的一组里只能选一个</td></tr>
+            <tr><td><code class="inline">checkbox</code></td><td>多选框</td><td>可多选</td></tr>
+            <tr><td><code class="inline">file</code></td><td>文件选择框</td><td>上传文件</td></tr>
+            <tr><td><code class="inline">hidden</code></td><td>隐藏域</td><td>提交不可见数据</td></tr>
+            <tr><td><code class="inline">button</code></td><td>普通按钮</td><td>配合JS使用</td></tr>
+            <tr><td><code class="inline">submit</code></td><td>提交按钮</td><td>提交表单</td></tr>
+            <tr><td><code class="inline">reset</code></td><td>重置按钮</td><td>清空表单</td></tr>
+            <tr><td><code class="inline">image</code></td><td>图片按钮</td><td>同submit，可用图片</td></tr>
+          </tbody>
+        </table>
+
+        <div class="tip">
+          <strong>input 常用属性：</strong>
+          <code class="inline">value</code>（默认值）、
+          <code class="inline">size</code>（显示宽度，单位是字符数不是像素）、
+          <code class="inline">readonly</code>（只读但仍可被表单提交）、
+          <code class="inline">disabled</code>（禁用且不会被提交）、
+          <code class="inline">checked</code>（单选/多选默认选中）、
+          <code class="inline">placeholder</code>（输入前的提示占位文字）。
+        </div>
+
+        <h3>9.3 select 下拉列表</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- select 和 option 是组标签，select 是"选择"，option 是"选项" --&gt;
+&lt;label for="city"&gt;城市&lt;/label&gt;
+&lt;select id="city" name="city"&gt;
+  &lt;option value=""&gt;请选择&lt;/option&gt;
+  &lt;option value="beijing" selected&gt;北京&lt;/option&gt;  &lt;!-- selected：默认选中 --&gt;
+  &lt;option value="shanghai"&gt;上海&lt;/option&gt;
+&lt;/select&gt;
+
+&lt;!-- multiple 属性：允许多选（一般配合 css 展示多行）--&gt;
+&lt;select multiple&gt;
+  &lt;option&gt;选项A&lt;/option&gt;
+  &lt;option&gt;选项B&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <select>
+              <option value="">请选择</option>
+              <option value="beijing" selected>北京</option>
+              <option value="shanghai">上海</option>
+            </select>
+          </div>
+        </div>
+
+        <h3>9.4 textarea 多行文本</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- rows：可见行数；cols：可见列宽（字符数）--&gt;
+&lt;label for="remark"&gt;备注&lt;/label&gt;
+&lt;textarea id="remark" name="remark" rows="3" placeholder="补充说明..."&gt;&lt;/textarea&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <textarea rows="3" placeholder="补充说明..." style="width:100%;"></textarea>
+          </div>
+        </div>
+
+        <h3>9.5 label 的作用</h3>
+        <div class="tip">
+          <code class="inline">&lt;label for="id值"&gt;</code> 关联对应 <code class="inline">id</code> 的 input，
+          点击文字标签也能让对应输入框获得焦点（比如点"男"字也能选中单选框），提升可用性和点击区域。
+        </div>
+
+        <h3>9.6 表单和表格的搭配</h3>
+        <div class="tip">
+          实际项目中常见"表单 + 表格"布局：<code class="inline">&lt;form&gt;</code> 标签里嵌套 <code class="inline">&lt;table&gt;</code> 标签来对齐排版（老写法），
+          现代开发推荐用 CSS Flex/Grid 布局代替表格排版表单。
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 10. HTML5 语义化标签                                              -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-semantic">
+        <h2>10. HTML5 语义化标签 <span class="badge h5">HTML5</span></h2>
+        <p>
+          语义化标签让代码更有意义，便于开发者阅读，也便于浏览器/搜索引擎/屏幕阅读器理解内容结构。
+          <strong>本质上新语义标签和 div 没有渲染上的区别，只是自带了"意义"。能用语义词就不用 div。</strong>
+        </p>
+
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">对比：传统 div 布局 vs HTML5 语义化布局</span>
+            <pre><code>&lt;!-- ❌ 传统写法：全是 div，靠 class 起名字表达语义，机器读不出意义 --&gt;
+&lt;div class="header"&gt;
+  &lt;div class="nav"&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="main"&gt;
+  &lt;div class="article"&gt;&lt;/div&gt;
+  &lt;div class="aside"&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="footer"&gt;&lt;/div&gt;
+
+&lt;!-- ✅ HTML5 写法：标签名本身自带语义，通用性更好 --&gt;
+&lt;header&gt;
+  &lt;nav&gt;&lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;&lt;/article&gt;
+  &lt;aside&gt;&lt;/aside&gt;
+&lt;/main&gt;
+&lt;footer&gt;&lt;/footer&gt;</code></pre>
+          </div>
+        </div>
+
+        <table class="ref-table">
+          <thead><tr><th>标签</th><th>语义</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">&lt;header&gt;</code></td><td>页面或区块的头部（Logo、导航、标题区）</td></tr>
+            <tr><td><code class="inline">&lt;nav&gt;</code></td><td>导航链接区域</td></tr>
+            <tr><td><code class="inline">&lt;main&gt;</code></td><td>页面主要内容，一个页面只能有一个</td></tr>
+            <tr><td><code class="inline">&lt;section&gt;</code></td><td>文档中的一个区块/章节</td></tr>
+            <tr><td><code class="inline">&lt;article&gt;</code></td><td>独立完整的内容，如文章、评论、卡片、帖子</td></tr>
+            <tr><td><code class="inline">&lt;aside&gt;</code></td><td>侧边栏，辅助/相关信息</td></tr>
+            <tr><td><code class="inline">&lt;footer&gt;</code></td><td>页面或区块的底部</td></tr>
+            <tr><td><code class="inline">&lt;figure&gt;</code> + <code class="inline">&lt;figcaption&gt;</code></td><td>媒体内容分组（图片/视频）+ 说明文字</td></tr>
+            <tr><td><code class="inline">&lt;mark&gt;</code></td><td>标记/高亮文字</td></tr>
+            <tr><td><code class="inline">&lt;time&gt;</code></td><td>日期时间</td></tr>
+            <tr><td><code class="inline">&lt;progress&gt;</code></td><td>任务进度条</td></tr>
+          </tbody>
+        </table>
+
+        <h3>10.1 本项目里的真实例子</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码（摘自 html-01-store-card.html）</span>
+            <pre><code>&lt;article class="store-card"&gt;
+  &lt;header&gt;
+    &lt;h1&gt;小象超市·朝阳店&lt;/h1&gt;
+  &lt;/header&gt;
+  &lt;main&gt;
+    &lt;section&gt;
+      &lt;img src="..." alt="门店照片"&gt;
+      &lt;p&gt;&lt;strong&gt;地址：&lt;/strong&gt;北京市朝阳区建国路88号&lt;/p&gt;
+      &lt;p&gt;&lt;strong&gt;营业状态：&lt;/strong&gt;&lt;strong style="color: green;"&gt;营业中&lt;/strong&gt;&lt;/p&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+  &lt;footer&gt;
+    &lt;p&gt;联系电话：010-12345678&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/article&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">说明</span>
+            <p>这就是一张门店信息卡片，用 <code class="inline">article</code> 表示"一条独立完整的信息"，
+            内部用 <code class="inline">header/main/footer</code> 划分头部、内容、底部。</p>
+          </div>
+        </div>
+
+        <h3>10.2 老浏览器兼容性处理</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- IE8及以下不认识H5新标签，会当成行内元素处理。解决方案是引入 html5shiv.js --&gt;
+&lt;!-- 下面这是"条件注释"：普通浏览器把它当注释忽略，但IE浏览器能识别执行 --&gt;
+&lt;!--[if lte IE 8]&gt;
+  &lt;script src="html5shiv.min.js"&gt;&lt;/script&gt;
+&lt;![endif]--&gt;
+&lt;!-- lte = less than or equal，"小于等于" --&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 11. HTML5 新表单类型/属性                                          -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-h5form">
+        <h2>11. HTML5 新增表单类型 &amp; 属性 <span class="badge h5">HTML5</span></h2>
+
+        <h3>11.1 新增 input 类型</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;input type="email" required&gt;   &lt;!-- 邮箱，自带格式校验 --&gt;
+&lt;input type="tel"&gt;               &lt;!-- 电话号码 --&gt;
+&lt;input type="url"&gt;               &lt;!-- 网址，自带格式校验 --&gt;
+&lt;input type="number" step="1"&gt;   &lt;!-- 只能输入数字，step控制步进 --&gt;
+&lt;input type="search"&gt;            &lt;!-- 搜索框 --&gt;
+&lt;input type="range" min="0" max="100"&gt; &lt;!-- 滑动条 --&gt;
+&lt;input type="color"&gt;             &lt;!-- 拾色器 --&gt;
+&lt;input type="date"&gt;              &lt;!-- 日期选择器 --&gt;
+&lt;input type="time"&gt;              &lt;!-- 时间选择器 --&gt;
+&lt;input type="month"&gt;             &lt;!-- 月份选择器 --&gt;
+&lt;input type="week"&gt;              &lt;!-- 星期选择器 --&gt;
+&lt;input type="datetime-local"&gt;    &lt;!-- 本地日期+时间 --&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <p>邮箱：<input type="email"></p>
+            <p>颜色：<input type="color"></p>
+            <p>数字：<input type="number" step="1"></p>
+            <p>滑动条：<input type="range" min="0" max="100"></p>
+            <p>日期：<input type="date"></p>
+          </div>
+        </div>
+
+        <h3>11.2 表单相关新标签：fieldset / legend / datalist / meter / progress</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;form&gt;
+  &lt;fieldset&gt;
+    &lt;!-- fieldset：把表单内容打包分组；legend：给这组内容定义标题 --&gt;
+    &lt;legend&gt;基本信息&lt;/legend&gt;
+
+    &lt;!-- datalist：配合 input 的 list 属性，实现"自动补全提示" --&gt;
+    &lt;input type="text" list="myData"&gt;
+    &lt;datalist id="myData"&gt;
+      &lt;option&gt;本科&lt;/option&gt;
+      &lt;option&gt;研究生&lt;/option&gt;
+    &lt;/datalist&gt;
+  &lt;/fieldset&gt;
+&lt;/form&gt;
+
+&lt;!-- meter：度量器，比如显示磁盘使用率、考试分数等区间值 --&gt;
+&lt;meter value="81" min="0" max="100" low="60" high="80"&gt;&lt;/meter&gt;
+
+&lt;!-- progress：进度条，比如文件上传进度 --&gt;
+&lt;progress value="70" max="100"&gt;&lt;/progress&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <fieldset>
+              <legend>基本信息</legend>
+              <input type="text" list="myDataDemo" placeholder="试试输入或选择">
+              <datalist id="myDataDemo">
+                <option>本科</option>
+                <option>研究生</option>
+              </datalist>
+            </fieldset>
+            <p>meter 度量器：<meter value="81" min="0" max="100" low="60" high="80"></meter></p>
+            <p>progress 进度条：<progress value="70" max="100"></progress></p>
+          </div>
+        </div>
+
+        <h3>11.3 表单新增属性</h3>
+        <table class="ref-table">
+          <thead><tr><th>属性</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">placeholder</code></td><td>输入框占位提示文字</td></tr>
+            <tr><td><code class="inline">autofocus</code></td><td>页面加载后自动获取焦点</td></tr>
+            <tr><td><code class="inline">multiple</code></td><td>文件框可多选，或邮箱框可填多个</td></tr>
+            <tr><td><code class="inline">autocomplete</code></td><td>浏览器自动填充历史输入，on/off</td></tr>
+            <tr><td><code class="inline">required</code></td><td>必填项，不填不能提交</td></tr>
+            <tr><td><code class="inline">pattern</code></td><td>自定义正则表达式校验，如手机号 <code class="inline">pattern="1\d{10}"</code></td></tr>
+            <tr><td><code class="inline">novalidate</code></td><td>关闭表单默认校验（写在 form 上）</td></tr>
+          </tbody>
+        </table>
+
+        <h3>11.4 表单事件：oninput / oninvalid</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;input type="email" id="txt1"&gt;
+&lt;script&gt;
+  var txt1 = document.getElementById('txt1');
+
+  // oninput：用户每次输入内容时触发，常用于实时统计字数
+  txt1.oninput = function () {
+    console.log('用户输入了：', this.value);
+  };
+
+  // oninvalid：表单校验不通过时触发，可自定义提示文案
+  txt1.oninvalid = function () {
+    this.setCustomValidity('亲，请输入正确的邮箱格式哦');
+  };
+&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 12. HTML5 多媒体                                                  -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-media">
+        <h2>12. HTML5 多媒体 audio / video <span class="badge h5">HTML5</span></h2>
+        <p>在 HTML5 之前播放音视频要靠 Flash 插件，HTML5 直接原生支持，移动端也能用。</p>
+
+        <h3>12.1 音频 &lt;audio&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 推荐的多格式兼容写法：浏览器会依次尝试，直到找到能播放的格式 --&gt;
+&lt;audio controls loop&gt;
+  &lt;source src="music/yinyue.mp3"&gt;
+  &lt;source src="music/yinyue.ogg"&gt;
+  &lt;source src="music/yinyue.wav"&gt;
+  抱歉，你的浏览器暂不支持此音频格式
+&lt;/audio&gt;
+
+&lt;!-- 常用属性：
+     autoplay：自动播放
+     controls：显示播放控制条（强烈建议加上，否则用户看不到播放按钮）
+     loop：循环播放
+     preload：预加载（和 autoplay 同时设置时会失效）--&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">说明</span>
+            <p>由于示例环境没有真实音频文件，此处仅展示语法结构，实际使用时把 <code class="inline">src</code> 换成真实音频地址即可。</p>
+          </div>
+        </div>
+
+        <h3>12.2 视频 &lt;video&gt;</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;video controls autoplay width="480" height="270"&gt;
+  &lt;source src="video/movie.mp4"&gt;
+  &lt;source src="video/movie.ogg"&gt;
+  &lt;source src="video/movie.webm"&gt;
+  抱歉，你的浏览器不支持此视频格式
+&lt;/video&gt;</code></pre>
+          </div>
+        </div>
+
+        <h3>12.3 视频播放器常用 JS API（简化摘要）</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>var video = document.querySelector('video');
+
+video.play();     // 播放
+video.pause();    // 暂停
+video.paused;     // 是否处于暂停状态（布尔值）
+video.duration;   // 视频总时长（秒）
+video.currentTime;// 当前播放到第几秒
+
+// 事件监听
+video.oncanplay = function () { /* 视频可以播放时触发，可用来获取总时长 */ };
+video.ontimeupdate = function () { /* 播放进度更新时持续触发，可用来同步进度条 */ };
+
+// 全屏播放（有浏览器前缀兼容问题）
+video.requestFullscreen && video.requestFullscreen();</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">说明</span>
+            <p>结合这些 API，就能实现自定义的播放/暂停按钮、进度条同步、时间显示等功能（详见千古教程第 09 篇的完整播放器案例）。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 13. HTML5 DOM 操作                                                -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-dom">
+        <h2>13. HTML5 相关 DOM 操作 <span class="badge h5">HTML5</span></h2>
+
+        <h3>13.1 获取元素</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>// 通过CSS选择器获取第一个匹配元素
+document.querySelector('.box');
+
+// 通过CSS选择器获取所有匹配元素（类数组，不是真数组）
+document.querySelectorAll('.box');</code></pre>
+          </div>
+        </div>
+
+        <h3>13.2 类名操作 classList</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>el.classList.add('active');       // 添加 class
+el.classList.remove('active');    // 移除 class
+el.classList.toggle('active');    // 有则移除，无则添加（常用于开关切换）
+el.classList.contains('active');  // 判断是否包含某个 class</code></pre>
+          </div>
+        </div>
+
+        <h3>13.3 自定义属性 data-*</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- HTML5规定：自定义属性必须以 data- 开头，否则不算标准写法 --&gt;
+&lt;div class="box" data-my-name="smyhvae" data-content="我是一个div"&gt;div&lt;/div&gt;
+
+&lt;script&gt;
+  var box = document.querySelector('.box');
+  // 通过 dataset 读取：驼峰命名会自动转换（data-my-name → dataset.myName）
+  console.log(box.dataset.content); // 我是一个div
+  console.log(box.dataset.myName);  // smyhvae
+&lt;/script&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果</span>
+            <div class="box-demo" data-my-name="demo" data-content="示例内容" style="width:auto;padding:0 12px;">带自定义属性的 div</div>
+          </div>
+        </div>
+
+        <h3>13.4 综合案例：Tab 栏切换（结合 data-* 属性）</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码思路</span>
+            <pre><code>&lt;nav&gt;
+  &lt;a href="javascript:;" data-cont="local"&gt;国内新闻&lt;/a&gt;
+  &lt;a href="javascript:;" data-cont="global"&gt;国际新闻&lt;/a&gt;
+&lt;/nav&gt;
+&lt;section class="cont" id="local"&gt;...&lt;/section&gt;
+&lt;section class="cont" id="global"&gt;...&lt;/section&gt;
+
+&lt;script&gt;
+  // 点击导航项时：
+  // 1. 给当前点击的 a 加 active 类，移除其他 a 的 active 类
+  // 2. 通过 data-cont 的值找到对应 id 的 section，让它显示，其余隐藏
+&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 14. HTML5 拖拽                                                    -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-drag">
+        <h2>14. HTML5 拖拽 API <span class="badge h5">HTML5</span></h2>
+        <p>
+          给元素加上 <code class="inline">draggable="true"</code> 属性即可开启拖拽（图片、链接默认已经开启）。
+        </p>
+
+        <h3>14.1 拖拽元素自身的事件</h3>
+        <table class="ref-table">
+          <thead><tr><th>事件</th><th>触发时机</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">ondragstart</code></td><td>拖拽开始时触发</td></tr>
+            <tr><td><code class="inline">ondrag</code></td><td>整个拖拽过程中持续触发</td></tr>
+            <tr><td><code class="inline">ondragleave</code></td><td>鼠标离开被拖拽元素时触发</td></tr>
+            <tr><td><code class="inline">ondragend</code></td><td>拖拽结束时触发</td></tr>
+          </tbody>
+        </table>
+
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;div class="box" draggable="true"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  var box = document.querySelector('.box');
+  box.ondragstart = function () { console.log('拖拽开始'); };
+  box.ondrag      = function () { console.log('拖拽中'); };
+  box.ondragend   = function () { console.log('拖拽结束'); };
+&lt;/script&gt;</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">效果（可尝试拖动下面的方块）</span>
+            <div class="box-demo" draggable="true">拖我试试</div>
+          </div>
+        </div>
+
+        <h3>14.2 目标元素（放置区域）的事件</h3>
+        <p>比如想把 A 元素拖拽到 B 元素里，B 就是"目标元素"，页面中任何元素都可以作为目标元素。</p>
+        <table class="ref-table">
+          <thead><tr><th>事件</th><th>触发时机</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">ondragenter</code></td><td>被拖拽元素进入目标元素时触发</td></tr>
+            <tr><td><code class="inline">ondragover</code></td><td>被拖拽元素停留在目标元素上方时持续触发</td></tr>
+            <tr><td><code class="inline">ondrop</code></td><td>在目标元素上松开鼠标时触发</td></tr>
+            <tr><td><code class="inline">ondragleave</code></td><td>鼠标离开目标元素时触发</td></tr>
+          </tbody>
+        </table>
+
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>var two = document.querySelector('.two'); // 目标元素
+
+two.ondragover = function (e) {
+  // 【重要】必须阻止默认行为，否则 ondrop 永远不会触发
+  e.preventDefault();
+};
+
+two.ondrop = function () {
+  console.log('松开鼠标，放置成功！');
+  // 常见做法：把当前拖拽的元素 appendChild 到目标容器里
+};</code></pre>
+          </div>
+          <div class="demo-preview">
+            <span class="demo-label">说明</span>
+            <p><strong>关键点：</strong>如果不在 <code class="inline">ondragover</code> 里调用 <code class="inline">e.preventDefault()</code>，
+            <code class="inline">ondrop</code> 事件就不会被触发，浏览器默认是"禁止放置"的。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 15. 历史 / 地理定位 / 全屏                                         -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-geo">
+        <h2>15. 历史记录 / 地理定位 / 全屏 API <span class="badge h5">HTML5</span></h2>
+
+        <h3>15.1 window.history 历史记录</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>window.history.forward();  // 前进一页
+window.history.back();     // 后退一页
+window.history.go(n);      // n=1前进一页，n=-1后退一页，n=0刷新当前页
+
+// HTML5 新增：可以手动往历史记录里"塞"一条状态，不刷新页面就能改变地址栏
+// 常用于单页应用（SPA）的路由实现
+history.pushState(stateObj, title, url);</code></pre>
+          </div>
+        </div>
+
+        <h3>15.2 地理定位 Geolocation</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>// 使用前必须做兼容性判断
+if (navigator.geolocation) {
+  // 参数1：成功回调；参数2：失败回调
+  navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+} else {
+  console.log('抱歉，你的浏览器不支持地理定位');
+}
+
+function successCallback(position) {
+  var lat = position.coords.latitude;  // 纬度
+  var lng = position.coords.longitude; // 经度
+  console.log('当前坐标：', lat, lng);
+}
+
+function errorCallback(error) {
+  console.log('获取位置失败：', error);
+}
+// 注意：必须先获得用户明确授权，才能拿到地理位置信息（隐私保护机制）</code></pre>
+          </div>
+        </div>
+
+        <h3>15.3 全屏 API</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>var box = document.querySelector('.box');
+
+// 不同浏览器需要加不同前缀做兼容处理
+function goFullscreen(el) {
+  if (el.requestFullscreen) {
+    el.requestFullscreen();
+  } else if (el.webkitRequestFullScreen) {
+    el.webkitRequestFullScreen();  // 老版本 Chrome/Safari
+  } else if (el.mozRequestFullScreen) {
+    el.mozRequestFullScreen();     // 老版本 Firefox
+  }
+}
+
+box.onclick = function () { goFullscreen(this); };
+
+/* CSS 全屏伪类：可以在元素处于全屏状态时单独设置样式 */
+/* .box:fullscreen { background-color: red; } */</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 16. Web 存储 / 网络状态 / 离线缓存                                  -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-storage">
+        <h2>16. Web 存储 / 网络状态 / 离线缓存 <span class="badge h5">HTML5</span></h2>
+
+        <h3>16.1 sessionStorage vs localStorage</h3>
+        <table class="ref-table">
+          <thead><tr><th></th><th>sessionStorage（会话存储）</th><th>localStorage（本地存储）</th></tr></thead>
+          <tbody>
+            <tr><td>生命周期</td><td>关闭浏览器窗口后销毁</td><td>永久生效，除非手动删除</td></tr>
+            <tr><td>存储位置</td><td>内存</td><td>硬盘</td></tr>
+            <tr><td>共享范围</td><td>同一窗口内共享</td><td>可跨窗口共享（同源）</td></tr>
+            <tr><td>大致容量</td><td>约 5M</td><td>约 20M</td></tr>
+          </tbody>
+        </table>
+
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码：常见 API</span>
+            <pre><code>// 存储只能存字符串，存对象要先 JSON.stringify() 转换
+window.localStorage.setItem('userName', 'lxy');   // 新增/更新
+window.localStorage.getItem('userName');          // 读取，读不到返回 null
+window.localStorage.removeItem('userName');       // 按key删除
+window.localStorage.clear();                      // 清空全部
+window.localStorage.key(0);                       // 按索引取key名
+
+// sessionStorage 用法和 localStorage 完全一样，只是生命周期不同
+window.sessionStorage.setItem('token', 'abc123');</code></pre>
+          </div>
+        </div>
+
+        <h3>16.2 案例：记住用户名和密码（登录页常见需求）</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;input type="text" class="userName"&gt;
+&lt;input type="text" class="pwd"&gt;
+&lt;input type="checkbox" class="check"&gt;记住密码
+&lt;button&gt;登录&lt;/button&gt;
+
+&lt;script&gt;
+  var userName = document.querySelector('.userName');
+  var pwd = document.querySelector('.pwd');
+  var chk = document.querySelector('.check');
+
+  // 点击登录：勾选了"记住密码"就存储，否则清除
+  document.querySelector('button').onclick = function () {
+    if (chk.checked) {
+      localStorage.setItem('userName', userName.value);
+      localStorage.setItem('pwd', pwd.value);
+    } else {
+      localStorage.removeItem('userName');
+      localStorage.removeItem('pwd');
+    }
+  };
+
+  // 页面加载时：如果本地有记录，自动回填
+  window.onload = function () {
+    userName.value = localStorage.getItem('userName') || '';
+    pwd.value = localStorage.getItem('pwd') || '';
+  };
+&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+
+        <h3>16.3 网络状态监听</h3>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>// window.navigator.onLine 返回布尔值，表示当前是否联网
+console.log(navigator.onLine);
+
+window.addEventListener('online', function () {
+  console.log('网络已连接');
+});
+window.addEventListener('offline', function () {
+  console.log('网络已断开');
+});</code></pre>
+          </div>
+        </div>
+
+        <h3>16.4 离线应用缓存（了解即可，现已被 Service Worker 取代）</h3>
+        <div class="warn">
+          <strong>提示：</strong><code class="inline">cache manifest</code> 是较早期的离线缓存方案，现代浏览器已废弃，
+          目前主流方案是 <code class="inline">Service Worker</code>，此处仅作历史了解。
+        </div>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- demo.appcache 缓存清单文件内容示例 --&gt;
+CACHE MANIFEST
+# 要缓存的文件
+CACHE:
+images/logo.png
+style.css
+
+# 必须联网才能访问的文件
+NETWORK:
+api/data.json
+
+# 访问不到时的备用页面
+FALLBACK:
+404.html
+
+&lt;!-- 在页面根标签上引用缓存清单 --&gt;
+&lt;html manifest="demo.appcache"&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 17. 注释与转义字符总表                                             -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-comment">
+        <h2>17. HTML 注释语法</h2>
+        <div class="demo-card">
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>&lt;!-- 这是HTML注释，浏览器不会渲染显示，但源码里能看到 --&gt;
+&lt;!-- 注释可以写在任何标签之间，常用于：
+     1. 解释代码作用，方便团队协作
+     2. 临时"注释掉"某段代码，不删除但不生效
+     3. 配合IE浏览器实现"条件注释"做兼容处理 --&gt;
+
+&lt;p&gt;可见内容&lt;/p&gt;
+&lt;!-- &lt;p&gt;这段代码被注释掉了，不会显示&lt;/p&gt; --&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 18. 标签速查总表                                                   -->
+      <!-- ================================================================ -->
+      <section class="chapter" id="ch-summary">
+        <h2>18. 全部标签速查总表</h2>
+        <p>把本篇出现过的标签汇总在一起，方便当字典快速翻阅。</p>
+
+        <h3>18.1 结构 / 文档标签</h3>
+        <table class="ref-table">
+          <thead><tr><th>标签</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">&lt;!DOCTYPE html&gt;</code></td><td>声明HTML5文档类型</td></tr>
+            <tr><td><code class="inline">&lt;html&gt;</code></td><td>根标签</td></tr>
+            <tr><td><code class="inline">&lt;head&gt;</code></td><td>头部元信息区域</td></tr>
+            <tr><td><code class="inline">&lt;body&gt;</code></td><td>主体内容区域</td></tr>
+            <tr><td><code class="inline">&lt;meta&gt;</code></td><td>元数据（编码、视口、SEO描述等）</td></tr>
+            <tr><td><code class="inline">&lt;title&gt;</code></td><td>页面标题</td></tr>
+            <tr><td><code class="inline">&lt;link&gt;</code></td><td>引入外部资源，如CSS文件</td></tr>
+            <tr><td><code class="inline">&lt;style&gt;</code></td><td>内嵌CSS样式</td></tr>
+            <tr><td><code class="inline">&lt;script&gt;</code></td><td>内嵌或引入JavaScript</td></tr>
+          </tbody>
+        </table>
+
+        <h3>18.2 排版 / 文本标签</h3>
+        <table class="ref-table">
+          <thead><tr><th>标签</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">&lt;h1&gt;~&lt;h6&gt;</code></td><td>一到六级标题</td></tr>
+            <tr><td><code class="inline">&lt;p&gt;</code></td><td>段落</td></tr>
+            <tr><td><code class="inline">&lt;br&gt;</code></td><td>换行</td></tr>
+            <tr><td><code class="inline">&lt;hr&gt;</code></td><td>水平分割线</td></tr>
+            <tr><td><code class="inline">&lt;div&gt;</code></td><td>块级容器</td></tr>
+            <tr><td><code class="inline">&lt;span&gt;</code></td><td>行内容器</td></tr>
+            <tr><td><code class="inline">&lt;pre&gt;</code></td><td>预格式化文本，保留空格换行</td></tr>
+            <tr><td><code class="inline">&lt;b&gt; / &lt;strong&gt;</code></td><td>加粗（strong带语义）</td></tr>
+            <tr><td><code class="inline">&lt;i&gt; / &lt;em&gt;</code></td><td>斜体（em带语义"强调"）</td></tr>
+            <tr><td><code class="inline">&lt;u&gt;</code></td><td>下划线</td></tr>
+            <tr><td><code class="inline">&lt;s&gt; / &lt;del&gt;</code></td><td>删除线</td></tr>
+            <tr><td><code class="inline">&lt;sup&gt; / &lt;sub&gt;</code></td><td>上标 / 下标</td></tr>
+            <tr><td><code class="inline">&lt;mark&gt;</code></td><td>高亮标记</td></tr>
+            <tr><td><code class="inline">&lt;code&gt;</code></td><td>代码片段</td></tr>
+            <tr><td><code class="inline">&lt;time&gt;</code></td><td>日期时间</td></tr>
+          </tbody>
+        </table>
+
+        <h3>18.3 链接 / 图片 / 列表 / 表格</h3>
+        <table class="ref-table">
+          <thead><tr><th>标签</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">&lt;a&gt;</code></td><td>超链接</td></tr>
+            <tr><td><code class="inline">&lt;img&gt;</code></td><td>图片</td></tr>
+            <tr><td><code class="inline">&lt;ul&gt; / &lt;ol&gt; / &lt;li&gt;</code></td><td>无序/有序列表及列表项</td></tr>
+            <tr><td><code class="inline">&lt;dl&gt; / &lt;dt&gt; / &lt;dd&gt;</code></td><td>定义列表/术语/描述</td></tr>
+            <tr><td><code class="inline">&lt;table&gt; / &lt;tr&gt; / &lt;td&gt; / &lt;th&gt;</code></td><td>表格 / 行 / 单元格 / 表头格</td></tr>
+            <tr><td><code class="inline">&lt;thead&gt; / &lt;tbody&gt; / &lt;tfoot&gt;</code></td><td>表头/表体/表尾分组</td></tr>
+            <tr><td><code class="inline">&lt;caption&gt;</code></td><td>表格标题</td></tr>
+          </tbody>
+        </table>
+
+        <h3>18.4 表单标签</h3>
+        <table class="ref-table">
+          <thead><tr><th>标签</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">&lt;form&gt;</code></td><td>表单容器</td></tr>
+            <tr><td><code class="inline">&lt;input&gt;</code></td><td>输入控件，靠type属性区分类型</td></tr>
+            <tr><td><code class="inline">&lt;label&gt;</code></td><td>输入项的文字标签，可关联input</td></tr>
+            <tr><td><code class="inline">&lt;select&gt; / &lt;option&gt;</code></td><td>下拉列表 / 选项</td></tr>
+            <tr><td><code class="inline">&lt;textarea&gt;</code></td><td>多行文本框</td></tr>
+            <tr><td><code class="inline">&lt;button&gt;</code></td><td>按钮</td></tr>
+            <tr><td><code class="inline">&lt;fieldset&gt; / &lt;legend&gt;</code></td><td>表单分组 / 分组标题</td></tr>
+            <tr><td><code class="inline">&lt;datalist&gt;</code></td><td>输入建议列表（HTML5）</td></tr>
+            <tr><td><code class="inline">&lt;meter&gt;</code></td><td>度量器（HTML5）</td></tr>
+            <tr><td><code class="inline">&lt;progress&gt;</code></td><td>进度条（HTML5）</td></tr>
+          </tbody>
+        </table>
+
+        <h3>18.5 HTML5 语义化 / 框架 / 多媒体标签</h3>
+        <table class="ref-table">
+          <thead><tr><th>标签</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">&lt;header&gt; / &lt;footer&gt;</code></td><td>页眉 / 页脚</td></tr>
+            <tr><td><code class="inline">&lt;nav&gt;</code></td><td>导航区域</td></tr>
+            <tr><td><code class="inline">&lt;main&gt;</code></td><td>主要内容（唯一）</td></tr>
+            <tr><td><code class="inline">&lt;section&gt;</code></td><td>区块/章节</td></tr>
+            <tr><td><code class="inline">&lt;article&gt;</code></td><td>独立完整内容</td></tr>
+            <tr><td><code class="inline">&lt;aside&gt;</code></td><td>侧边栏</td></tr>
+            <tr><td><code class="inline">&lt;figure&gt; / &lt;figcaption&gt;</code></td><td>媒体分组 / 说明文字</td></tr>
+            <tr><td><code class="inline">&lt;iframe&gt;</code></td><td>内嵌框架</td></tr>
+            <tr><td><code class="inline">&lt;audio&gt;</code></td><td>音频播放</td></tr>
+            <tr><td><code class="inline">&lt;video&gt;</code></td><td>视频播放</td></tr>
+            <tr><td><code class="inline">&lt;source&gt;</code></td><td>多媒体的多格式来源</td></tr>
+          </tbody>
+        </table>
+
+        <h3>18.6 已废弃标签/属性一览（了解即可，不要在新项目中使用）</h3>
+        <table class="ref-table">
+          <thead><tr><th>标签/属性</th><th>替代方案</th></tr></thead>
+          <tbody>
+            <tr><td><code class="inline">&lt;font&gt;</code></td><td>CSS：color / font-size / font-family</td></tr>
+            <tr><td><code class="inline">&lt;center&gt;</code></td><td>CSS：text-align:center 或 margin:0 auto</td></tr>
+            <tr><td><code class="inline">&lt;frameset&gt; / &lt;frame&gt;</code></td><td><code class="inline">&lt;iframe&gt;</code></td></tr>
+            <tr><td><code class="inline">img/table 的 align 属性</code></td><td>CSS：float / vertical-align / text-align</td></tr>
+            <tr><td><code class="inline">table 的 border/bgcolor 等外观属性</code></td><td>CSS：border / background-color</td></tr>
+          </tbody>
+        </table>
+
+        <div class="tip">
+          <strong>核心心法：</strong>HTML 负责"内容和结构"，CSS 负责"外观样式"，JavaScript 负责"行为交互"。
+          凡是涉及颜色、边框、对齐、间距、动画的老式 HTML 属性，现在统统交给 CSS 来做。
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============ 页脚：footer 语义标签 ============ -->
+  <footer class="site-footer">
+    <p>本页内容整理自 lxy-learn 项目笔记 与 千古前端图文教程《01-HTML》系列（web.qianguyihao.com），仅用于个人学习。</p>
+  </footer>
+
+</body>
+</html>

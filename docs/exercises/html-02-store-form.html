@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>练习2：门店录入表单</title>
+</head>
+<body>
+
+  <h1>门店信息录入</h1>
+
+  <!--
+    form 标签：表单容器
+    label 的 for 属性关联 input 的 id
+    required 属性表示必填
+  -->
+  <form action="/api/submit" method="POST">
+
+    <!-- 门店名称 -->
+    <div>
+      <label for="storeName">门店名称</label><br>
+      <input type="text" id="storeName" name="storeName" placeholder="请输入门店名称" required>
+    </div>
+    <br>
+
+    <!-- 业态分类 -->
+    <div>
+      <label for="businessType">业态分类</label><br>
+      <select id="businessType" name="businessType" required>
+        <option value="" disabled selected>请选择业态</option>
+        <option value="supermarket">超市</option>
+        <option value="convenience">便利店</option>
+        <option value="restaurant">餐饮</option>
+        <option value="other">其他</option>
+      </select>
+    </div>
+    <br>
+
+    <!-- 开业日期 -->
+    <div>
+      <label for="openDate">开业日期</label><br>
+      <input type="date" id="openDate" name="openDate">
+    </div>
+    <br>
+
+    <!-- 是否有停车场（单选） -->
+    <div>
+      <span>是否有停车场</span><br>
+      <label>
+        <input type="radio" name="parking" value="yes"> 是
+      </label>
+      <label>
+        <input type="radio" name="parking" value="no" checked> 否
+      </label>
+    </div>
+    <br>
+
+    <!-- 经营面积（数字输入） -->
+    <div>
+      <label for="area">经营面积（平方米）</label><br>
+      <input type="number" id="area" name="area" min="1" placeholder="请输入面积">
+    </div>
+    <br>
+
+    <!-- 备注（多行文本） -->
+    <div>
+      <label for="remark">备注</label><br>
+      <textarea id="remark" name="remark" rows="3" placeholder="补充说明..."></textarea>
+    </div>
+    <br>
+
+    <!-- 按钮 -->
+    <button type="submit">提交</button>
+    <button type="reset">重置</button>
+
+  </form>
+
+</body>
+</html>

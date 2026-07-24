@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 知识大全 | 语法详解 + 可运行代码示例</title>
+
+  <!--
+    ============================================================
+    这份文件是什么？
+    ============================================================
+    这是一份"可以在浏览器里直接打开阅读、也可以当字典查"的 JavaScript 知识大全。
+    内容整理自：
+      1）本项目 docs/ 目录下已有的 JS 基础语法教学笔记；
+      2）千古前端图文教程《03-JavaScript》系列文章；
+      3）MDN Web Docs 官方参考。
+
+    组织方式：
+      - 每一章用一个 <section class="chapter"> 包裹，配编号标题；
+      - 每个知识点配可运行的代码示例，多数可直接在控制台执行；
+      - DOM/事件相关章节附带"效果预览"卡片，左预览右源码；
+      - 所有源码用 <pre><code> 展示，带语法高亮和中文注释。
+
+    怎么读这份文件：
+      - 可以直接拖到浏览器里打开，点左侧目录跳转；
+      - 代码示例都可以复制到浏览器控制台（F12 → Console）运行；
+      - 建议配合 docs/03-JavaScript基础语法.md 一起看，那份是精简版，这份是详尽版。
+    ============================================================
+  -->
+
+  <style>
+    /* ============ 全局样式：只为了让这份"字典"读起来舒服 ============ */
+    * { box-sizing: border-box; }
+
+    :root {
+      --primary: #f7df1e;       /* JS 黄 */
+      --primary-dark: #e6b450;
+      --accent: #323330;        /* JS 黑 */
+      --text: #2c3e50;
+      --text-light: #666;
+      --border: #e6e6e6;
+      --bg-code: #282c34;
+      --bg-code-text: #abb2bf;
+      --warn: #e6a23c;
+      --danger: #f56c6c;
+      --tip-blue: #409eff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, "Microsoft Yahei", "PingFang SC", sans-serif;
+      color: var(--text);
+      line-height: 1.7;
+      background: #fafafa;
+    }
+
+    /* ---- 顶部页眉 ---- */
+    .site-header {
+      background: linear-gradient(135deg, #323330 0%, #1a1a1a 100%);
+      color: var(--primary);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .site-header h1 { margin: 0 0 8px; font-size: 28px; }
+    .site-header p { margin: 0; color: #aaa; font-size: 14px; }
+    .site-header .js-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #323330;
+      font-weight: bold;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ---- 页面整体布局：左侧目录 + 右侧正文 ---- */
+    .layout {
+      display: flex;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 16px;
+      flex: 0 0 260px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+    }
+    .site-nav h2 { font-size: 14px; color: var(--text-light); margin: 0 0 8px; }
+    .site-nav ul { list-style: none; margin: 0; padding: 0; }
+    .site-nav li { margin: 2px 0; }
+    .site-nav a {
+      display: block;
+      padding: 5px 8px;
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .site-nav a:hover { background: #fff8d6; color: #b8860b; }
+    .site-nav a.sub { padding-left: 20px; font-size: 12px; color: var(--text-light); }
+
+    main.content { flex: 1 1 auto; min-width: 0; }
+
+    /* ---- 每个大章节 section 的样式 ---- */
+    section.chapter {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      scroll-margin-top: 16px;
+    }
+    section.chapter > h2 {
+      margin-top: 0;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--primary);
+      color: var(--accent);
+    }
+    section.chapter h3 {
+      margin-top: 28px;
+      color: var(--text);
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+    }
+    section.chapter h4 { color: var(--text-light); margin-bottom: 6px; }
+
+    /* ---- 知识点卡片：左边效果，右边源码 ---- */
+    .demo-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin: 14px 0 22px;
+      background: #fcfcfc;
+    }
+    .demo-preview, .demo-code {
+      flex: 1 1 320px;
+      min-width: 280px;
+    }
+    .demo-preview {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      background: #fff;
+    }
+    .demo-preview .demo-label,
+    .demo-code .demo-label {
+      display: block;
+      font-size: 12px;
+      color: #323330;
+      background: var(--primary);
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    .demo-code .demo-label { background: #555; color: #fff; }
+
+    pre {
+      margin: 0;
+      background: var(--bg-code);
+      color: var(--bg-code-text);
+      padding: 12px 14px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    code { font-family: "Fira Code", Consolas, Monaco, monospace; }
+    .demo-preview code.inline,
+    p code, li code, td code {
+      background: #f1f1f1;
+      color: #c7254e;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 90%;
+    }
+
+    /* JS 语法高亮 */
+    .kw { color: #c678dd; }       /* 关键字 */
+    .fn { color: #61afef; }       /* 函数名 */
+    .st { color: #98c379; }       /* 字符串 */
+    .nu { color: #d19a66; }       /* 数字 */
+    .cm { color: #7f848e; font-style: italic; }  /* 注释 */
+    .op { color: #56b6c2; }       /* 运算符 */
+    .vb { color: #e5c07b; }       /* 变量/内置 */
+    .tx { color: #abb2bf; }       /* 纯文本 */
+
+    /* ---- 比较表格 ---- */
+    table.ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 14px;
+    }
+    table.ref-table th, table.ref-table td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.ref-table th { background: #fff8d6; color: #b8860b; }
+    table.ref-table tr:nth-child(even) { background: #fafafa; }
+    table.ref-table td:first-child {
+      font-family: monospace;
+      white-space: nowrap;
+      color: #c7254e;
+    }
+
+    .tip, .warn, .danger {
+      padding: 10px 14px;
+      margin: 10px 0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .tip { background: #f0f9ff; border-left: 4px solid var(--tip-blue); color: #555; }
+    .warn { background: #fff7e6; border-left: 4px solid var(--warn); color: #555; }
+    .danger { background: #fef0f0; border-left: 4px solid var(--danger); color: #555; }
+
+    .run-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--primary);
+      border: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      margin: 4px 0;
+      font-family: inherit;
+    }
+    .run-btn:hover { background: #000; }
+    .run-btn:active { transform: scale(0.97); }
+    .run-output {
+      background: #f5f5f5;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      font-size: 13px;
+      font-family: monospace;
+      min-height: 20px;
+    }
+
+    /* ---- 属性网格 ---- */
+    .attr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin: 12px 0;
+    }
+    .attr-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: #fff;
+    }
+    .attr-card .attr-name {
+      font-family: monospace;
+      font-weight: bold;
+      color: #c7254e;
+      margin-bottom: 4px;
+    }
+
+    .attr-card .attr-desc { font-size: 14px; color: var(--text-light); }
+
+    /* ---- 页脚 ---- */
+    .site-footer {
+      text-align: center;
+      padding: 32px 24px;
+      color: var(--text-light);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    .site-footer a { color: #b8860b; text-decoration: none; }
+
+    /* ============================================================
+       以下是教程正文里用到的"演示样式"
+       ============================================================ */
+
+    /* ---- DOM 演示用样式 ---- */
+    .demo-box {
+      width: 60px; height: 60px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #323330;
+    }
+    .demo-output-area {
+      min-height: 30px;
+      padding: 8px;
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+      background: #fafafa;
+      margin-top: 8px;
+    }
+    .demo-btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 顶部页眉 ============ -->
+  <header class="site-header">
+    <h1>JavaScript 知识大全 <span class="js-badge">ES2022+</span></h1>
+    <p>从基础语法到高级特性 · 可运行代码 · 浏览器控制台验证</p>
+  </header>
+
+  <!-- ============ 页面整体布局 ============ -->
+  <div class="layout">
+
+    <!-- ============ 左侧目录导航 ============ -->
+    <nav class="site-nav">
+      <h2>📖 目录</h2>
+      <ul>
+        <li><a href="#ch1">第1章 JavaScript 简介</a></li>
+        <li><a href="#ch2">第2章 变量与声明</a></li>
+        <li class="sub"><a href="#ch2-1"> · var / let / const</a></li>
+        <li class="sub"><a href="#ch2-2"> · 作用域</a></li>
+        <li><a href="#ch3">第3章 数据类型</a></li>
+        <li class="sub"><a href="#ch3-1"> · 基本类型</a></li>
+        <li class="sub"><a href="#ch3-2"> · 引用类型</a></li>
+        <li class="sub"><a href="#ch3-3"> · typeof</a></li>
+        <li class="sub"><a href="#ch3-4"> · 类型判断+深拷贝</a></li>
+        <li><a href="#ch4">第4章 运算符</a></li>
+        <li class="sub"><a href="#ch4-1"> · 比较运算符</a></li>
+        <li class="sub"><a href="#ch4-2"> · 逻辑运算符</a></li>
+        <li class="sub"><a href="#ch4-3"> · 短路运算实战</a></li>
+        <li><a href="#ch5">第5章 流程控制</a></li>
+        <li><a href="#ch6">第6章 字符串</a></li>
+        <li class="sub"><a href="#ch6-1"> · 正则表达式</a></li>
+        <li class="sub"><a href="#ch6-2"> · 表单校验实战</a></li>
+        <li class="sub"><a href="#ch6-3"> · 字符串排序</a></li>
+        <li><a href="#ch7">第7章 数组</a></li>
+        <li class="sub"><a href="#ch7-1"> · 增删改查</a></li>
+        <li class="sub"><a href="#ch7-2"> · 高阶函数</a></li>
+        <li class="sub"><a href="#ch7-3"> · reduce实战</a></li>
+        <li class="sub"><a href="#ch7-4"> · 去重/分组/扁平化</a></li>
+        <li class="sub"><a href="#ch7-5"> · 数据处理流水线</a></li>
+        <li><a href="#ch8">第8章 对象</a></li>
+        <li><a href="#ch9">第9章 函数</a></li>
+        <li class="sub"><a href="#ch9-1"> · 箭头函数</a></li>
+        <li class="sub"><a href="#ch9-2"> · 闭包</a></li>
+        <li class="sub"><a href="#ch9-3"> · this指向</a></li>
+        <li class="sub"><a href="#ch9-4"> · call/apply/bind</a></li>
+        <li class="sub"><a href="#ch9-5"> · 防抖/节流/柯里化</a></li>
+        <li><a href="#ch10">第10章 DOM 操作</a></li>
+        <li><a href="#ch11">第11章 事件</a></li>
+        <li><a href="#ch12">第12章 异步编程</a></li>
+        <li class="sub"><a href="#ch12-1"> · Promise</a></li>
+        <li class="sub"><a href="#ch12-2"> · async/await</a></li>
+        <li class="sub"><a href="#ch12-3"> · 重试/超时/并发限制</a></li>
+        <li class="sub"><a href="#ch12-4"> · 常见异步场景</a></li>
+        <li><a href="#ch13">第13章 ES6+ 新特性</a></li>
+        <li class="sub"><a href="#ch13-1"> · 解构</a></li>
+        <li class="sub"><a href="#ch13-2"> · Map/Set</a></li>
+        <li class="sub"><a href="#ch13-3"> · Proxy</a></li>
+        <li><a href="#ch14">第14章 Class 与面向对象</a></li>
+        <li><a href="#ch15">第15章 错误处理与调试</a></li>
+        <li><a href="#ch16">第16章 BOM 与 Web API</a></li>
+        <li><a href="#cheatsheet">附录 · 速查表</a></li>
+      </ul>
+    </nav>
+
+    <!-- ============ 右侧正文 ============ -->
+    <main class="content">
+
+      <!-- ============================================================
+           第1章：JavaScript 简介
+           ============================================================ -->
+      <section class="chapter" id="ch1">
+        <h2>第1章 · JavaScript 是什么？</h2>
+
+        <p>JavaScript（简称 JS）是浏览器的编程语言，让网页"动起来"。它是前端三剑客之一：</p>
+
+        <table class="ref-table">
+          <tr><th>语言</th><th>职责</th><th>类比</th></tr>
+          <tr><td>HTML</td><td>内容结构</td><td>骨架</td></tr>
+          <tr><td>CSS</td><td>外观样式</td><td>皮肤</td></tr>
+          <tr><td>JavaScript</td><td>交互行为</td><td>肌肉</td></tr>
+        </table>
+
+        <h3>JS 和 Java 的关系</h3>
+        <p><strong>没有关系。</strong> 就像雷锋和雷峰塔的关系。名字相似是历史原因（1995 年 Netscape 为了蹭 Java 热度取的）。</p>
+
+        <table class="ref-table">
+          <tr><th>维度</th><th>Java</th><th>JavaScript</th></tr>
+          <tr><td>类型系统</td><td>静态强类型</td><td>动态弱类型</td></tr>
+          <tr><td>运行环境</td><td>JVM</td><td>浏览器 / Node.js</td></tr>
+          <tr><td>面向对象</td><td>基于类（class）</td><td>基于原型（prototype）+ class 语法糖</td></tr>
+          <tr><td>编译</td><td>编译为字节码</td><td>解释执行（JIT 优化）</td></tr>
+          <tr><td>运行方式</td><td>启动后运行整个程序</td><td>逐行执行，永不报编译错误</td></tr>
+          <tr><td>变量</td><td>声明时需指定类型</td><td>赋值时自动推断类型</td></tr>
+        </table>
+
+        <div class="tip">
+          <strong>前端开发中的 JS：</strong>操作 DOM（页面元素）、处理用户交互（点击/输入/滚动）、发送网络请求（向后端 API 获取数据）、数据校验、动画效果、存储数据（localStorage）……几乎所有"能动"的东西都靠 JS。
+        </div>
+
+        <h3>在哪里写 JS 代码</h3>
+        <pre><code><span class="cm">/* 方式1：内嵌在 HTML 的 &lt;script&gt; 标签中 */</span>
+<span class="kw">&lt;script&gt;</span>
+  <span class="vb">console</span>.log(<span class="st">'Hello, JavaScript!'</span>);
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="cm">/* 方式2：外部 JS 文件（推荐！） */</span>
+<span class="kw">&lt;script</span> <span class="tx">src=</span><span class="st">"app.js"</span><span class="kw">&gt;&lt;/script&gt;</span>
+
+<span class="cm">/* 方式3：浏览器控制台（F12 → Console），适合快速验证 */</span>
+<span class="vb">console</span>.log(<span class="st">'快速测试'</span>);  <span class="cm">// 直接按 Enter 执行</span></code></pre>
+
+        <div class="warn">
+          <strong>注意：</strong>CSS 写在 <code>&lt;style&gt;</code> 里，JS 写在 <code>&lt;script&gt;</code> 里。Vue 项目中，JS 写在 <code>&lt;script setup&gt;</code> 里。
+        </div>
+      </section>
+
+      <!-- ============================================================
+           第2章：变量与声明
+           ============================================================ -->
+      <section class="chapter" id="ch2">
+        <h2>第2章 · 变量与声明</h2>
+
+        <h3 id="ch2-1">三种声明方式：var / let / const</h3>
+
+        <table class="ref-table">
+          <tr><th>关键字</th><th>作用域</th><th>可重赋值</th><th>可重复声明</th><th>使用场景</th></tr>
+          <tr><td><code>var</code></td><td>函数作用域</td><td>✅</td><td>✅</td><td>� 已废弃，不要用</td></tr>
+          <tr><td><code>let</code></td><td>块级作用域 &#123;&#125;</td><td>✅</td><td>❌</td><td>循环计数、会变化的值</td></tr>
+          <tr><td><code>const</code></td><td>块级作用域 &#123;&#125;</td><td>❌</td><td>❌</td><td>默认选择：绝大多数变量</td></tr>
+        </table>
+
+        <pre><code><span class="cm">// ========== const：默认选择 ==========</span>
+<span class="kw">const</span> PI = <span class="nu">3.14</span>;
+<span class="kw">const</span> userName = <span class="st">'张三'</span>;
+<span class="kw">const</span> config = { apiUrl: <span class="st">'https://api.example.com'</span> };
+
+<span class="cm">// PI = 3;  // ❌ TypeError: Assignment to constant variable</span>
+
+<span class="cm">// ========== let：值会变时使用 ==========</span>
+<span class="kw">let</span> count = <span class="nu">0</span>;
+count = <span class="nu">1</span>;  <span class="cm">// ✅ 可以重新赋值</span>
+
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="nu">0</span>; i &lt; <span class="nu">10</span>; i++) {
+  <span class="cm">// i 只在 for 循环的 {} 块里有效</span>
+}
+
+<span class="cm">// ========== var：不要在项目中使用 ==========</span>
+<span class="kw">var</span> oldWay = <span class="st">'not recommended'</span>;
+<span class="cm">// var 的问题：变量提升 + 函数作用域，容易出 bug</span></code></pre>
+
+        <h3>const 的陷阱：锁的是引用不是内容</h3>
+        <pre><code><span class="kw">const</span> user = { name: <span class="st">'张三'</span>, age: <span class="nu">25</span> };
+
+user.name = <span class="st">'李四'</span>;   <span class="cm">// ✅ 可以修改对象的属性</span>
+user.age = <span class="nu">26</span>;        <span class="cm">// ✅ 引用没变，内容可改</span>
+user.email = <span class="st">'a@b.com'</span>; <span class="cm">// ✅ 可以添加属性</span>
+
+<span class="cm">// user = &#123; name: '王五' &#125;;  // ❌ TypeError! 不能重新赋值整个对象</span>
+
+<span class="kw">const</span> list = [<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">3</span>];
+list.push(<span class="nu">4</span>);       <span class="cm">// ✅ 可以修改数组内容：[1, 2, 3, 4]</span>
+list.length = <span class="nu">0</span>;     <span class="cm">// ✅ 可以清空数组</span>
+<span class="cm">// list = [5, 6];          // ❌ 不能重新赋值</span></code></pre>
+
+        <div class="tip">
+          <strong>记忆口诀：</strong>const 锁的是"地址"不是"内容"。Java 里的 <code>final List</code> 同理——可以 add/remove 但不能指向新 List。如果要真正冻结，用 <code>Object.freeze(obj)</code>。
+        </div>
+
+        <h3 id="ch2-2">三种作用域</h3>
+        <pre><code><span class="cm">// 1. 全局作用域：在最外层声明的变量，任何地方都能访问</span>
+<span class="kw">const</span> globalVar = <span class="st">'我是全局变量'</span>;
+
+<span class="kw">function</span> <span class="fn">demo</span>() {
+  <span class="cm">// 2. 函数作用域：函数内部声明的变量，只在函数内有效</span>
+  <span class="kw">const</span> funcVar = <span class="st">'我是函数变量'</span>;
+
+  <span class="kw">if</span> (<span class="kw">true</span>) {
+    <span class="cm">// 3. 块级作用域：if/for/while 的 &#123;&#125; 内有效</span>
+    <span class="kw">const</span> blockVar = <span class="st">'我是块变量'</span>;
+    <span class="kw">let</span> blockLet = <span class="st">'我也是'</span>;
+    <span class="kw">var</span> blockVar2 = <span class="st">'我能穿透块级！'</span>; <span class="cm">// var 不受块级限制</span>
+  }
+
+  <span class="vb">console</span>.log(blockVar2); <span class="cm">// '我能穿透块级！'（因为 var 是函数作用域）</span>
+  <span class="cm">// console.log(blockVar);  // ❌ ReferenceError: blockVar is not defined</span>
+}</code></pre>
+
+        <h3>变量命名规则与规范</h3>
+        <table class="ref-table">
+          <tr><th>规则</th><th>示例</th><th>说明</th></tr>
+          <tr><td>字符集</td><td>a-z, A-Z, 0-9, _, $</td><td>首字符不能是数字</td></tr>
+          <tr><td>关键字不能用</td><td>let, class, return, if...</td><td>会报 SyntaxError</td></tr>
+          <tr><td>大小写敏感</td><td>userName ≠ username</td><td>两个是不同的变量</td></tr>
+          <tr><td>驼峰命名法</td><td><code>userName</code></td><td>JS 标准命名风格</td></tr>
+          <tr><td>const 大写</td><td><code>MAX_SIZE</code></td><td>常量有时用全大写下划线</td></tr>
+          <tr><td>私有约定</td><td><code>_private</code></td><td>下划线开头约定为私有（不强制）</td></tr>
+        </table>
+
+        <pre><code><span class="cm">// ✅ 好的命名</span>
+<span class="kw">const</span> userName = <span class="st">'张三'</span>;
+<span class="kw">const</span> isLoggedIn = <span class="kw">true</span>;
+<span class="kw">const</span> MAX_RETRY = <span class="nu">3</span>;
+<span class="kw">const</span> $price = <span class="nu">99</span>;     <span class="cm">// jQuery 风格</span>
+<span class="kw">const</span> _cache = &#123;&#125;;        <span class="cm">// 私有变量约定</span>
+
+<span class="cm">// ❌ 差的命名</span>
+<span class="kw">const</span> a = <span class="st">'张三'</span>;       <span class="cm">// 含义不明</span>
+<span class="kw">const</span> username1 = <span class="st">'李四'</span>; <span class="cm">// 加数字通常意味着设计有问题</span>
+<span class="kw">const</span> the_user_name = <span class="st">'王五'</span>; <span class="cm">// JS 用驼峰，不用下划线（那是 Python/SQL 风格）</span>
+
+<span class="cm">// ❌ 非法命名（运行报错）</span>
+<span class="cm">// const 2name = '错误';     // 不能数字开头</span>
+<span class="cm">// const my-name = '错误';   // 不能用连字符（会被解析成减法）</span>
+<span class="cm">// const let = '错误';       // 不能用关键字</span></code></pre>
+      </section>
+
+      <!-- ============================================================
+           第3章：数据类型
+           ============================================================ -->
+      <section class="chapter" id="ch3">
+        <h2>第3章 · 数据类型</h2>
+
+        <h3 id="ch3-1">基本类型（Primitive Types）— 7 种</h3>
+        <p>基本类型的值存在<strong>栈内存</strong>中，赋值时复制的是值本身。</p>
+
+        <table class="ref-table">
+          <tr><th>类型</th><th>说明</th><th>示例</th></tr>
+          <tr><td><code>string</code></td><td>文本</td><td><code>'hello'`` `template` ``</code></td></tr>
+          <tr><td><code>number</code></td><td>数字（不区分 int/bigint/float）</td><td><code>25, 9.99, Infinity, NaN</code></td></tr>
+          <tr><td><code>boolean</code></td><td>布尔值</td><td><code>true, false</code></td></tr>
+          <tr><td><code>null</code></td><td>"空"（自己设的）</td><td><code>let a = null</code></td></tr>
+          <tr><td><code>undefined</code></td><td>"未定义"（没赋值）</td><td><code>let a; a === undefined</code></td></tr>
+          <tr><td><code>symbol</code></td><td>唯一标识符</td><td><code>Symbol('id')</code></td></tr>
+          <tr><td><code>bigint</code></td><td>大整数</td><td><code>9007199254740991n</code></td></tr>
+        </table>
+
+        <pre><code><span class="cm">// String 文本类型</span>
+<span class="kw">const</span> name1 = <span class="st">'张三'</span>;          <span class="cm">// 单引号</span>
+<span class="kw">const</span> name2 = <span class="st">"李四"</span>;          <span class="cm">// 双引号（等价）</span>
+<span class="kw">const</span> template = <span class="st">`我叫<span class="kw">${name1}</span>`</span>;  <span class="cm">// 模板字符串（推荐！）</span>
+<span class="kw">const</span> multiLine = <span class="st">`多行
+文本
+支持换行`</span>;             <span class="cm">// 保留换行</span>
+
+<span class="cm">// Number 数字类型</span>
+<span class="kw">const</span> int = <span class="nu">42</span>;
+<span class="kw">const</span> float = <span class="nu">3.14</span>;
+<span class="kw">const</span> negative = -<span class="nu">100</span>;
+<span class="kw">const</span> infinity = <span class="vb">Infinity</span>;
+<span class="kw">const</span> notANumber = <span class="vb">NaN</span>;       <span class="cm">// "Not a Number"，运算出错时出现</span>
+<span class="kw">const</span> bigInt = <span class="nu">9007199254740991n</span>; <span class="cm">// BigInt，大整数末尾加 n</span>
+
+<span class="cm">// Boolean 布尔类型</span>
+<span class="kw">const</span> isTrue = <span class="kw">true</span>;
+<span class="kw">const</span> isFalse = <span class="kw">false</span>;
+<span class="cm">// 只有以下值是 falsy：false, 0, '', null, undefined, NaN</span>
+<span class="cm">// 其他所有值都是 truthy</span>
+
+<span class="cm">// null 和 undefined</span>
+<span class="kw">let</span> a;                  <span class="cm">// a = undefined（声明了没赋值）</span>
+<span class="kw">let</span> b = <span class="kw">null</span>;           <span class="cm">// b = null（有意设为空）</span>
+
+<span class="cm">/** 记忆技巧：
+ * undefined = 没人管它（JS 的默认行为）
+ * null       = 我让它空的（程序员主动设置）
+ */</span></code></pre>
+
+        <h3>引用类型（Reference Types）</h3>
+        <p>引用类型的值存在<strong>堆内存</strong>中，变量存的是地址（指针）。赋值时复制的是地址，而非值本身。</p>
+
+        <pre><code><span class="cm">// Object 对象 —— 键值对集合</span>
+<span class="kw">const</span> user = {
+  name: <span class="st">'张三'</span>,
+  age: <span class="nu">25</span>,
+  hobbies: [<span class="st">'读书'</span>, <span class="st">'写代码'</span>],
+  address: { city: <span class="st">'北京'</span>, district: <span class="st">'朝阳'</span> }
+};
+
+<span class="cm">// Array 数组 —— 有序列表</span>
+<span class="kw">const</span> colors = [<span class="st">'red'</span>, <span class="st">'green'</span>, <span class="st">'blue'</span>];
+<span class="kw">const</span> mixed = [<span class="nu">1</span>, <span class="st">'hello'</span>, <span class="kw">true</span>, &#123; a: <span class="nu">1</span> &#125;];  <span class="cm">// JS 数组可以类型混杂</span>
+
+<span class="cm">// Function 函数 —— 函数也是值！</span>
+<span class="kw">const</span> greet = <span class="kw">function</span>(name) {
+  <span class="kw">return</span> <span class="st">'Hello, '</span> + name;
+};
+
+<span class="cm">// Date 日期</span>
+<span class="kw">const</span> now = <span class="kw">new</span> <span class="vb">Date</span>();
+
+<span class="cm">// RegExp 正则表达式</span>
+<span class="kw">const</span> emailRegex = <span class="st">/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]&#123;2,&#125;$/</span>;</code></pre>
+
+        <div class="warn">
+          <strong>引用类型赋值陷阱：</strong>
+          <pre><code><span class="kw">const</span> obj1 = &#123; name: <span class="st">'张三'</span> &#125;;
+<span class="kw">const</span> obj2 = obj1;          <span class="cm">// 复制的是地址，不是拷贝对象</span>
+obj2.name = <span class="st">'李四'</span>;
+<span class="vb">console</span>.log(obj1.name);    <span class="cm">// '李四'（因为 obj1 和 obj2 指向同一个对象！）</span>
+
+<span class="cm">// 如果需要真正拷贝：</span>
+<span class="kw">const</span> obj3 = &#123; ...obj1 &#125;;   <span class="cm">// 浅拷贝</span>
+<span class="kw">const</span> obj4 = <span class="vb">JSON</span>.parse(<span class="vb">JSON</span>.stringify(obj1)); <span class="cm">// 深拷贝（有局限性）</span></code></pre>
+        </div>
+
+        <h3 id="ch3-3">typeof — 查看数据类型</h3>
+        <table class="ref-table">
+          <tr><th>表达式</th><th>结果</th><th>说明</th></tr>
+          <tr><td><code>typeof 'hello'</code></td><td><code>'string'</code></td><td>字符串</td></tr>
+          <tr><td><code>typeof 42</code></td><td><code>'number'</code></td><td>数字</td></tr>
+          <tr><td><code>typeof true</code></td><td><code>'boolean'</code></td><td>布尔值</td></tr>
+          <tr><td><code>typeof undefined</code></td><td><code>'undefined'</code></td><td>未定义</td></tr>
+          <tr><td><code>typeof null</code></td><td><code>'object'</code></td><td>⚠️ 历史 bug</td></tr>
+          <tr><td><code>typeof &#123;&#125;</code></td><td><code>'object'</code></td><td>对象</td></tr>
+          <tr><td><code>typeof []</code></td><td><code>'object'</code></td><td>⚠️ 数组也是 object</td></tr>
+          <tr><td><code>typeof function()&#123;&#125;</code></td><td><code>'function'</code></td><td>函数是特例</td></tr>
+          <tr><td><code>typeof Symbol()</code></td><td><code>'symbol'</code></td><td>Symbol</td></tr>
+        </table>
+
+        <pre><code><span class="cm">// 判断数组不能用 typeof，要用 Array.isArray()</span>
+<span class="vb">Array</span>.isArray([]);            <span class="cm">// true</span>
+<span class="kw">typeof</span> [];                 <span class="cm">// 'object'（不准确）</span>
+
+<span class="cm">// 判断 null</span>
+<span class="kw">null</span> === <span class="kw">null</span>;              <span class="cm">// true （用 === 判断）</span>
+<span class="kw">typeof</span> <span class="kw">null</span>;               <span class="cm">// 'object'（不要用 typeof）</span>
+
+<span class="cm">// 判断 undefined</span>
+<span class="kw">typeof</span> undeclaredVar === <span class="st">'undefined'</span>;  <span class="cm">// true（不会报错！）</span>
+<span class="cm">// undeclaredVar === undefined  // ReferenceError （不能这样写）</span></code></pre>
+
+        <h3>类型转换</h3>
+        <pre><code><span class="cm">// === String → Number ===</span>
+<span class="vb">Number</span>(<span class="st">'42'</span>);      <span class="cm">// 42</span>
+<span class="vb">Number</span>(<span class="st">'3.14'</span>);    <span class="cm">// 3.14</span>
+<span class="vb">Number</span>(<span class="st">''</span>);        <span class="cm">// 0（空字符串转 0）</span>
+<span class="vb">Number</span>(<span class="st">'abc'</span>);     <span class="cm">// NaN（无法转换）</span>
+<span class="vb">Number</span>(<span class="kw">true</span>);      <span class="cm">// 1</span>
+<span class="vb">Number</span>(<span class="kw">false</span>);     <span class="cm">// 0</span>
+<span class="vb">Number</span>(<span class="kw">null</span>);      <span class="cm">// 0</span>
+<span class="vb">Number</span>(<span class="kw">undefined</span>); <span class="cm">// NaN</span>
+
+<span class="vb">parseInt</span>(<span class="st">'100px'</span>);   <span class="cm">// 100（从左解析，遇到非数字停）</span>
+<span class="vb">parseFloat</span>(<span class="st">'9.99美元'</span>); <span class="cm">// 9.99</span>
+
+<span class="cm">// === Number → String ===</span>
+<span class="vb">String</span>(<span class="nu">42</span>);        <span class="cm">// '42'</span>
+(<span class="nu">42</span>).toString();   <span class="cm">// '42'</span>
+<span class="st">''</span> + <span class="nu">42</span>;             <span class="cm">// '42'（隐式转换，不推荐，但实际很常用）</span>
+<span class="kw">`template <span class="nu">${42}</span>`</span>; <span class="cm">// 'template 42'</span>
+
+<span class="cm">// === 转 Boolean ===</span>
+<span class="vb">Boolean</span>(<span class="st">'hello'</span>);  <span class="cm">// true</span>
+<span class="vb">Boolean</span>(<span class="st">''</span>);        <span class="cm">// false（空字符串）</span>
+<span class="vb">Boolean</span>(<span class="nu">0</span>);         <span class="cm">// false</span>
+<span class="vb">Boolean</span>(<span class="nu">1</span>);         <span class="cm">// true</span>
+<span class="vb">Boolean</span>(<span class="kw">null</span>);      <span class="cm">// false</span>
+<span class="vb">Boolean</span>(<span class="kw">undefined</span>); <span class="cm">// false</span>
+<span class="vb">Boolean</span>(<span class="kw">NaN</span>);       <span class="cm">// false</span>
+<span class="vb">Boolean</span>([]);         <span class="cm">// true（空数组是 truthy！这是出了名的坑）</span>
+<span class="vb">Boolean</span>(&#123;&#125;);        <span class="cm">// true（空对象也是 truthy）</span>
+
+<span class="cm">// 常见写法：!! 转布尔</span>
+!!<span class="st">'hello'</span>;   <span class="cm">// true</span>
+!!<span class="st">''</span>;         <span class="cm">// false</span>
+!![];          <span class="cm">// true</span></code></pre>
+
+        <div class="danger">
+          <strong>类型转换大坑：</strong>
+          <pre><code><span class="cm">// [] → 0, [] + [] → ''</span>
+[] == ![];         <span class="cm">// true（因为 ![] = false, [] == false → 0 == 0）</span>
+<span class="cm">永远不要在项目中使用 == 做隐式比较，用 ===：</span>
+[] === ![];        <span class="cm">// false（类型不同直接 false）</span></code></pre>
+        </div>
+
+        <h3>实战：判断类型的正确姿势</h3>
+        <pre><code><span class="cm">// ========== 判断数组 ==========</span>
+<span class="cm">// ✅ 正确</span>
+<span class="vb">Array</span>.isArray([<span class="nu">1</span>, <span class="nu">2</span>]);     <span class="cm">// true</span>
+<span class="vb">Array</span>.isArray(<span class="st">'hello'</span>);      <span class="cm">// false</span>
+
+<span class="cm">// ❌ 错误</span>
+<span class="kw">typeof</span> [];  <span class="cm">// 'object'（无法区分 [] 和 &#123;&#125;）</span>
+
+<span class="cm">// ========== 判断 null ==========</span>
+<span class="cm">// ✅ 正确</span>
+value === <span class="kw">null</span>;           <span class="cm">// 严格等于 null</span>
+value === <span class="kw">undefined</span>;      <span class="cm">// 严格等于 undefined</span>
+value == <span class="kw">null</span>;            <span class="cm">// true 表示 null 或 undefined（宽松判断）</span>
+
+<span class="cm">// ❌ 错误</span>
+<span class="kw">typeof</span> <span class="kw">null</span>;  <span class="cm">// 'object'（历史 bug，不能用）</span>
+
+<span class="cm">// ========== 判断数字（排除 NaN） ==========</span>
+<span class="cm">// ✅ 正确</span>
+<span class="kw">typeof</span> value === <span class="st">'number'</span> && !<span class="vb">isNaN</span>(value);
+
+<span class="cm">// 更严格：有限数字</span>
+<span class="vb">Number</span>.isFinite(value);  <span class="cm">// 排除了 Infinity / NaN</span>
+
+<span class="cm">// ========== 判断空对象 ==========</span>
+<span class="kw">function</span> <span class="fn">isEmpty</span>(obj) {
+  <span class="kw">return</span> <span class="vb">Object</span>.keys(obj).length === <span class="nu">0</span>;
+&#125;
+isEmpty(&#123;&#125;);          <span class="cm">// true</span>
+isEmpty(&#123; a: <span class="nu">1</span> &#125;);     <span class="cm">// false</span>
+
+<span class="cm">// ========== 判断空数组 ==========</span>
+<span class="kw">function</span> <span class="fn">isEmptyArr</span>(arr) {
+  <span class="kw">return</span> <span class="vb">Array</span>.isArray(arr) && arr.length === <span class="nu">0</span>;
+&#125;</code></pre>
+
+        <h3>实战：深拷贝的几种方案</h3>
+        <pre><code><span class="cm">// 方式1：JSON 序列化（最常用，但有局限）</span>
+<span class="kw">const</span> original = &#123;
+  name: <span class="st">'张三'</span>,
+  age: <span class="nu">25</span>,
+  hobbies: [<span class="st">'读书'</span>, <span class="st">'写代码'</span>],
+  address: &#123; city: <span class="st">'北京'</span> &#125;
+&#125;;
+
+<span class="kw">const</span> copy = <span class="vb">JSON</span>.parse(<span class="vb">JSON</span>.stringify(original));
+copy.address.city = <span class="st">'上海'</span>;
+<span class="vb">console</span>.log(original.address.city);  <span class="cm">// '北京'（深拷贝成功）</span>
+
+<span class="cm">// ⚠️ JSON 深拷贝的局限性：</span>
+<span class="kw">const</span> withFunc = &#123;
+  name: <span class="st">'test'</span>,
+  fn: <span class="kw">function</span>() <span class="cm">return 1;</span>,
+  date: <span class="kw">new</span> <span class="vb">Date</span>(),
+  undef: <span class="kw">undefined</span>,
+  nan: <span class="vb">NaN</span>,
+  inf: <span class="vb">Infinity</span>,
+  regex: <span class="st">/abc/</span>
+&#125;;
+
+<span class="kw">const</span> bad = <span class="vb">JSON</span>.parse(<span class="vb">JSON</span>.stringify(withFunc));
+<span class="cm">// fn 没了 → undefined</span>
+<span class="cm">// date 变成字符串 → "2024-01-01T00:00:00.000Z"</span>
+<span class="cm">// undef 没了 → JSON 中 undefined 被忽略</span>
+<span class="cm">// nan → null, inf → null（NaN/Infinity 被转成 null）</span>
+<span class="cm">// regex → &#123;&#125;（正则变成空对象）</span>
+
+<span class="cm">// 方式2：structuredClone（现代浏览器，Node 17+）</span>
+<span class="kw">const</span> good2 = structuredClone(withFunc);
+<span class="cm">// 支持 Date/RegExp/Map/Set/ArrayBuffer</span>
+<span class="cm">// 仍然不支持函数</span>
+
+<span class="cm">// 方式3：手写递归深拷贝（面试题 + 老项目）</span>
+<span class="kw">function</span> <span class="fn">deepClone</span>(obj, map = <span class="kw">new</span> <span class="vb">WeakMap</span>()) {
+  <span class="cm">// 非对象或 null，直接返回</span>
+  <span class="kw">if</span> (obj === <span class="kw">null</span> || <span class="kw">typeof</span> obj !== <span class="st">'object'</span>) {
+    <span class="kw">return</span> obj;
+  &#125;
+
+  <span class="cm">// 防止循环引用</span>
+  <span class="kw">if</span> (map.has(obj)) {
+    <span class="kw">return</span> map.get(obj);
+  &#125;
+
+  <span class="cm">// 日期</span>
+  <span class="kw">if</span> (obj <span class="kw">instanceof</span> <span class="vb">Date</span>) <span class="kw">return</span> <span class="kw">new</span> <span class="vb">Date</span>(obj.getTime());
+
+  <span class="cm">// 正则</span>
+  <span class="kw">if</span> (obj <span class="kw">instanceof</span> <span class="vb">RegExp</span>) <span class="kw">return</span> <span class="kw">new</span> <span class="vb">RegExp</span>(obj);
+
+  <span class="cm">// 数组或对象</span>
+  <span class="kw">const</span> clone = <span class="vb">Array</span>.isArray(obj) ? [] : &#123;&#125;;
+  map.set(obj, clone);
+
+  <span class="kw">for</span> (<span class="kw">const</span> key <span class="kw">in</span> obj) {
+    <span class="kw">if</span> (obj.hasOwnProperty(key)) {
+      clone[key] = deepClone(obj[key], map);
+    &#125;
+  &#125;
+
+  <span class="kw">return</span> clone;
+&#125;</code></pre>
+
+        <h3>Java 后端对比：类型系统差异</h3>
+        <div class="tip">
+          <strong>为什么 JS 这么麻烦？</strong>Java 是编译时静态类型，<code>List&lt;String&gt;</code> 不可能塞进 Integer。JS 是运行时动态类型，变量类型随赋值变化，所以需要用 <code>typeof</code> / <code>instanceof</code> / <span class="cm">Array.isArray()</span> 做运行时判断。Vue 3 + TypeScript 的类型标注就是为了缓解这个问题，但它们只存在于编译阶段。
+        </div>
+
+        <table class="ref-table">
+          <tr><th>场景</th><th>Java</th><th>JavaScript</th></tr>
+          <tr><td>判断类型</td><td><code>x instanceof String</code></td><td><code>typeof x === 'string'</code></td></tr>
+          <tr><td>判空</td><td><code>x == null</code></td><td><code>x == null</code>（同时检查 null+undefined）</td></tr>
+          <tr><td>判空字符串</td><td><code>str == null || str.isEmpty()</code></td><td><code>!str</code>（''、null、undefined 都是 falsy）</td></tr>
+          <tr><td>类型转换</td><td><code>Integer.parseInt(str)</code></td><td><code>parseInt(str)</code> / <code>Number(str)</code></td></tr>
+          <tr><td>深拷贝</td><td><code>BeanUtils.copy()</code> / JSON 反序列化</td><td><code>structuredClone()</code> / <code>JSON</code> 赋值</td></tr>
+        </table>
+      </section>
+
+      <!-- ============================================================
+           第4章：运算符
+           ============================================================ -->
+      <section class="chapter" id="ch4">
+        <h2>第4章 · 运算符</h2>
+
+        <h3>算术与赋值运算符</h3>
+        <pre><code><span class="cm">// 算术运算符</span>
+<span class="nu">10</span> + <span class="nu">3</span>;    <span class="cm">// 13</span>
+<span class="nu">10</span> - <span class="nu">3</span>;    <span class="cm">// 7</span>
+<span class="nu">10</span> * <span class="nu">3</span>;    <span class="cm">// 30</span>
+<span class="nu">10</span> / <span class="nu">3</span>;    <span class="cm">// 3.3333...（JS 没有整数除法）</span>
+<span class="nu">10</span> % <span class="nu">3</span>;    <span class="cm">// 1（取余 / 取模）</span>
+<span class="nu">10</span> ** <span class="nu">3</span>;   <span class="cm">// 1000（幂运算，ES2016）</span>
+
+<span class="cm">// 自增/自减</span>
+<span class="kw">let</span> i = <span class="nu">0</span>;
+i++;          <span class="cm">// i = 1</span>
+i--;          <span class="cm">// i = 0</span>
+++i;          <span class="cm">// i = 1（前缀：先加后取）</span>
+i++;          <span class="cm">// i = 1（后缀：先取后加）</span>
+
+<span class="cm">// 赋值运算符</span>
+<span class="kw">let</span> x = <span class="nu">10</span>;
+x += <span class="nu">5</span>;   <span class="cm">// x = 15</span>
+x -= <span class="nu">3</span>;   <span class="cm">// x = 12</span>
+x *= <span class="nu">2</span>;   <span class="cm">// x = 24</span>
+x /= <span class="nu">4</span>;   <span class="cm">// x = 6</span>
+x %= <span class="nu">4</span>;   <span class="cm">// x = 2</span>
+x **= <span class="nu">3</span>;  <span class="cm">// x = 8</span></code></pre>
+
+        <h3 id="ch4-1">比较运算符（重要！）</h3>
+        <table class="ref-table">
+          <tr><th>运算符</th><th>含义</th><th>示例</th><th>结果</th></tr>
+          <tr><td><code>===</code></td><td>严格相等（类型+值）</td><td><code>'5' === 5</code></td><td><code>false</code></td></tr>
+          <tr><td><code>!==</code></td><td>严格不等</td><td><code>'5' !== 5</code></td><td><code>true</code></td></tr>
+          <tr><td><code>==</code></td><td>宽松相等（隐式转换）</td><td><code>'5' == 5</code></td><td><code>true</code></td></tr>
+          <tr><td><code>!=</code></td><td>宽松不等</td><td><code>'5' != 5</code></td><td><code>false</code></td></tr>
+          <tr><td><code>&gt;</code></td><td>大于</td><td><code>5 &gt; 3</code></td><td><code>true</code></td></tr>
+          <tr><td><code>&gt;=</code></td><td>大于等于</td><td><code>5 &gt;= 5</code></td><td><code>true</code></td></tr>
+          <tr><td><code>&lt;</code></td><td>小于</td><td><code>3 &lt; 5</code></td><td><code>true</code></td></tr>
+          <tr><td><code>&lt;=</code></td><td>小于等于</td><td><code>5 &lt;= 5</code></td><td><code>true</code></td></tr>
+        </table>
+
+        <div class="danger">
+          <strong>永远用 <code>===</code> 不用 <code>==</code>：</strong> <code>==</code> 会触发隐式类型转换，导致无数诡异的 bug。
+          <pre><code><span class="st">''</span> == <span class="st">'0'</span>;     <span class="cm">// false</span>
+<span class="nu">0</span> == <span class="st">''</span>;        <span class="cm">// true</span>
+<span class="nu">0</span> == <span class="st">'0'</span>;       <span class="cm">// true</span>
+<span class="kw">false</span> == <span class="st">'0'</span>;    <span class="cm">// true</span>
+<span class="kw">null</span> == <span class="kw">undefined</span>;  <span class="cm">// true</span>
+
+<span class="cm">// === 永远安全，不再有上述问题</span>
+<span class="nu">0</span> === <span class="st">'0'</span>;      <span class="cm">// false（类型不同）</span>
+<span class="kw">null</span> === <span class="kw">undefined</span>;  <span class="cm">// false</span></code></pre>
+        </div>
+
+        <h3 id="ch4-2">逻辑运算符与短路求值</h3>
+        <pre><code><span class="cm">// && 与：两边都为 true 才返回 true</span>
+<span class="kw">true</span> && <span class="kw">true</span>;     <span class="cm">// true</span>
+<span class="kw">true</span> && <span class="kw">false</span>;    <span class="cm">// false</span>
+
+<span class="cm">// || 或：一边为 true 就返回 true</span>
+<span class="kw">true</span> || <span class="kw">false</span>;    <span class="cm">// true</span>
+<span class="kw">false</span> || <span class="kw">false</span>;   <span class="cm">// false</span>
+
+<span class="cm">// ! 非：取反</span>
+!<span class="kw">true</span>;              <span class="cm">// false</span>
+
+<span class="cm">// && 短路：左边为 falsy 直接返回左边</span>
+<span class="kw">const</span> result = <span class="kw">user</span> && user.name;
+
+<span class="cm">// || 短路：左边为 falsy 返回右边（设置默认值）</span>
+<span class="kw">const</span> displayName = userName || <span class="st">'匿名'</span>;
+
+<span class="cm">// ?? 空值合并（ES2020）：只有 null/undefined 才用默认值</span>
+<span class="kw">const</span> count = data ?? <span class="nu">0</span>;
+<span class="nu">0</span> || <span class="nu">100</span>;  <span class="cm">// 100（0 被当成了 falsy）</span>
+<span class="nu">0</span> ?? <span class="nu">100</span>;  <span class="cm">// 0（0 不是 null/undefined）</span></code></pre>
+
+        <h3>可选链 <code>?.</code>（ES2020）</h3>
+        <pre><code><span class="kw">const</span> response = &#123; data: &#123; user: &#123; name: <span class="st">'张三'</span> &#125; &#125; &#125;;
+
+<span class="cm">// 以前的安全写法：</span>
+<span class="kw">const</span> old = response && response.data && response.data.user && response.data.user.name;
+
+<span class="cm">// 可选链写法：</span>
+<span class="kw">const</span> name = response?.data?.user?.name;  <span class="cm">// '张三'</span>
+<span class="kw">const</span> bad = response?.data?.xxx?.yyy;      <span class="cm">// undefined（不报错）</span>
+
+<span class="cm">// 配合 ?? 提供默认值</span>
+<span class="kw">const</span> city = response?.data?.user?.city ?? <span class="st">'未知'</span>;</code></pre>
+
+        <div class="tip">
+          <strong>Java 后端类比：</strong><code>response?.data?.user?.name</code> ≈ Java 的 Optional 链式调用 <code>.flatMap().map().orElse()</code>，但 JS 写法简洁得多。
+        </div>
+
+        <h3>三元运算符</h3>
+        <pre><code><span class="kw">const</span> age = <span class="nu">20</span>;
+<span class="kw">const</span> status = age >= <span class="nu">18</span> ? <span class="st">'成年'</span> : <span class="st">'未成年'</span>;  <span class="cm">// '成年'</span>
+
+<span class="cm">// 嵌套三元（多于两层建议用 if）</span>
+<span class="kw">const</span> level = score >= <span class="nu">90</span> ? <span class="st">'A'</span> : score >= <span class="nu">80</span> ? <span class="st">'B'</span> : <span class="st">'C'</span>;</code></pre>
+
+        <h3>短路运算实战模式（Vue/React 项目高频使用）</h3>
+        <pre><code><span class="cm">// ========== 模式1：条件渲染 ==========</span>
+<span class="cm">// Vue 模板: &lt;div v-if="user"&gt;&#123;&#123; user.name &#125;&#125;&lt;/div&gt;</span>
+<span class="cm">// JS 等价写法：</span>
+<span class="kw">const</span> displayName = user && user.name;
+<span class="cm">// user 为 null → displayName = null（不会报错）</span>
+<span class="cm">// user 有值 → displayName = user.name</span>
+
+<span class="cm">// ========== 模式2：设置默认值 ==========</span>
+<span class="cm">// ⚠️ || 会把 0、''、false 也当"空"</span>
+<span class="kw">const</span> pageSize = query.pageSize || <span class="nu">10</span>;       <span class="cm">// 如果 pageSize = 0，会取 10（错！）</span>
+<span class="kw">const</span> pageSize2 = query.pageSize ?? <span class="nu">10</span>;      <span class="cm">// 如果 pageSize = 0，正确取 0</span>
+<span class="kw">const</span> keyword = query.keyword ?? <span class="st">''</span>;        <span class="cm">// 如果 keyword = ''，正确取 ''</span>
+
+<span class="cm">// ========== 模式3：条件执行 ==========</span>
+<span class="cm">// 点击时才执行（类似 if 的简写）</span>
+isLoggedIn && showUserPanel();
+<span class="cm">// 等价于：if (isLoggedIn) showUserPanel();</span>
+
+hasError && <span class="vb">console</span>.error(errorMessage);
+<span class="cm">// 等价于：if (hasError) console.error(errorMessage);</span>
+
+<span class="cm">// ========== 模式4：Vue/React 中的 JSX 条件渲染 ==========</span>
+<span class="cm">// React JSX:</span>
+<span class="cm">// &#123;isLoading && &lt;Spinner /&gt;&#125;          // 加载中显示 Spinner</span>
+<span class="cm">// &#123;isLoading ? &lt;Spinner /&gt; : &lt;Content /&gt;&#125; // 二选一</span>
+<span class="cm">// &#123;user?.name ?? '匿名'&#125;               // 有值显示 name，否则显示 匿名</span>
+
+<span class="cm">// ========== 模式5：多层安全访问 ==========</span>
+<span class="cm">// 从接口拿到的数据可能是：</span>
+<span class="cm">// response = &#123; data: &#123; user: &#123; address: &#123; city: '北京' &#125; &#125; &#125; &#125;</span>
+<span class="cm">// 任何一层都可能为 null/undefined:</span>
+<span class="kw">const</span> city = response?.data?.user?.address?.city ?? <span class="st">'未知城市'</span>;
+<span class="cm">// 有一层是 null/undefined → '未知城市'（全程不报错）</span>
+
+<span class="cm">// ========== 模式6：链式调用安全写法 ==========</span>
+<span class="cm">// 接口返回的 list 可能是 undefined</span>
+<span class="kw">const</span> firstItem = response?.data?.list?.[<span class="nu">0</span>]; <span class="cm">// 可选链 + 数组索引</span>
+<span class="kw">const</span> name = response?.data?.users?.find(u => u.id === <span class="nu">1</span>)?.name;</code></pre>
+
+        <h3>位运算符（了解即可，面试偶尔考）</h3>
+        <pre><code><span class="cm">// 位运算在 Web 开发中很少用，但需要能看懂：</span>
+
+<span class="cm">// | 0 取整（等价于 Math.trunc，但更短）</span>
+<span class="nu">3.7</span> | <span class="nu">0</span>;              <span class="cm">// 3</span>
+-<span class="nu">3.7</span> | <span class="nu">0</span>;             <span class="cm">// -3</span>
+<span class="vb">Math</span>.trunc(<span class="nu">3.7</span>);      <span class="cm">// 3（更规范）</span>
+
+<span class="cm">// ~~ 取整（同上）</span>
+~~<span class="nu">3.7</span>;                <span class="cm">// 3</span>
+
+<span class="cm">// &gt;&gt; 1 除以 2（位操作）</span>
+<span class="nu">8</span> >> <span class="nu">1</span>;              <span class="cm">// 4</span>
+<span class="nu">8</span> >> <span class="nu">2</span>;              <span class="cm">// 2</span></code></pre>
+      </section>
+
+      <!-- ============================================================
+           第5章：流程控制
+           ============================================================ -->
+      <section class="chapter" id="ch5">
+        <h2>第5章 · 流程控制</h2>
+
+        <h3>if / else if / else</h3>
+        <pre><code><span class="kw">const</span> score = <span class="nu">85</span>;
+
+<span class="kw">if</span> (score >= <span class="nu">90</span>) {
+  <span class="vb">console</span>.log(<span class="st">'优秀'</span>);
+&#125; <span class="kw">else if</span> (score >= <span class="nu">80</span>) {
+  <span class="vb">console</span>.log(<span class="st">'良好'</span>);   <span class="cm">// 输出这个</span>
+&#125; <span class="kw">else if</span> (score >= <span class="nu">60</span>) {
+  <span class="vb">console</span>.log(<span class="st">'及格'</span>);
+&#125; <span class="kw">else</span> {
+  <span class="vb">console</span>.log(<span class="st">'不及格'</span>);
+&#125;</code></pre>
+
+        <h3>switch</h3>
+        <pre><code><span class="kw">const</span> role = <span class="st">'admin'</span>;
+
+<span class="kw">switch</span> (role) {
+  <span class="kw">case</span> <span class="st">'admin'</span>:
+    <span class="vb">console</span>.log(<span class="st">'管理员'</span>);
+    <span class="kw">break</span>;  <span class="cm">// ⚠️ 不写 break 会继续执行下一个 case</span>
+  <span class="kw">case</span> <span class="st">'editor'</span>:
+    <span class="vb">console</span>.log(<span class="st">'编辑'</span>);
+    <span class="kw">break</span>;
+  <span class="kw">default</span>:
+    <span class="vb">console</span>.log(<span class="st">'未知角色'</span>);
+&#125;</code></pre>
+
+        <h3>for 循环</h3>
+        <pre><code><span class="cm">// 1. 标准 for</span>
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="nu">0</span>; i &lt; <span class="nu">5</span>; i++) {
+  <span class="vb">console</span>.log(i);  <span class="cm">// 0, 1, 2, 3, 4</span>
+&#125;
+
+<span class="cm">// 2. for...of：遍历值（推荐）</span>
+<span class="kw">const</span> colors = [<span class="st">'red'</span>, <span class="st">'green'</span>, <span class="st">'blue'</span>];
+<span class="kw">for</span> (<span class="kw">const</span> color <span class="kw">of</span> colors) {
+  <span class="vb">console</span>.log(color);
+&#125;
+
+<span class="cm">// 3. for...in：遍历对象的键名</span>
+<span class="kw">const</span> user = &#123; name: <span class="st">'张三'</span>, age: <span class="nu">25</span> &#125;;
+<span class="kw">for</span> (<span class="kw">const</span> key <span class="kw">in</span> user) {
+  <span class="vb">console</span>.log(key, user[key]);
+&#125;</code></pre>
+
+        <div class="warn">
+          <strong>for...in vs for...of：</strong>for...in 遍历的是索引/键（string 类型），for...of 遍历的是值。数组通常用 for...of，因为 for...in 会遍历原型上的属性。
+        </div>
+
+        <h3>while / break / continue</h3>
+        <pre><code><span class="cm">// while：先判断再执行</span>
+<span class="kw">let</span> i = <span class="nu">0</span>;
+<span class="kw">while</span> (i &lt; <span class="nu">3</span>) {
+  <span class="vb">console</span>.log(i);  <span class="cm">// 0, 1, 2</span>
+  i++;
+&#125;
+
+<span class="cm">// break：跳出整个循环</span>
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="nu">0</span>; i &lt; <span class="nu">10</span>; i++) {
+  <span class="kw">if</span> (i === <span class="nu">5</span>) <span class="kw">break</span>;
+  <span class="vb">console</span>.log(i);  <span class="cm">// 0, 1, 2, 3, 4</span>
+&#125;
+
+<span class="cm">// continue：跳过本轮</span>
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="nu">0</span>; i &lt; <span class="nu">5</span>; i++) {
+  <span class="kw">if</span> (i === <span class="nu">2</span>) <span class="kw">continue</span>;
+  <span class="vb">console</span>.log(i);  <span class="cm">// 0, 1, 3, 4</span>
+&#125;</code></pre>
+      </section>
+
+      <!-- ============================================================
+           第6章：字符串
+           ============================================================ -->
+      <section class="chapter" id="ch6">
+        <h2>第6章 · 字符串</h2>
+
+        <h3>模板字符串（最重要！）</h3>
+        <pre><code><span class="kw">const</span> name = <span class="st">'吕鑫宇'</span>;
+<span class="kw">const</span> city = <span class="st">'北京'</span>;
+<span class="kw">const</span> age = <span class="nu">25</span>;
+
+<span class="cm">// 模板字符串：反引号包裹，$&#123;&#125; 插值（推荐！）</span>
+<span class="kw">const</span> msg = <span class="st">`我叫<span class="kw">${name}</span>，来自<span class="kw">${city}</span>，今年<span class="kw">${age}</span>岁`</span>;
+<span class="cm">// → "我叫吕鑫宇，来自北京，今年25岁"</span>
+
+<span class="cm">// 支持多行和表达式</span>
+<span class="kw">const</span> html = <span class="st">`
+  &lt;div class="card"&gt;
+    &lt;h2&gt;<span class="kw">${name}</span>&lt;/h2&gt;
+    &lt;p&gt;<span class="kw">${age >= 18 ? '成年' : '未成年'}</span>&lt;/p&gt;
+  &lt;/div&gt;
+`</span>;</code></pre>
+
+        <h3>常用方法速查</h3>
+        <table class="ref-table">
+          <tr><th>方法</th><th>说明</th><th>示例</th><th>结果</th></tr>
+          <tr><td><code>.length</code></td><td>字符串长度</td><td><code>'abc'.length</code></td><td><code>3</code></td></tr>
+          <tr><td><code>.toUpperCase()</code></td><td>转大写</td><td><code>'abc'.toUpperCase()</code></td><td><code>'ABC'</code></td></tr>
+          <tr><td><code>.toLowerCase()</code></td><td>转小写</td><td><code>'ABC'.toLowerCase()</code></td><td><code>'abc'</code></td></tr>
+          <tr><td><code>.trim()</code></td><td>去首尾空格</td><td><code>' hi '.trim()</code></td><td><code>'hi'</code></td></tr>
+          <tr><td><code>.includes(s)</code></td><td>是否包含 s</td><td><code>'hello'.includes('ell')</code></td><td><code>true</code></td></tr>
+          <tr><td><code>.startsWith(s)</code></td><td>是否以 s 开头</td><td><code>'hello'.startsWith('he')</code></td><td><code>true</code></td></tr>
+          <tr><td><code>.endsWith(s)</code></td><td>是否以 s 结尾</td><td><code>'hello'.endsWith('lo')</code></td><td><code>true</code></td></tr>
+          <tr><td><code>.indexOf(s)</code></td><td>首次出现的索引</td><td><code>'hello'.indexOf('l')</code></td><td><code>2</code></td></tr>
+          <tr><td><code>.replace(a,b)</code></td><td>替换第一个</td><td><code>'aaa'.replace('a','b')</code></td><td><code>'baa'</code></td></tr>
+          <tr><td><code>.replaceAll(a,b)</code></td><td>替换所有</td><td><code>'aaa'.replaceAll('a','b')</code></td><td><code>'bbb'</code></td></tr>
+          <tr><td><code>.split(sep)</code></td><td>按 sep 分割成数组</td><td><code>'a,b,c'.split(',')</code></td><td><code>['a','b','c']</code></td></tr>
+          <tr><td><code>.substring(i,j)</code></td><td>截取 [i, j)</td><td><code>'hello'.substring(1,4)</code></td><td><code>'ell'</code></td></tr>
+          <tr><td><code>.slice(i,j)</code></td><td>截取 [i,j)，支持负数</td><td><code>'hello'.slice(-3)</code></td><td><code>'llo'</code></td></tr>
+          <tr><td><code>.repeat(n)</code></td><td>重复 n 次</td><td><code>'ab'.repeat(3)</code></td><td><code>'ababab'</code></td></tr>
+          <tr><td><code>.padStart(n,c)</code></td><td>前填充到长度 n</td><td><code>'5'.padStart(3,'0')</code></td><td><code>'005'</code></td></tr>
+          <tr><td><code>.padEnd(n,c)</code></td><td>后填充到长度 n</td><td><code>'5'.padEnd(3,'0')</code></td><td><code>'500'</code></td></tr>
+        </table>
+
+        <h3>正则表达式（前端必备）</h3>
+        <pre><code><span class="cm">// ========== 创建正则 ==========</span>
+<span class="kw">const</span> re1 = <span class="st">/abc/</span>;            <span class="cm">// 字面量（推荐）</span>
+<span class="kw">const</span> re2 = <span class="kw">new</span> <span class="vb">RegExp</span>(<span class="st">'abc'</span>); <span class="cm">// 构造函数（用于动态创建）</span>
+<span class="kw">const</span> re3 = <span class="kw">new</span> <span class="vb">RegExp</span>(prefix + <span class="st">'\\.js'</span>); <span class="cm">// 动态拼接</span>
+
+<span class="cm">// ========== 常用正则速查 ==========</span>
+<span class="st">/^\d+$/</span>;              <span class="cm">// 纯数字</span>
+<span class="st">/^[a-zA-Z]+$/</span>;        <span class="cm">// 纯字母</span>
+<span class="st">/^[a-zA-Z0-9_]+$/</span>;    <span class="cm">// 字母数字下划线（用户名）</span>
+<span class="st">/^1[3-9]\d&#123;9&#125;$/</span>;        <span class="cm">// 中国手机号</span>
+<span class="st">/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]&#123;2,&#125;$/</span>; <span class="cm">// 邮箱</span>
+<span class="st">/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]&#123;8,&#125;$/</span>; <span class="cm">// 密码：8位以上+大小写+数字</span>
+<span class="st">/^[\u4e00-\u9fa5]+$/</span>;  <span class="cm">// 纯中文</span>
+<span class="st">/^\d&#123;15&#125;|\d&#123;18&#125;$/</span>;      <span class="cm">// 身份证（15或18位）</span>
+
+<span class="cm">// ========== 正则方法 ==========</span>
+<span class="st">/hello/</span>.test(<span class="st">'hello world'</span>);  <span class="cm">// true（是否匹配）</span>
+<span class="st">/l/</span>.exec(<span class="st">'hello'</span>);             <span class="cm">// ['l', index: 2, ...]</span>
+
+<span class="cm">// ========== 字符串的正则方法 ==========</span>
+<span class="st">'hello world'</span>.match(<span class="st">/o/</span>);     <span class="cm">// ['o', index: 4]</span>
+<span class="st">'hello world'</span>.match(<span class="st">/o/g</span>);    <span class="cm">// ['o', 'o']（全局匹配）</span>
+<span class="st">'hello world'</span>.search(<span class="st">/o/</span>);   <span class="cm">// 4（首次匹配的索引）</span>
+<span class="st">'hello world'</span>.replace(<span class="st">/o/</span>, <span class="st">'0'</span>);   <span class="cm">// 'hell0 world'</span>
+<span class="st">'hello world'</span>.replace(<span class="st">/o/g</span>, <span class="st">'0'</span>);  <span class="cm">// 'hell0 w0rld'</span>
+<span class="st">'a,b,c'</span>.split(<span class="st">/,/</span>);              <span class="cm">// ['a','b','c']（正则分割）</span>
+<span class="st">'a1b2c3'</span>.split(<span class="st">/\d/</span>);            <span class="cm">// ['a','b','c']（按数字分割）</span>
+
+<span class="cm">// ========== 捕获组 ==========</span>
+<span class="kw">const</span> dateMatch = <span class="st">'2024-03-15'</span>.match(<span class="st">/(\d&#123;4&#125;)-(\d&#123;2&#125;)-(\d&#123;2&#125;)/</span>);
+<span class="cm">// dateMatch[0] = '2024-03-15'（完整匹配）</span>
+<span class="cm">// dateMatch[1] = '2024'（第1组）</span>
+<span class="cm">// dateMatch[2] = '03'（第2组）</span>
+<span class="cm">// dateMatch[3] = '15'（第3组）</span>
+
+<span class="cm">// ========== 命名捕获组（ES2018） ==========</span>
+<span class="kw">const</span> m = <span class="st">'2024-03-15'</span>.match(<span class="st">/(?&lt;year&gt;\d&#123;4&#125;)-(?&lt;month&gt;\d&#123;2&#125;)-(?&lt;day&gt;\d&#123;2&#125;)/</span>);
+m.groups.year;   <span class="cm">// '2024'</span>
+m.groups.month;  <span class="cm">// '03'</span>
+m.groups.day;    <span class="cm">// '15'</span>
+
+<span class="cm">// ========== 常用标志 ==========</span>
+<span class="st">/hello/i</span>;   <span class="cm">// i = 忽略大小写</span>
+<span class="st">/hello/g</span>;   <span class="cm">// g = 全局匹配</span>
+<span class="st">/hello/m</span>;   <span class="cm">// m = 多行模式</span>
+<span class="st">/hello/s</span>;   <span class="cm">// s = 点号匹配换行</span>
+<span class="st">/hello/gi</span>;  <span class="cm">// 组合使用</span></code></pre>
+
+        <h3>实战：表单校验常用正则</h3>
+        <pre><code><span class="cm">// 手机号校验</span>
+<span class="kw">function</span> <span class="fn">isValidPhone</span>(phone) {
+  <span class="kw">return</span> <span class="st">/^1[3-9]\d&#123;9&#125;$/</span>.test(phone);
+&#125;
+isValidPhone(<span class="st">'1*********8'</span>); <span class="cm">// true</span>
+isValidPhone(<span class="st">'123'</span>);           <span class="cm">// false</span>
+
+<span class="cm">// 邮箱校验</span>
+<span class="kw">function</span> <span class="fn">isValidEmail</span>(email) {
+  <span class="kw">return</span> <span class="st">/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]&#123;2,&#125;$/</span>.test(email);
+&#125;
+
+<span class="cm">// 密码强度校验（8位以上，含大小写+数字）</span>
+<span class="kw">function</span> <span class="fn">isStrongPassword</span>(pwd) {
+  <span class="kw">return</span> <span class="st">/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]&#123;8,&#125;$/</span>.test(pwd);
+&#125;
+isStrongPassword(<span class="st">'Abc12345'</span>);  <span class="cm">// true</span>
+isStrongPassword(<span class="st">'abc12345'</span>);  <span class="cm">// false（没有大写）</span>
+
+<span class="cm">// 提取 URL 参数</span>
+<span class="kw">function</span> <span class="fn">getUrlParam</span>(url, key) {
+  <span class="kw">const</span> match = url.match(<span class="kw">new</span> <span class="vb">RegExp</span>(<span class="st">`[?&]${key}=([^&]*)`</span>));
+  <span class="kw">return</span> match ? decodeURIComponent(match[<span class="nu">1</span>]) : <span class="kw">null</span>;
+&#125;
+getUrlParam(<span class="st">'https://example.com?name=张三&age=25'</span>, <span class="st">'name'</span>);
+<span class="cm">// → '张三'</span>
+
+<span class="cm">// 格式化金额（千分位）</span>
+<span class="kw">function</span> <span class="fn">formatMoney</span>(num) {
+  <span class="kw">return</span> num.toString().replace(<span class="st">/\B(?=(\d&#123;3&#125;)+(?!\d))/g</span>, <span class="st">','</span>);
+&#125;
+formatMoney(<span class="nu">1234567</span>);  <span class="cm">// '1,234,567'</span>
+
+<span class="cm">// 脱敏手机号 138****5678</span>
+<span class="kw">function</span> <span class="fn">maskPhone</span>(phone) {
+  <span class="kw">return</span> phone.replace(<span class="st">/(\d&#123;3&#125;)\d&#123;4&#125;(\d&#123;4&#125;)/</span>, <span class="st">'$1****$2'</span>);
+&#125;
+maskPhone(<span class="st">'1*********8'</span>); <span class="cm">// '138****5678'</span></code></pre>
+
+        <h3>字符串比较与排序</h3>
+        <pre><code><span class="cm">// 字符串比较（按 Unicode 码点）</span>
+<span class="st">'a'</span> &lt; <span class="st">'b'</span>;     <span class="cm">// true</span>
+<span class="st">'A'</span> &lt; <span class="st">'a'</span>;     <span class="cm">// true（大写字母码点小于小写）</span>
+<span class="st">'2'</span> &lt; <span class="st">'10'</span>;    <span class="cm">// false！字符串比较 '2' > '1'（字典序）</span>
+
+<span class="cm">// 数字排序必须传比较函数</span>
+[<span class="nu">1</span>, <span class="nu">10</span>, <span class="nu">2</span>, <span class="nu">21</span>].sort();                  <span class="cm">// [1, 10, 2, 21]（字典序，错！）</span>
+[<span class="nu">1</span>, <span class="nu">10</span>, <span class="nu">2</span>, <span class="nu">21</span>].sort((a, b) => a - b); <span class="cm">// [1, 2, 10, 21]（数字序，对）</span>
+
+<span class="cm">// 中文排序用 localeCompare</span>
+[<span class="st">'张三'</span>, <span class="st">'李四'</span>, <span class="st">'王五'</span>].sort();
+<span class="cm">// 可能不是拼音顺序（取决于浏览器实现）</span>
+
+[<span class="st">'张三'</span>, <span class="st">'李四'</span>, <span class="st">'王五'</span>].sort((a, b) => a.localeCompare(b, <span class="st">'zh-CN'</span>));
+<span class="cm">// ['李四', '王五', '张三']（拼音顺序）</span>
+
+<span class="cm">// 不区分大小写比较</span>
+<span class="st">'Hello'</span>.toLowerCase() === <span class="st">'hello'</span>.toLowerCase(); <span class="cm">// true</span>
+<span class="st">'Hello'</span>.localeCompare(<span class="st">'hello'</span>, <span class="st">'en'</span>, &#123; sensitivity: <span class="st">'base'</span> &#125;) === <span class="nu">0</span>; <span class="cm">// true</span></code></pre>
+      </section>
+
+      <!-- ============================================================
+           第7章：数组
+           ============================================================ -->
+      <section class="chapter" id="ch7">
+        <h2>第7章 · 数组</h2>
+
+        <h3 id="ch7-1">创建、访问、增删</h3>
+        <pre><code><span class="cm">// 创建</span>
+<span class="kw">const</span> nums = [<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">3</span>, <span class="nu">4</span>, <span class="nu">5</span>];
+<span class="kw">const</span> sized = <span class="kw">new</span> <span class="vb">Array</span>(<span class="nu">5</span>);   <span class="cm">// [empty × 5]，长度 5 的空数组</span>
+
+<span class="cm">// 访问</span>
+nums[<span class="nu">0</span>];                  <span class="cm">// 1</span>
+nums[nums.length - <span class="nu">1</span>];       <span class="cm">// 5（首个元素）</span>
+
+<span class="cm">// 末尾操作（效率最高）</span>
+nums.push(<span class="nu">6</span>);    <span class="cm">// 末尾添加。nums = [1,2,3,4,5,6]</span>
+nums.pop();      <span class="cm">// 末尾删除，返回被删元素</span>
+
+<span class="cm">// 开头操作（效率低，要挪动所有元素）</span>
+nums.unshift(<span class="nu">0</span>); <span class="cm">// 开头添加</span>
+nums.shift();    <span class="cm">// 开头删除</span>
+
+<span class="cm">// splice：万能手术刀（添加/删除/替换任意位置）</span>
+<span class="kw">const</span> arr = [<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">3</span>, <span class="nu">4</span>, <span class="nu">5</span>];
+arr.splice(<span class="nu">2</span>, <span class="nu">1</span>);           <span class="cm">// 从索引2删1个 → [1,2,4,5]</span>
+arr.splice(<span class="nu">1</span>, <span class="nu">0</span>, <span class="st">'a'</span>);       <span class="cm">// 从索引1插入 → [1,'a',2,4,5]</span>
+arr.splice(<span class="nu">1</span>, <span class="nu">1</span>, <span class="st">'x'</span>, <span class="st">'y'</span>);  <span class="cm">// 替换 → [1,'x','y',2,4,5]</span></code></pre>
+
+        <h3 id="ch7-2">高阶函数（重点！）— 不改变原数组</h3>
+
+        <table class="ref-table">
+          <tr><th>方法</th><th>作用</th><th>返回值</th></tr>
+          <tr><td><code>filter(fn)</code></td><td>保留 fn 返回 true 的项</td><td>新数组</td></tr>
+          <tr><td><code>map(fn)</code></td><td>每个元素变换为新形式</td><td>新数组</td></tr>
+          <tr><td><code>find(fn)</code></td><td>找第一个满足条件的元素</td><td>元素 / undefined</td></tr>
+          <tr><td><code>findIndex(fn)</code></td><td>找第一个满足条件的索引</td><td>索引 / -1</td></tr>
+          <tr><td><code>some(fn)</code></td><td>是否有元素满足条件</td><td>boolean</td></tr>
+          <tr><td><code>every(fn)</code></td><td>是否全部满足条件</td><td>boolean</td></tr>
+          <tr><td><code>reduce(fn, init)</code></td><td>把数组"压缩"为单值</td><td>归约值</td></tr>
+        </table>
+
+        <pre><code><span class="kw">const</span> stores = [
+  &#123; id: <span class="nu">1</span>, name: <span class="st">'门店A'</span>, sales: <span class="nu">12000</span>, city: <span class="st">'北京'</span>, status: <span class="st">'营业中'</span> &#125;,
+  &#123; id: <span class="nu">2</span>, name: <span class="st">'门店B'</span>, sales: <span class="nu">8000</span>, city: <span class="st">'上海'</span>, status: <span class="st">'休息中'</span> &#125;,
+  &#123; id: <span class="nu">3</span>, name: <span class="st">'门店C'</span>, sales: <span class="nu">15000</span>, city: <span class="st">'北京'</span>, status: <span class="st">'营业中'</span> &#125;,
+  &#123; id: <span class="nu">4</span>, name: <span class="st">'门店D'</span>, sales: <span class="nu">5000</span>, city: <span class="st">'广州'</span>, status: <span class="st">'营业中'</span> &#125;
+];
+
+<span class="cm">// filter：找出所有营业中的门店</span>
+stores.filter(s => s.status === <span class="st">'营业中'</span>); <span class="cm">// 3 条</span>
+
+<span class="cm">// map：只要名称数组</span>
+stores.map(s => s.name); <span class="cm">// ['门店A','门店B','门店C','门店D']</span>
+
+<span class="cm">// find：找第一个销售额 > 10000 的</span>
+stores.find(s => s.sales > <span class="nu">10000</span>); <span class="cm">// &#123; id: 1, name: '门店A', ... &#125;</span>
+
+<span class="cm">// reduce：计算总销售额</span>
+stores.reduce((sum, s) => sum + s.sales, <span class="nu">0</span>); <span class="cm">// 40000</span>
+
+<span class="cm">// 链式调用：filter + map（最常用组合）</span>
+stores
+  .filter(s => s.city === <span class="st">'北京'</span>)
+  .map(s => (&#123; ...s, isPremium: s.sales > <span class="nu">10000</span> &#125;));
+
+<span class="cm">// sort 排序（会改变原数组，先复制！）</span>
+[...stores].sort((a, b) => b.sales - a.sales);  <span class="cm">// 销售额降序</span>
+
+<span class="cm">// join：数组 → 字符串</span>
+[<span class="st">'北京'</span>, <span class="st">'上海'</span>].join(<span class="st">'、'</span>); <span class="cm">// '北京、上海'</span>
+
+<span class="cm">// includes：是否包含</span>
+[<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">3</span>].includes(<span class="nu">2</span>); <span class="cm">// true</span></code></pre>
+
+        <div class="warn">
+          <strong>sort 会改变原数组！</strong>不想改变就 <code>[...arr].sort(...)</code> 或 <code>arr.toSorted(...)</code>（ES2023）
+        </div>
+
+        <h3>实战：reduce 高阶用法</h3>
+        <pre><code><span class="kw">const</span> orders = [
+  &#123; id: <span class="nu">1</span>, category: <span class="st">'食品'</span>, amount: <span class="nu">120</span>, status: <span class="st">'已完成'</span> &#125;,
+  &#123; id: <span class="nu">2</span>, category: <span class="st">'服装'</span>, amount: <span class="nu">299</span>, status: <span class="st">'待发货'</span> &#125;,
+  &#123; id: <span class="nu">3</span>, category: <span class="st">'食品'</span>, amount: <span class="nu">55</span>, status: <span class="st">'已完成'</span> &#125;,
+  &#123; id: <span class="nu">4</span>, category: <span class="st">'电子'</span>, amount: <span class="nu">1999</span>, status: <span class="st">'已完成'</span> &#125;,
+  &#123; id: <span class="nu">5</span>, category: <span class="st">'服装'</span>, amount: <span class="nu">450</span>, status: <span class="st">'待发货'</span> &#125;,
+  &#123; id: <span class="nu">6</span>, category: <span class="st">'食品'</span>, amount: <span class="nu">88</span>, status: <span class='st'>'已取消'</span> &#125;
+];
+
+<span class="cm">// ========== 1. 数组转对象（id → item） ==========</span>
+<span class="kw">const</span> orderMap = orders.reduce((map, o) => &#123;
+  map[o.id] = o;
+  <span class="kw">return</span> map;
+&#125;, &#123;&#125;);
+<span class="cm">// orderMap[1] = &#123; id: 1, category: '食品', ... &#125;</span>
+
+<span class="cm">// ========== 2. 按字段分组（类似 SQL GROUP BY） ==========</span>
+<span class="kw">const</span> grouped = orders.reduce((acc, o) => &#123;
+  <span class="kw">const</span> key = o.category;
+  <span class="kw">if</span> (!acc[key]) acc[key] = [];
+  acc[key].push(o);
+  <span class="kw">return</span> acc;
+&#125;, &#123;&#125;);
+<span class="cm">// grouped = &#123;</span>
+<span class="cm">//   食品: [&#123;id:1&#125;, &#123;id:3&#125;, &#123;id:6&#125;],</span>
+<span class="cm">//   服装: [&#123;id:2&#125;, &#123;id:5&#125;],</span>
+<span class="cm">//   电子: [&#123;id:4&#125;]</span>
+<span class="cm">// &#125;</span>
+
+<span class="cm">// 更优雅分组（使用 nullish coalescing）</span>
+<span class="kw">const</span> group2 = orders.reduce((acc, o) => &#123;
+  (acc[o.category] ??= []).push(o);
+  <span class="kw">return</span> acc;
+&#125;, &#123;&#125;);
+
+<span class="cm">// ========== 3. 同时计算多个统计量 ==========</span>
+<span class="kw">const</span> stats = orders.reduce((acc, o) => acc + o.amount, <span class="nu">0</span>);
+<span class="cm">// 只有一次 reduce 拿到总和</span>
+
+<span class="cm">// 更复杂的：一次遍历拿多个统计值</span>
+<span class="kw">const</span> &#123; total, count, avg, max, min &#125; = orders.reduce(
+  (acc, o) => &#123;
+    acc.total += o.amount;
+    acc.count += <span class="nu">1</span>;
+    acc.max = <span class="vb">Math</span>.max(acc.max, o.amount);
+    acc.min = <span class="vb">Math</span>.min(acc.min, o.amount);
+    acc.avg = acc.total / acc.count;
+    <span class="kw">return</span> acc;
+  &#125;,
+  &#123; total: <span class="nu">0</span>, count: <span class="nu">0</span>, max: -<span class="vb">Infinity</span>, min: <span class="vb">Infinity</span>, avg: <span class="nu">0</span> &#125;
+);
+
+<span class="cm">// ========== 4. 计算每个分类的销售额 ==========</span>
+<span class="kw">const</span> salesByCategory = orders.reduce((acc, o) => &#123;
+  acc[o.category] = (acc[o.category] || <span class="nu">0</span>) + o.amount;
+  <span class="kw">return</span> acc;
+&#125;, &#123;&#125;);
+<span class="cm">// &#123; 食品: 263, 服装: 749, 电子: 1999 &#125;</span>
+
+<span class="cm">// ========== 5. 按状态统计数量 ==========</span>
+<span class="kw">const</span> statusCount = orders.reduce((acc, o) => &#123;
+  acc[o.status] = (acc[o.status] || <span class="nu">0</span>) + <span class="nu">1</span>;
+  <span class="kw">return</span> acc;
+&#125;, &#123;&#125;);
+<span class="cm">// &#123; '已完成': 3, '待发货': 2, '已取消': 1 &#125;</span></code></pre>
+
+        <h3>实战：数组高频操作</h3>
+        <pre><code><span class="cm">// ========== 1. 数组去重 ==========</span>
+<span class="cm">// Set 去重（最简单）</span>
+[<span class="kw">new</span> <span class="vb">Set</span>([<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">2</span>, <span class="nu">3</span>, <span class="nu">3</span>])];  <span class="cm">// [1, 2, 3]</span>
+
+<span class="cm">// filter 去重（兼容性好）</span>
+[<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">2</span>, <span class="nu">3</span>].filter((v, i, arr) => arr.indexOf(v) === i); <span class="cm">// [1, 2, 3]</span>
+
+<span class="cm">// ========== 2. 对象数组去重（按某个字段） ==========</span>
+<span class="kw">const</span> users3 = [
+  &#123; id: <span class="nu">1</span>, name: <span class="st">'张三'</span> &#125;, &#123; id: <span class="nu">2</span>, name: <span class="st">'李四'</span> &#125;, &#123; id: <span class="nu">1</span>, name: <span class="st">'张三2'</span> &#125;
+];
+
+<span class="kw">const</span> uniqueById = users3.filter(
+  (u, i, arr) => arr.findIndex(x => x.id === u.id) === i
+);
+<span class="cm">// [&#123;id:1&#125;, &#123;id:2&#125;]（保留第一个）</span>
+
+<span class="cm">// 更高效的 Map 方案</span>
+<span class="kw">function</span> <span class="fn">uniqueBy</span>(arr, key) {
+  <span class="kw">const</span> map = <span class="kw">new</span> <span class="vb">Map</span>();
+  arr.forEach(item => &#123;
+    <span class="kw">if</span> (!map.has(item[key])) map.set(item[key], item);
+  &#125;);
+  <span class="kw">return</span> [...map.values()];
+&#125;
+
+<span class="cm">// ========== 3. 数组交集、并集、差集 ==========</span>
+<span class="kw">const</span> arr1 = [<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">3</span>, <span class="nu">4</span>];
+<span class="kw">const</span> arr2 = [<span class="nu">3</span>, <span class="nu">4</span>, <span class="nu">5</span>, <span class="nu">6</span>];
+
+<span class="cm">// 并集</span>
+<span class="kw">new</span> <span class="vb">Set</span>([...arr1, ...arr2]);  <span class="cm">// &#123;1, 2, 3, 4, 5, 6&#125;</span>
+
+<span class="cm">// 交集</span>
+arr1.filter(x => arr2.includes(x));  <span class="cm">// [3, 4]</span>
+
+<span class="cm">// 差集（在 arr1 中但不在 arr2 中）</span>
+arr1.filter(x => !arr2.includes(x)); <span class="cm">// [1, 2]</span>
+
+<span class="cm">// ========== 4. 数组扁平化 ==========</span>
+[<span class="nu">1</span>, [<span class="nu">2</span>, <span class="nu">3</span>], [<span class="nu">4</span>, [<span class="nu">5</span>]]].flat(<span class="vb">Infinity</span>);
+<span class="cm">// [1, 2, 3, 4, 5]（Infinity = 任意深度）</span>
+
+<span class="cm">// 用 reduce 实现扁平化</span>
+<span class="kw">function</span> <span class="fn">flatten</span>(arr) &#123;
+  <span class="kw">return</span> arr.reduce(
+    (acc, v) => acc.concat(<span class="vb">Array</span>.isArray(v) ? flatten(v) : v),
+    []
+  );
+&#125;
+
+<span class="cm">// ========== 5. 随机打乱数组（Fisher-Yates 洗牌算法） ==========</span>
+<span class="kw">function</span> <span class="fn">shuffle</span>(arr) &#123;
+  <span class="kw">const</span> copy = [...arr];
+  <span class="kw">for</span> (<span class="kw">let</span> i = copy.length - <span class="nu">1</span>; i &gt; <span class="nu">0</span>; i--) &#123;
+    <span class="kw">const</span> j = <span class="vb">Math</span>.floor(<span class="vb">Math</span>.random() * (i + <span class="nu">1</span>));
+    [copy[i], copy[j]] = [copy[j], copy[i]]; <span class="cm">// 解构交换</span>
+  &#125;
+  <span class="kw">return</span> copy;
+&#125;
+
+<span class="cm">// ========== 6. 随机取一个元素 ==========</span>
+<span class="kw">const</span> colors2 = [<span class="st">'red'</span>, <span class="st">'green'</span>, <span class="st">'blue'</span>];
+colors2[<span class="vb">Math</span>.floor(<span class="vb">Math</span>.random() * colors2.length)]; <span class="cm">// 随机一个</span>
+
+<span class="cm">// ========== 7. 类数组转真数组 ==========</span>
+<span class="cm">// arguments / NodeList / HTMLCollection 都不是真数组</span>
+<span class="kw">function</span> <span class="fn">test</span>() &#123;
+  <span class="kw">const</span> argsArr = [...arguments];       <span class="cm">// 方法1</span>
+  <span class="kw">const</span> argsArr2 = <span class="vb">Array</span>.from(arguments);  <span class="cm">// 方法2（推荐）</span>
+&#125;</code></pre>
+
+        <h3>实战：对象数组的数据处理流水线</h3>
+        <pre><code><span class="cm">// 真实场景：处理后端返回的门店列表，渲染到页面表格</span>
+<span class="kw">const</span> rawData = [
+  &#123; storeId: <span class="nu">101</span>, storeName: <span class="st">'朝阳店'</span>, sales: <span class="nu">12500</span>, city: <span class="st">'北京'</span>, status: <span class="nu">1</span>, createTime: <span class="st">'2024-01-15'</span> &#125;,
+  &#123; storeId: <span class="nu">102</span>, storeName: <span class="st">'海淀店'</span>, sales: <span class="nu">8900</span>, city: <span class="st">'北京'</span>, status: <span class="nu">1</span>, createTime: <span class="st">'2024-02-20'</span> &#125;,
+  &#123; storeId: <span class="nu">103</span>, storeName: <span class="st">'浦东店'</span>, sales: <span class="nu'>0</span>, city: <span class="st">'上海'</span>, status: <span class="nu">0</span>, createTime: <span class="st">'2023-11-01'</span> &#125;,
+  &#123; storeId: <span class="nu">104</span>, storeName: <span class="st">'徐汇店'</span>, sales: <span class="nu">15600</span>, city: <span class="st">'上海'</span>, status: <span class="nu">1</span>, createTime: <span class="st">'2024-03-10'</span> &#125;
+];
+
+<span class="cm">// 1. 过滤 + 排序 + 格式化的链式流水线</span>
+<span class="kw">const</span> tableData = rawData
+  .filter(s => s.status === <span class="nu">1</span>)                        <span class="cm">// 只要营业中</span>
+  .sort((a, b) => b.sales - a.sales)                  <span class="cm">// 销售额降序</span>
+  .map(s => (&#123;                                      <span class="cm">// 格式化为表格所需</span>
+    id: s.storeId,
+    name: s.storeName,
+    city: s.city,
+    salesText: <span class="st">`¥<span class="kw">${s.sales.toLocaleString()}</span>`</span>,
+    isOpen: <span class="kw">true</span>
+  &#125;));
+
+<span class="cm">// 2. 分组统计：每个城市的门店数和总销售额</span>
+<span class="kw">const</span> cityStats = Object.entries(
+  rawData.reduce((acc, s) => &#123;
+    <span class="kw">if</span> (!acc[s.city]) acc[s.city] = &#123; count: <span class="nu">0</span>, totalSales: <span class="nu">0</span> &#125;;
+    acc[s.city].count += <span class="nu">1</span>;
+    acc[s.city].totalSales += s.sales;
+    <span class="kw">return</span> acc;
+  &#125;, &#123;&#125;)
+).map(([city, stats]) => (&#123;
+  city,
+  count: stats.count,
+  totalSales: stats.totalSales,
+  <span class="cm">// 中文描述</span>
+  label: <span class="st">`<span class="kw">${city}</span>（<span class="kw">${stats.count</span>） ¥<span class="kw">${stats.totalSales.toLocaleString()}</span>`</span>
+&#125;));
+
+<span class="cm">// 3. 搜索高亮</span>
+<span class="kw">function</span> <span class="fn">searchStores</span>(keyword) &#123;
+  <span class="kw">if</span> (!keyword) <span class="kw">return</span> tableData;
+  <span class="kw">const</span> lower = keyword.toLowerCase();
+  <span class="kw">return</span> tableData.filter(s =>
+    s.name.toLowerCase().includes(lower) ||
+    s.city.toLowerCase().includes(lower)
+  );
+&#125;</code></pre>
+
+        <h3>Java 后端对比：数组操作差异</h3>
+        <table class="ref-table">
+          <tr><th>操作</th><th>Java</th><th>JavaScript</th></tr>
+          <tr><td>过滤</td><td><code>list.stream().filter(x -&gt; x &gt; 5).collect()</code></td><td><code>arr.filter(x =&gt; x &gt; 5)</code></td></tr>
+          <tr><td>映射</td><td><code>list.stream().map(x -&gt; x * 2).collect()</code></td><td><code>arr.map(x =&gt; x * 2)</code></td></tr>
+          <tr><td>分组</td><td><code>Collectors.groupingBy(x -&gt; x.getCity())</code></td><td><code>arr.reduce(...) </code>手工分组</td></tr>
+          <tr><td>查找</td><td><code>list.stream().findFirst().orElse(null)</code></td><td><code>arr.find(x =&gt; ...)</code></td></tr>
+          <tr><td>排序</td><td><code>list.sort(Comparator.comparing(Store::getSales))</code></td><td><code>arr.sort((a,b) =&gt; a.sales - b.sales)</code></td></tr>
+          <tr><td>转 Map</td><td><code>Collectors.toMap(s -&gt; s.getId())</code></td><td><code>new Map(arr.map(s =&gt; [s.id, s]))</code></td></tr>
+        </table>
+      </section>
+
+      <!-- ============================================================
+           第8章：对象
+           ============================================================ -->
+      <section class="chapter" id="ch8">
+        <h2>第8章 · 对象</h2>
+
+        <h3>解构赋值（最常用！）</h3>
+        <pre><code><span class="kw">const</span> user = &#123; name: <span class="st">'张三'</span>, age: <span class="nu">25</span>, city: <span class="st">'北京'</span>, email: <span class="st">'a@b.com'</span> &#125;;
+
+<span class="cm">// 基本解构</span>
+<span class="kw">const</span> &#123; name, age &#125; = user;
+name;  <span class="cm">// '张三'</span>
+
+<span class="cm">// 只取需要的字段</span>
+<span class="kw">const</span> &#123; city &#125; = user;
+
+<span class="cm">// 重命名</span>
+<span class="kw">const</span> &#123; name: userName &#125; = user;  <span class="cm">// userName = '张三'</span>
+
+<span class="cm">// 默认值</span>
+<span class="kw">const</span> &#123; phone = <span class="st">'未设置'&#125; = user;
+
+<span class="cm">// 剩余属性</span>
+<span class="kw">const</span> &#123; name, ...rest &#125; = user;
+rest;  <span class="cm">// &#123; age: 25, city: '北京', email: 'a@b.com' &#125;</span>
+
+<span class="cm">// 函数参数解构（Vue/React 中超级常见！）</span>
+<span class="kw">function</span> <span class="fn">greet</span>(&#123; name, age &#125;) {
+  <span class="kw">return</span> <span class="st">`$&#123;name&#125; 今年 $&#123;age&#125; 岁`</span>;
+&#125;
+greet(user);  <span class="cm">// '张三 今年 25 岁'</span></code></pre>
+
+        <h3>展开运算符</h3>
+        <pre><code><span class="kw">const</span> base = &#123; apiUrl: <span class="st">'...'</span>, timeout: <span class="nu">5000</span>, cache: <span class="kw">true</span> &#125;;
+<span class="kw">const</span> local = &#123; timeout: <span class="nu">3000</span>, debug: <span class="kw">false</span> &#125;;
+
+<span class="cm">// 合并（后面的覆盖前面的）</span>
+<span class="kw">const</span> merged = &#123; ...base, ...local &#125;;
+<span class="cm">// → &#123; apiUrl: '...', timeout: 3000, cache: true, debug: false &#125;</span>
+
+<span class="cm">// 浅拷贝</span>
+<span class="kw">const</span> copy = &#123; ...base &#125;;
+
+<span class="cm">// Object 静态方法</span>
+<span class="vb">Object</span>.keys(user);      <span class="cm">// ['name', 'age', 'city', 'email']</span>
+<span class="vb">Object</span>.values(user);    <span class="cm">// ['张三', 25, '北京', 'a@b.com']</span>
+<span class="vb">Object</span>.entries(user);   <span class="cm">// [['name','张三'],['age',25],...]
+<span class="vb">Object</span>.assign(&#123;&#125;, obj1, obj2);  <span class="cm">// 合并</span>
+<span class="vb">Object</span>.freeze(obj);      <span class="cm">// 冻结（不可修改）</span></code></pre>
+      </section>
+
+      <!-- ============================================================
+           第9章：函数
+           ============================================================ -->
+      <section class="chapter" id="ch9">
+        <h2>第9章 · 函数</h2>
+
+        <h3>三种定义方式</h3>
+        <pre><code><span class="cm">// 1. 函数声明（有提升，可在定义前调用）</span>
+<span class="kw">function</span> <span class="fn">add</span>(a, b) {
+  <span class="kw">return</span> a + b;
+&#125;
+add(<span class="nu">1</span>, <span class="nu">2</span>);  <span class="cm">// 3</span>
+
+<span class="cm">// 2. 函数表达式</span>
+<span class="kw">const</span> add = <span class="kw">function</span>(a, b) {
+  <span class="kw">return</span> a + b;
+&#125;;
+
+<span class="cm">// 3. 箭头函数（推荐！更简洁）</span>
+<span class="kw">const</span> add = (a, b) => a + b;
+
+<span class="cm">// 多行箭头函数</span>
+<span class="kw">const</span> add = (a, b) => {
+  <span class="kw">const</span> sum = a + b;
+  <span class="kw">return</span> sum;
+&#125;;
+
+<span class="cm">// 无参数</span>
+<span class="kw">const</span> greet = () => <span class="st">'Hello!'</span>;
+
+<span class="cm">// 一个参数可省略括号</span>
+<span class="kw">const</span> double = n => n * <span class="nu">2</span>;</code></pre>
+
+        <h3>默认参数与剩余参数</h3>
+        <pre><code><span class="cm">// 默认参数</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name = <span class="st">'匿名用户'</span>) {
+  <span class="kw">return</span> <span class="st">`你好，$&#123;name&#125;`</span>;
+&#125;
+greet();        <span class="cm">// '你好，匿名用户'</span>
+greet(<span class="st">'张三'</span>);  <span class="cm">// '你好，张三'</span>
+
+<span class="cm">// 剩余参数（...args 收集为数组）</span>
+<span class="kw">function</span> <span class="fn">sum</span>(...numbers) {
+  <span class="kw">return</span> numbers.reduce((a, b) => a + b, <span class="nu">0</span>);
+&#125;
+sum(<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">3</span>);   <span class="cm">// 6</span>
+sum(<span class="nu">10</span>, <span class="nu">20</span>);     <span class="cm">// 30</span>
+
+<span class="cm">// 也可以收集多余的命名参数</span>
+<span class="kw">function</span> <span class="fn">logAll</span>(first, ...rest) {
+  <span class="vb">console</span>.log(<span class="st">'第一个：'</span>, first);
+  <span class="vb">console</span>.log(<span class="st">'其余：'</span>, rest);
+&#125;</code></pre>
+
+        <h3 id="ch9-1">箭头函数 vs 普通函数</h3>
+        <table class="ref-table">
+          <tr><th>维度</th><th>普通函数</th><th>箭头函数</th></tr>
+          <tr><td>语法</td><td><code>function(a) &#123; return a &#125;</code></td><td><code>a => a</code></td></tr>
+          <tr><td>this</td><td>有自己的 this（谁调用指向谁）</td><td>没有自己的 this（继承外层）</td></tr>
+          <tr><td>arguments</td><td>✅ 有</td><td>❌ 没有（用 ...args）</td></tr>
+          <tr><td>new</td><td>✅ 可以当构造函数</td><td>❌ 不能 new</td></tr>
+          <tr><td>提升</td><td>函数声明有</td><td>❌ 没有</td></tr>
+        </table>
+
+        <h3 id="ch9-2">闭包（重要！）</h3>
+        <pre><code><span class="cm">// 闭包 = 函数 + 它能访问的外部变量</span>
+<span class="kw">function</span> <span class="fn">createCounter</span>() {
+  <span class="kw">let</span> count = <span class="nu">0</span>;   <span class="cm">// 外部变量</span>
+  <span class="kw">return</span> {
+    increment: () => ++count,
+    decrement: () => --count,
+    getCount: () => count
+  &#125;;
+&#125;
+
+<span class="kw">const</span> counter = createCounter();
+counter.increment();  <span class="cm">// 1</span>
+counter.increment();  <span class="cm">// 2</span>
+counter.decrement();  <span class="cm">// 1</span>
+counter.getCount();   <span class="cm">// 1</span>
+
+<span class="cm">// 闭包让 count 持久化，不被垃圾回收</span></code></pre>
+
+        <div class="tip">
+          <strong>Java 后端类比：</strong>闭包相当于 Java 的内部类可以访问外部的 effectively final 变量，但 JS 更常见。Vue 3 的 <code>ref</code> / <code>computed</code> 底层就用到了闭包。
+        </div>
+
+        <h3 id="ch9-3">this 指向问题</h3>
+        <pre><code><span class="cm">// 普通函数的 this：由调用方式决定</span>
+<span class="kw">function</span> <span class="fn">showThis</span>() {
+  <span class="vb">console</span>.log(<span class="kw">this</span>);
+&#125;
+
+<span class="cm">// 1. 直接调用：this = undefined（严格模式）或 window</span>
+showThis();
+
+<span class="cm">// 2. 方法调用：this = 调用方法的对象</span>
+<span class="kw">const</span> obj = &#123;
+  name: <span class="st">'Vue'</span>,
+  say: <span class="kw">function</span>() <span class="vb">console</span>.log(<span class="kw">this</span>.name);  <span class="cm">// 'Vue'</span>
+&#125;;
+obj.say();
+
+<span class="cm">// 3. 箭头函数：继承外层的 this</span>
+<span class="kw">const</span> obj2 = &#123;
+  name: <span class="st">'Vue'</span>,
+  sayLater: <span class="kw">function</span>() {
+    setTimeout(() => {
+      <span class="vb">console</span>.log(<span class="kw">this</span>.name);  <span class="cm">// 'Vue'（箭头函数继承了 sayLater 的 this）</span>
+    &#125;, <span class="nu">100</span>);
+  &#125;
+&#125;;
+
+<span class="cm">// ⚠️ 如果用普通函数，this 会丢</span>
+<span class="kw">const</span> obj3 = &#123;
+  name: <span class="st">'Vue'</span>,
+  sayLater: <span class="kw">function</span>() {
+    <span class="kw">var</span> self = <span class="kw">this</span>;   <span class="cm">// 老写法：先保存 this</span>
+    setTimeout(<span class="kw">function</span>() {
+      <span class="vb">console</span>.log(self.name); <span class="cm">// 'Vue'</span>
+    &#125;, <span class="nu">100</span>);
+  &#125;
+&#125;;</code></pre>
+
+        <div class="tip">
+          <strong>规则：</strong>回调函数中用箭头函数，this 不会丢。这就是为什么项目里 <code>.then(res => &#123; ... &#125;)</code> 都用箭头函数。
+        </div>
+
+        <h3>call / apply / bind — 手动控制 this</h3>
+        <pre><code><span class="cm">// call：改变 this 指向，参数一个个传</span>
+<span class="kw">function</span> <span class="fn">introduce</span>(age, city) &#123;
+  <span class="kw">return</span> <span class="st">`<span class="kw">${this.name&#125;</span>，<span class="kw">${age&#125;</span>岁，来自<span class="kw">${city&#125;</span>`</span>;
+&#125;
+
+<span class="kw">const</span> user4 = &#123; name: <span class="st">'张三'</span> &#125;;
+introduce.call(user4, <span class="nu">25</span>, <span class="st">'北京'</span>);
+<span class="cm">// '张三，25岁，来自北京'</span>
+
+<span class="cm">// apply：改变 this 指向，参数用数组传</span>
+introduce.apply(user4, [<span class="nu">25</span>, <span class="st">'北京'</span>]);
+<span class="cm">// 结果同上</span>
+
+<span class="cm">// bind：返回一个新函数，this 永久绑定</span>
+<span class="kw">const</span> boundIntroduce = introduce.bind(user4);
+boundIntroduce(<span class="nu">30</span>, <span class="st">'上海'</span>);
+<span class="cm">// '张三，30岁，来自上海'</span>
+
+<span class="cm">// bind 还可以"预设参数"（偏函数）</span>
+<span class="kw">const</span> introduceZhangsan = introduce.bind(user4, <span class="nu">25</span>);
+introduceZhangsan(<span class="st">'北京'</span>); <span class="cm">// '张三，25岁，来自北京'</span>
+introduceZhangsan(<span class="st">'上海'</span>); <span class="cm">// '张三，25岁，来自上海'</span></code></pre>
+
+        <h3>IIFE — 立即执行函数</h3>
+        <pre><code><span class="cm">// IIFE（Immediately Invoked Function Expression）</span>
+<span class="cm">// 定义完立即执行，用来创建独立作用域</span>
+
+<span class="cm">// 写法1</span>
+(<span class="kw">function</span>() &#123;
+  <span class="kw">const</span> privateVar = <span class="st">'外部无法访问'</span>;
+  <span class="vb">console</span>.log(<span class="st">'立即执行'</span>);
+&#125;)();
+
+<span class="cm">// 写法2</span>
+(<span class="kw">function</span>() &#123;
+  <span class="vb">console</span>.log(<span class="st">'立即执行'</span>);
+&#125;());
+
+<span class="cm">// 箭头函数 IIFE</span>
+(() => &#123;
+  <span class="vb">console</span>.log(<span class="st">'箭头 IIFE'</span>);
+&#125;)();
+
+<span class="cm">// 实际用途：创建私有变量（模块模式）</span>
+<span class="kw">const</span> counterModule = (() => &#123;
+  <span class="kw">let</span> count = <span class="nu">0</span>; <span class="cm">// 私有，外部无法直接访问</span>
+
+  <span class="kw">return</span> &#123;
+    increment: () => ++count,
+    decrement: () => --count,
+    getCount: () => count
+  &#125;;
+&#125;)();
+
+counterModule.increment(); <span class="cm">// 1</span>
+counterModule.increment(); <span class="cm">// 2</span>
+counterModule.getCount();  <span class="cm">// 2</span>
+<span class="cm">// counterModule.count  → undefined（访问不到）</span></code></pre>
+
+        <h3>柯里化（Currying）</h3>
+        <pre><code><span class="cm">// 柯里化：把多参数函数变成一系列单参数函数</span>
+<span class="cm">// 原始函数</span>
+<span class="kw">function</span> <span class="fn">add3</span>(a, b, c) &#123;
+  <span class="kw">return</span> a + b + c;
+&#125;
+add3(<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">3</span>); <span class="cm">// 6</span>
+
+<span class="cm">// 柯里化后</span>
+<span class="kw">function</span> <span class="fn">curriedAdd</span>(a) &#123;
+  <span class="kw">return</span> <span class="kw">function</span>(b) &#123;
+    <span class="kw">return</span> <span class="kw">function</span>(c) &#123;
+      <span class="kw">return</span> a + b + c;
+    &#125;;
+  &#125;;
+&#125;
+curriedAdd(<span class="nu">1</span>)(<span class="nu">2</span>)(<span class="nu">3</span>); <span class="cm">// 6</span>
+
+<span class="cm">// 箭头函数版（更简洁）</span>
+<span class="kw">const</span> curriedAdd2 = a => b => c => a + b + c;
+curriedAdd2(<span class="nu">1</span>)(<span class="nu">2</span>)(<span class="nu">3</span>); <span class="cm">// 6</span>
+
+<span class="cm">// 实用场景：创建特定配置的请求函数</span>
+<span class="kw">const</span> createFetch = baseURL => path => <span class="kw">async</span> () => &#123;
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(baseURL + path);
+  <span class="kw">return</span> res.json();
+&#125;;
+
+<span class="kw">const</span> api = createFetch(<span class="st">'https://api.example.com'</span>);
+<span class="kw">const</span> getUsers = api(<span class="st">'/users'</span>);
+<span class="kw">const</span> getOrders = api(<span class="st">'/orders'</span>);
+
+<span class="cm">// 使用</span>
+<span class="kw">const</span> users = <span class="kw">await</span> getUsers();
+<span class="kw">const</span> orders = <span class="kw">await</span> getOrders();</code></pre>
+
+        <h3>防抖（Debounce）与节流（Throttle）— 面试必考</h3>
+        <pre><code><span class="cm">// ========== 防抖：触发后等待 N 秒才执行，期间再触发重新计时 ==========</span>
+<span class="cm">// 场景：搜索框输入、窗口 resize</span>
+<span class="kw">function</span> <span class="fn">debounce</span>(fn, delay = <span class="nu">300</span>) &#123;
+  <span class="kw">let</span> timer = <span class="kw">null</span>;
+
+  <span class="kw">return</span> <span class="kw">function</span>(...args) &#123;
+    <span class="cm">// 清除之前的定时器</span>
+    clearTimeout(timer);
+
+    <span class="cm">// 重新设置定时器</span>
+    timer = setTimeout(() => &#123;
+      fn.apply(<span class="kw">this</span>, args);
+    &#125;, delay);
+  &#125;;
+&#125;
+
+<span class="cm">// 使用：搜索框输入</span>
+<span class="kw">const</span> searchInput = <span class="vb">document</span>.querySelector(<span class="st">'#search'</span>);
+searchInput.addEventListener(<span class="st">'input'</span>, debounce(<span class="kw">function</span>(e) &#123;
+  <span class="vb">console</span>.log(<span class="st">'搜索：'</span>, e.target.value);
+  <span class="cm">// 发送搜索请求...</span>
+&#125;, <span class="nu">500</span>));
+
+<span class="cm">// ========== 节流：N 秒内只执行一次 ==========</span>
+<span class="cm">// 场景：滚动事件、按钮点击</span>
+<span class="kw">function</span> <span class="fn">throttle</span>(fn, delay = <span class="nu">300</span>) &#123;
+  <span class="kw">let</span> lastTime = <span class="nu">0</span>;
+
+  <span class="kw">return</span> <span class="kw">function</span>(...args) &#123;
+    <span class="kw">const</span> now = <span class="vb">Date</span>.now();
+    <span class="kw">if</span> (now - lastTime &gt;= delay) &#123;
+      lastTime = now;
+      fn.apply(<span class="kw">this</span>, args);
+    &#125;
+  &#125;;
+&#125;
+
+<span class="cm">// 使用：滚动加载</span>
+window.addEventListener(<span class="st">'scroll'</span>, throttle(() => &#123;
+  <span class="kw">const</span> &#123; scrollTop, scrollHeight, clientHeight &#125; = <span class="vb">document</span>.documentElement;
+  <span class="kw">if</span> (scrollTop + clientHeight &gt;= scrollHeight - <span class="nu">100</span>) &#123;
+    <span class="vb">console</span>.log(<span class="st">'加载更多...'</span>);
+  &#125;
+&#125;, <span class="nu">200</span>));
+
+<span class="cm">// ========== 区别总结 ==========</span>
+<span class="cm">// 防抖："等你停了再做" → 搜索框、resize</span>
+<span class="cm">// 节流："做了就等一下" → 滚动、按钮防重复点击</span></code></pre>
+
+        <h3>递归与尾调用优化</h3>
+        <pre><code><span class="cm">// 递归：函数调用自己</span>
+<span class="kw">function</span> <span class="fn">factorial</span>(n) &#123;
+  <span class="kw">if</span> (n &lt;= <span class="nu">1</span>) <span class="kw">return</span> <span class="nu">1</span>;
+  <span class="kw">return</span> n * factorial(n - <span class="nu">1</span>);
+&#125;
+factorial(<span class="nu">5</span>); <span class="cm">// 120</span>
+
+<span class="cm">// 递归遍历树形结构（菜单、组织架构）</span>
+<span class="kw">function</span> <span class="fn">findInTree</span>(tree, id) &#123;
+  <span class="kw">for</span> (<span class="kw">const</span> node <span class="kw">of</span> tree) &#123;
+    <span class="kw">if</span> (node.id === id) <span class="kw">return</span> node;
+    <span class="kw">if</span> (node.children) &#123;
+      <span class="kw">const</span> found = findInTree(node.children, id);
+      <span class="kw">if</span> (found) <span class="kw">return</span> found;
+    &#125;
+  &#125;
+  <span class="kw">return</span> <span class="kw">null</span>;
+&#125;
+
+<span class="cm">// 递归转扁平数组</span>
+<span class="kw">function</span> <span class="fn">flattenTree</span>(tree) &#123;
+  <span class="kw">return</span> tree.reduce((acc, node) => &#123;
+    acc.push(&#123; id: node.id, name: node.name &#125;);
+    <span class="kw">if</span> (node.children) &#123;
+      acc.push(...flattenTree(node.children));
+    &#125;
+    <span class="kw">return</span> acc;
+  &#125;, []);
+&#125;</code></pre>
+      </section>
+
+      <!-- ============================================================
+           第10章：DOM 操作
+           ============================================================ -->
+      <section class="chapter" id="ch10">
+        <h2>第10章 · DOM 操作</h2>
+
+        <h3>选择元素</h3>
+        <pre><code><span class="cm">// 单个元素</span>
+<span class="kw">const</span> el = <span class="vb">document</span>.getElementById(<span class="st">'app'</span>);
+<span class="kw">const</span> first = <span class="vb">document</span>.querySelector(<span class="st">'.card'</span>);       <span class="cm">// CSS 选择器</span>
+
+<span class="cm">// 多个元素（NodeList，类数组但不是真数组）</span>
+<span class="kw">const</span> list = <span class="vb">document</span>.querySelectorAll(<span class="st">'.item'</span>);
+<span class="kw">const</span> tags = <span class="vb">document</span>.getElementsByTagName(<span class="st">'div'</span>);
+<span class="kw">const</span> cls = <span class="vb">document</span>.getElementsByClassName(<span class="st">'active'</span>);</code></pre>
+
+        <div class="demo-card">
+          <div class="demo-preview">
+            <span class="demo-label">效果预览</span>
+            <div id="demo-10" style="padding:8px;background:#fff8d6;border-radius:4px;text-align:center;">
+              我是 #demo-10
+            </div>
+            <button class="run-btn" onclick="document.getElementById('demo-10').textContent='被 JS 修改了！'">点击我修改上方文字</button>
+          </div>
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code><span class="cm">// 获取元素</span>
+<span class="kw">const</span> el = <span class="vb">document</span>
+  .getElementById(<span class="st">'demo-10'</span>);
+
+<span class="cm">// 修改文本内容</span>
+el.textContent = <span class="st">'被 JS 修改了！'</span>;
+
+<span class="cm">// 修改 HTML（慎用，有 XSS 风险）</span>
+el.innerHTML = <span class="st">'&lt;b&gt;加粗&lt;/b&gt;'</span>;</code></pre>
+          </div>
+        </div>
+
+        <h3>修改内容、样式、属性</h3>
+        <pre><code><span class="kw">const</span> el = <span class="vb">document</span>.querySelector(<span class="st">'.card'</span>);
+
+<span class="cm">// 修改文本内容（推荐，安全）</span>
+el.textContent = <span class="st">'新文本'</span>;
+
+<span class="cm">// 修改 HTML 结构（小心 XSS）</span>
+el.innerHTML = <span class="st">'&lt;span class="badge"&gt;新&lt;/span&gt;'</span>;
+
+<span class="cm">// 修改 CSS 样式</span>
+el.style.color = <span class="st">'red'</span>;
+el.style.fontSize = <span class="st">'18px'</span>;
+el.style.backgroundColor = <span class="st">'#f0f0f0'</span>; <span class="cm">// 驼峰写法（不是 background-color）</span>
+
+<span class="cm">// 修改 class（推荐！）</span>
+el.classList.add(<span class="st">'active'</span>);       <span class="cm">// 添加</span>
+el.classList.remove(<span class="st">'active'</span>);    <span class="cm">// 移除</span>
+el.classList.toggle(<span class="st">'active'</span>);    <span class="cm">// 有就删，没有就加</span>
+el.classList.contains(<span class="st">'active'</span>);  <span class="cm">// 是否包含（boolean）</span>
+
+<span class="cm">// 修改属性</span>
+el.setAttribute(<span class="st">'data-id'</span>, <span class="st">'123'</span>);
+el.getAttribute(<span class="st">'data-id'</span>);   <span class="cm">// '123'</span>
+el.removeAttribute(<span class="st">'data-id'</span>);
+
+<span class="cm">// 常见属性直接访问</span>
+input.value;       <span class="cm">// 获取输入框的值</span>
+checkbox.checked;  <span class="cm">// 获取勾选状态</span>
+img.src;           <span class="cm">// 获取图片地址</span>
+a.href;            <span class="cm">// 获取链接地址</span></code></pre>
+
+        <h3>创建和删除元素</h3>
+        <pre><code><span class="cm">// 创建元素</span>
+<span class="kw">const</span> newDiv = <span class="vb">document</span>.createElement(<span class="st">'div'</span>);
+newDiv.textContent = <span class="st">'我是新建的 div'</span>;
+newDiv.classList.add(<span class="st">'card'</span>);
+
+<span class="cm">// 插入到页面</span>
+<span class="vb">document</span>.body.appendChild(newDiv);       <span class="cm">// body 末尾追加</span>
+parentEl.appendChild(newDiv);             <span class="cm">// 指定父元素末尾追加</span>
+parentEl.insertBefore(newDiv, refEl);    <span class="cm">// 在 refEl 之前插入</span>
+
+<span class="cm">// 现代插入方法（更灵活）</span>
+target.insertAdjacentElement(<span class="st">'beforebegin'</span>, newEl); <span class="cm">// 元素前面</span>
+target.insertAdjacentElement(<span class="st">'afterend'</span>, newEl);   <span class="cm">// 元素后面</span>
+target.insertAdjacentHTML(<span class="st">'beforeend'</span>, <span class="st">'&lt;li&gt;新&lt;/li&gt;'</span>);
+
+<span class="cm">// 删除元素</span>
+el.remove();                  <span class="cm">// 直接删除自己</span>
+parentEl.removeChild(el);     <span class="cm">// 通过父元素删除
+
+<span class="cm">// 克隆元素</span>
+<span class="kw">const</span> clone = el.cloneNode(<span class="kw">true</span>); <span class="cm">// true = 深克隆（克隆子元素）</span></code></pre>
+      </section>
+
+      <!-- ============================================================
+           第11章：事件
+           ============================================================ -->
+      <section class="chapter" id="ch11">
+        <h2>第11章 · 事件</h2>
+
+        <h3>事件监听</h3>
+        <pre><code><span class="cm">// 现代写法：addEventListener（推荐）</span>
+<span class="kw">const</span> btn = <span class="vb">document</span>.querySelector(<span class="st">'#myBtn'</span>);
+
+btn.addEventListener(<span class="st">'click'</span>, <span class="kw">function</span>(event) {
+  <span class="vb">console</span>.log(<span class="st">'按钮被点击了'</span>);
+  <span class="vb">console</span>.log(event.target); <span class="cm">// 被点击的元素
+&#125;);
+
+<span class="cm">// 箭头函数写法（注意 this 不再指向元素本身）</span>
+btn.addEventListener(<span class="st">'click'</span>, (e) => {
+  <span class="vb">console</span>.log(e.target.textContent);
+&#125;);
+
+<span class="cm">// 只执行一次的监听</span>
+btn.addEventListener(<span class="st">'click'</span>, handler, &#123; once: <span class="kw">true</span> &#125;);
+
+<span class="cm">// 移除监听（函数必须是同一个引用）</span>
+btn.removeEventListener(<span class="st">'click'</span>, handler);</code></pre>
+
+        <div class="demo-card">
+          <div class="demo-preview">
+            <span class="demo-label">效果预览</span>
+            <button class="run-btn" id="demo-btn-11">点击我</button>
+            <div id="demo-output-11" class="run-output">等待点击...</div>
+          </div>
+          <div class="demo-code">
+            <span class="demo-label">源码</span>
+            <pre><code>btn.addEventListener(<span class="st">'click'</span>, (e) => {
+  output.textContent =
+    <span class="st">`点击时间：$&#123;new Date().toLocaleTimeString()&#125;`</span>;
+&#125;);</code></pre>
+          </div>
+        </div>
+
+        <h3>常见事件类型</h3>
+        <table class="ref-table">
+          <tr><th>事件</th><th>触发时机</th><th>常见场景</th></tr>
+          <tr><td><code>click</code></td><td>点击</td><td>按钮、链接</td></tr>
+          <tr><td><code>dblclick</code></td><td>双击</td><td></td></tr>
+          <tr><td><code>mouseenter</code></td><td>鼠标进入（不冒泡）</td><td>悬停提示</td></tr>
+          <tr><td><code>mouseleave</code></td><td>鼠标离开（不冒泡）</td><td>取消悬停</td></tr>
+          <tr><td><code>mouseover</code></td><td>鼠标进入（冒泡）</td><td></td></tr>
+          <tr><td><code>mousemove</code></td><td>鼠标移动</td><td>拖拽</td></tr>
+          <tr><td><code>mousedown / mouseup</code></td><td>按下/松开</td><td>拖拽开始/结束</td></tr>
+          <tr><td><code>keydown / keyup</code></td><td>键盘按下/松开</td><td>快捷键、搜索框</td></tr>
+          <tr><td><code>input</code></td><td>输入框值变化（实时）</td><td>搜索框实时搜索</td></tr>
+          <tr><td><code>change</code></td><td>输入框失去焦点后变化</td><td>选择器、复选框</td></tr>
+          <tr><td><code>focus / blur</code></td><td>获焦/失焦</td><td>表单校验</td></tr>
+          <tr><td><code>submit</code></td><td>表单提交</td><td>阻止默认 + AJAX</td></tr>
+          <tr><td><code>scroll</code></td><td>滚动</td><td>上拉加载</td></tr>
+          <tr><td><code>resize</code></td><td>窗口大小变化</td><td>响应式调整</td></tr>
+          <tr><td><code>load</code></td><td>页面加载完成</td><td>初始化</td></tr>
+          <tr><td><code>DOMContentLoaded</code></td><td>HTML 解析完成</td><td>入口初始化</td></tr>
+        </table>
+
+        <h3>事件对象常用属性</h3>
+        <pre><code>element.addEventListener(<span class="st">'click'</span>, <span class="kw">function</span>(e) {
+  <span class="cm">// 常用属性</span>
+  e.target;           <span class="cm">// 触发事件的元素</span>
+  e.currentTarget;    <span class="cm">// 绑定事件的元素</span>
+  e.type;             <span class="cm">// 事件类型，如 'click'</span>
+  e.preventDefault(); <span class="cm">// 阻止默认行为</span>
+  e.stopPropagation();<span class="cm">// 阻止事件冒泡</span>
+
+  <span class="cm">// 鼠标事件</span>
+  e.clientX;          <span class="cm">// 鼠标相对于视口的 X</span>
+  e.clientY;
+
+  <span class="cm">// 键盘事件</span>
+  e.key;              <span class="cm">// 按下的键，如 'Enter'</span>
+  e.code;             <span class="cm">// 物理键，如 'KeyA'</span>
+&#125;);</code></pre>
+
+        <h3>事件委托（重要！）</h3>
+        <pre><code><span class="cm">// 场景：1000 个列表项，不要给每个都绑定事件</span>
+<span class="cm">// 而是委托给父元素</span>
+<span class="kw">const</span> list2 = <span class="vb">document</span>.querySelector(<span class="st">'#list'</span>);
+
+list2.addEventListener(<span class="st">'click'</span>, (e) => {
+  <span class="cm">// 找到实际被点击的 li</span>
+  <span class="kw">const</span> li = e.target.closest(<span class="st">'li'</span>);
+  <span class="kw">if</span> (!li) <span class="kw">return</span>;
+
+  <span class="vb">console</span>.log(<span class="st">'点击了：'</span>, li.dataset.id);
+&#125;);</code></pre>
+
+        <div class="tip">
+          <strong>为什么用事件委托：</strong>1）减少内存消耗（一个监听 vs 1000 个）；2）动态添加的元素自动拥有事件（不需要重新绑定）。Vue/React 框架底层也大量使用了事件委托。
+        </div>
+      </section>
+
+      <!-- ============================================================
+           第12章：异步编程
+           ============================================================ -->
+      <section class="chapter" id="ch12">
+        <h2>第12章 · 异步编程</h2>
+
+        <p>JS 是<strong>单线程</strong>语言，网络请求、定时器等操作不会阻塞主线程。异步编程是前端的核心能力。</p>
+
+        <h3 id="ch12-1">Promise</h3>
+        <pre><code><span class="cm">// 创建一个 Promise</span>
+<span class="kw">const</span> fetchUser = <span class="kw">new</span> <span class="vb">Promise</span>((resolve, reject) => {
+  <span class="cm">// 模拟网络请求（1 秒后）</span>
+  setTimeout(() => {
+    <span class="kw">const</span> success = <span class="kw">true</span>;
+    <span class="kw">if</span> (success) {
+      resolve(&#123; id: <span class="nu">1</span>, name: <span class="st">'张三'</span>, age: <span class="nu">25</span> &#125;); <span class="cm">// 成功</span>
+    &#125; <span class="kw">else</span> {
+      reject(<span class="kw">new</span> <span class="vb">Error</span>(<span class="st">'网络超时'</span>));           <span class="cm">// 失败</span>
+    &#125;, <span class="nu">1000</span>);
+&#125;});
+
+<span class="cm">// 消费 Promise</span>
+fetchUser
+  .then(user => {
+    <span class="vb">console</span>.log(<span class="st">'用户：'</span>, user.name);
+    <span class="kw">return</span> fetchOrders(user.id); <span class="cm">// 返回下一个 Promise</span>
+  &#125;)
+  .then(orders => {
+    <span class="vb">console</span>.log(<span class="st">'订单数：'</span>, orders.length);
+  &#125;)
+  .catch(err => {
+    <span class="vb">console</span>.error(<span class="st">'出错了：'</span>, err.message);
+  &#125;)
+  .finally(() => {
+    <span class="vb">console</span>.log(<span class="st">'无论成功失败都执行'</span>);
+  &#125;);</code></pre>
+
+        <h3 id="ch12-2">async / async（推荐！）</h3>
+        <pre><code><span class="cm">// async 让异步代码看起来像同步</span>
+<span class="kw">async function</span> <span class="fn">loadUserData</span>() {
+  <span class="kw">try</span> {
+    <span class="cm">// await 等待 Promise 完成，直接拿到结果</span>
+    <span class="kw">const</span> user = <span class="kw">await</span> fetchUser;
+    <span class="vb">console</span>.log(<span class="st">'用户：'</span>, user.name);
+
+    <span class="cm">// 串行：一个接一个（必须等前面完成）</span>
+    <span class="kw">const</span> orders = <span class="kw">await</span> fetchOrders(user.id);
+    <span class="vb">console</span>.log(<span class="st">'订单数：'</span>, orders.length);
+
+    <span class="kw">return</span> &#123; user, orders &#125;;
+  &#125; <span class="kw">catch</span> (err) {
+    <span class="vb">console</span>.error(<span class="st">'加载失败：'</span>, err);
+  &#125;
+&#125;</code></pre>
+
+        <h3>并发请求</h3>
+        <pre><code><span class="cm">// 串行（慢）：总耗时 ≈ t1 + t2</span>
+<span class="kw">const</span> user = <span class="kw">await</span> fetchUser();
+<span class="kw">const</span> config = <span class="kw">await</span> fetchConfig();
+
+<span class="cm">// 并发（快）：总耗时 ≈ max(t1, t2)</span>
+<span class="kw">const</span> [user, config] = <span class="kw">await</span> Promise.all([
+  fetchUser(),
+  fetchConfig()
+]);
+
+<span class="cm">// Promise.allSettled：等全部完成（不论成败）</span>
+<span class="kw">const</span> results = <span class="kw">await</span> Promise.allSettled([
+  fetchUser(),
+  fetchConfig(),
+  fetchOther()
+]);
+results.forEach(r => {
+  <span class="kw">if</span> (r.status === <span class="st">'fulfilled'</span>) {
+    <span class="vb">console</span>.log(<span class="st">'成功：'</span>, r.value);
+  &#125; <span class="kw">else</span> {
+    <span class="vb">console</span>.log(<span class="st">'失败：'</span>, r.reason);
+  &#125;
+&#125;);</code></pre>
+
+        <div class="tip">
+          <strong>Java 后端类比：</strong><code>Promise</code> ≈ <code>CompletableFuture</code>，<code>await</code> ≈ <code>.join()</code> 或 <code>.get()</code>。但 JS 的 async/await 语法更简洁，不需要手动 <code>thenCompose</code>。
+        </div>
+
+        <h3>实战：Promise 工具函数</h3>
+        <pre><code><span class="cm">// ========== 1. 超时控制 ==========</span>
+<span class="kw">function</span> <span class="fn">withTimeout</span>(promise, ms) &#123;
+  <span class="kw">const</span> timeout = <span class="kw">new</span> <span class="vb">Promise</span>((_, reject) =>
+    setTimeout(() => reject(<span class="kw">new</span> <span class="vb">Error</span>(<span class="st">'请求超时'</span>)), ms)
+  );
+  <span class="kw">return</span> <span class="vb">Promise</span>.race([promise, timeout]);
+&#125;
+
+<span class="cm">// 使用</span>
+<span class="kw">try</span> &#123;
+  <span class="kw">const</span> data = <span class="kw">await</span> withTimeout(fetchData(), <span class="nu">5000</span>); <span class="cm">// 5秒超时</span>
+&#125; <span class="kw">catch</span> (err) &#123;
+  <span class="cm">// err.message = '请求超时' 或 fetchData 本身的错误</span>
+&#125;
+
+<span class="cm">// ========== 2. 自动重试 ==========</span>
+<span class="kw">async function</span> <span class="fn">retry</span>(fn, maxRetries = <span class="nu">3</span>, delay = <span class="nu">1000</span>) &#123;
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="nu">0</span>; i &lt; maxRetries; i++) &#123;
+    <span class="kw">try</span> &#123;
+      <span class="kw">return</span> <span class="kw">await</span> fn();
+    &#125; <span class="kw">catch</span> (err) &#123;
+      <span class="kw">if</span> (i === maxRetries - <span class="nu">1</span>) <span class="kw">throw</span> err; <span class="cm">// 最后一次还失败就抛出</span>
+      <span class="vb">console</span>.log(<span class="st">`第 <span class="kw">${i + 1}</span> 次失败，<span class="kw">${delay &#125;ms</span> 后重试`</span>);
+      <span class="kw">await</span> <span class="kw">new</span> <span class="vb">Promise</span>(r => setTimeout(r, delay));
+    &#125;
+  &#125;
+&#125;
+
+<span class="cm">// 使用</span>
+<span class="kw">const</span> result = <span class="kw">await</span> retry(() => fetch(<span class="st">'/api/data'</span>).then(r => r.json()), <span class="nu">3</span>, <span class="nu">1000</span>);
+
+<span class="cm">// ========== 3. 并发限制（限制同时进行的请求数） ==========</span>
+<span class="kw">async function</span> <span class="fn">pool</span>(tasks, limit) &#123;
+  <span class="kw">const</span> results = [];
+  <span class="kw">const</span> executing = <span class="kw">new</span> <span class="vb">Set</span>();
+
+  <span class="kw">for</span> (<span class="kw">const</span> task <span class="kw">of</span> tasks) &#123;
+    <span class="kw">const</span> p = task().then(result => &#123;
+      executing.delete(p);
+      <span class="kw">return</span> result;
+    &#125;);
+    results.push(p);
+    executing.add(p);
+
+    <span class="kw">if</span> (executing.size >= limit) &#123;
+      <span class="kw">await</span> <span class="vb">Promise</span>.race(executing);
+    &#125;
+  &#125;
+
+  <span class="kw">return</span> <span class="kw">await</span> <span class="vb">Promise</span>.all(results);
+&#125;
+
+<span class="cm">// 使用：100 个请求，同时最多 5 个</span>
+<span class="kw">const</span> urls = Array.from(&#123; length: <span class="nu">100</span> &#125;, (_, i) => <span class="st">`/api/item/<span class="kw">${i}</span>`</span>);
+<span class="kw">const</span> items = <span class="kw">await</span> pool(
+  urls.map(url => () => fetch(url).then(r => r.json())),
+  <span class="nu">5</span> <span class="cm">// 并发上限为 5</span>
+);
+
+<span class="cm">// ========== 4. 延迟函数 ==========</span>
+<span class="kw">const</span> sleep = ms => <span class="kw">new</span> <span class="vb">Promise</span>(r => setTimeout(r, ms));
+
+<span class="cm">// 使用</span>
+<span class="vb">console</span>.log(<span class="st">'开始'</span>);
+<span class="kw">await</span> sleep(<span class="nu">1000</span>);
+<span class="vb">console</span>.log(<span class="st">'1 秒后'</span>);
+
+<span class="cm">// ========== 5. 串行执行异步任务 ==========</span>
+<span class="kw">async function</span> <span class="fn">sequential</span>(tasks) &#123;
+  <span class="kw">const</span> results = [];
+  <span class="kw">for</span> (<span class="kw">const</span> task <span class="kw">of</span> tasks) &#123;
+    results.push(<span class="kw">await</span> task());
+  &#125;
+  <span class="kw">return</span> results;
+&#125;
+
+<span class="cm">// 更优雅：reduce 串行</span>
+tasks.reduce(
+  (p, task) => p.then(async results => [...results, <span class="kw">await</span> task()]),
+  <span class="vb">Promise</span>.resolve([])
+);</code></pre>
+
+        <h3>实战：常见异步场景完整示例</h3>
+        <pre><code><span class="cm">// ========== 场景1：页面初始化加载 ==========</span>
+<span class="kw">async function</span> <span class="fn">initPage</span>() &#123;
+  showLoading(); <span class="cm">// 显示 loading</span>
+
+  <span class="kw">try</span> &#123;
+    <span class="cm">// 多个独立请求并发发出（节省时间）</span>
+    <span class="kw">const</span> [userInfo, menus, notifications] = <span class="kw">await</span> <span class="vb">Promise</span>.all([
+      fetchUserInfo(),
+      fetchMenuList(),
+      fetchNotifications()
+    ]);
+
+    <span class="cm">// 数据驱动的后续请求（用上一步结果）</span>
+    <span class="kw">const</span> recentOrders = <span class="kw">await</span> fetchRecentOrders(userInfo.id);
+
+    <span class="cm">// 渲染页面</span>
+    render(&#123; userInfo, menus, notifications, recentOrders &#125;);
+  &#125; <span class="kw">catch</span> (err) &#123;
+    showErrorPage(err); <span class="cm">// 显示错误页</span>;
+  &#125; <span class="kw">finally</span> &#123;
+    hideLoading(); <span class="cm">// 无论成功失败都隐藏 loading</span>
+  &#125;
+&#125;
+
+<span class="cm">// ========== 场景2：分页加载 ==========</span>
+<span class="kw">async function</span> <span class="fn">loadPage</span>(page = <span class="nu">1</span>, append = <span class="kw">false</span>) &#123;
+  <span class="kw">if</span> (isLoading || !hasMore) <span class="kw">return</span>; <span class="cm">// 防止重复加载</span>
+  isLoading = <span class="kw">true</span>;
+
+  <span class="kw">try</span> &#123;
+    <span class="kw">const</span> data = <span class="kw">await</span> fetchList(&#123; page, pageSize: <span class="nu">10</span> &#125;);
+    hasMore = data.list.length === <span class="nu">10</span>; <span class="cm">// 是否还有更多</span>
+
+    <span class="kw">if</span> (append) &#123;
+      list.push(...data.list); <span class="cm">// 追加到现有列表</span>;
+    &#125; <span class="kw">else</span> &#123;
+      list = data.list;          <span class="cm">// 替换（刷新）</span>
+    &#125;
+    page += <span class="nu">1</span>;
+  &#125; <span class="kw">catch</span> (err) &#123;
+    showToast(<span class="st">'加载失败'</span>);
+  &#125; <span class="kw">finally</span> &#123;
+    isLoading = <span class="kw">false</span>;
+  &#125;
+&#125;
+
+<span class="cm">// ========== 场景3：取消请求（AbortController） ==========</span>
+<span class="kw">const</span> controller = <span class="kw">new</span> <span class="vb">AbortController</span>();
+
+fetch(<span class="st">'/api/search?q='</span> + keyword, &#123;
+  signal: controller.signal  <span class="cm">// 绑定取消信号</span>
+&#125;)
+  .then(r => r.json())
+  .then(data => renderResults(data))
+  .catch(err => &#123;
+    <span class="kw">if</span> (err.name === <span class="st">'AbortError'</span>) &#123;
+      <span class="vb">console</span>.log(<span class="st">'请求被取消了'</span>); <span class="cm">// 用户已发起新搜索</span>;
+    &#125; <span class="kw">else</span> &#123;
+      <span class="vb">console</span>.error(<span class="st">'网络错误'</span>, err);
+    &#125;
+  &#125;);
+
+<span class="cm">// 输入框每次变化时，取消上一次还没返回的请求</span>
+controller.abort(); <span class="cm">// 主动取消请求</span>
+
+<span class="cm">// ========== 场景4：请求缓存（避免重复请求） ==========</span>
+<span class="kw">const</span> cache = <span class="kw">new</span> <span class="vb">Map</span>();
+
+<span class="kw">async function</span> <span class="fn">cachedFetch</span>(url) &#123;
+  <span class="cm">// 如果缓存里有且未过期，直接返回</span>
+  <span class="kw">if</span> (cache.has(url)) &#123;
+    <span class="kw">const</span> &#123; data, expireTime &#125; = cache.get(url);
+    <span class="kw">if</span> (<span class="vb">Date</span>.now() &lt; expireTime) <span class="kw">return</span> data;
+  &#125;
+
+  <span class="cm">// 没有缓存或已过期，发起请求</span>
+  <span class="kw">const</span> data = <span class="kw">await</span> fetch(url).then(r => r.json());
+  cache.set(url, &#123; data, expireTime: <span class="vb">Date</span>.now() + <span class="nu">60000</span> &#125;); <span class="cm">// 缓存 60 秒</span>
+  <span class="kw">return</span> data;
+&#125;
+
+<span class="cm">// ========== 场景5：loading 状态管理 ==========</span>
+<span class="kw">let</span> loadingCount = <span class="nu">0</span>; <span class="cm">// 支持多个并发请求共享一个 loading</span>
+
+<span class="kw">function</span> <span class="fn">startLoading</span>() &#123;
+  loadingCount++;
+  <span class="kw">if</span> (loadingCount === <span class="nu">1</span>) showGlobalLoading();
+&#125;
+
+<span class="kw">function</span> <span class="fn">stopLoading</span>() &#123;
+  loadingCount--;
+  <span class="kw">if</span> (loadingCount === <span class="nu">0</span>) hideGlobalLoading();
+&#125;
+
+<span class="kw">async function</span> <span class="fn">fetchWithLoading</span>(url) &#123;
+  startLoading();
+  <span class="kw">try</span> &#123;
+    <span class="kw">const</span> res = <span class="kw">await</span> fetch(url);
+    <span class="kw">return</span> <span class="kw">await</span> res.json();
+  &#125; <span class="kw">finally</span> &#123;
+    stopLoading();
+  &#125;
+&#125;</code></pre>
+
+        <h3>Promise 链 vs async/await 对比</h3>
+        <table class="ref-table">
+          <tr><th>维度</th><th>Promise 链</th><th>async/await</th></tr>
+          <tr><td>可读性</td><td>链式嵌套，类似回调地狱</td><td>像同步代码，最直观</td></tr>
+          <tr><td>错误处理</td><td><code>.catch()</code> 统一捕获</td><td><code>try/catch</code>，可用多个</td></tr>
+          <tr><td>条件分支</td><td>需要在 .then 内写 if</td><td>直接写 if/else，自然</td></tr>
+          <tr><td>循环</td><td>需要 reduce 串 Promise</td><td>直接 for + await</td></tr>
+          <tr><td>调试</td><td>调用栈不友好</td><td>可打断点，调用栈清晰</td></tr>
+          <tr><td>并发</td><td><code>Promise.all</code> 自然</td><td>也是 <code>await Promise.all</code></td></tr>
+        </table>
+
+        <h3>async 函数的返回值</h3>
+        <pre><code><span class="cm">// async 函数永远返回 Promise！</span>
+<span class="kw">async function</span> <span class="fn">getNumber</span>() &#123;
+  <span class="kw">return</span> <span class="nu">42</span>;
+&#125;
+
+getNumber(); <span class="cm">// Promise &#123;&lt;fulfilled&gt;: 42&#125;</span>
+getNumber().then(v => <span class="vb">console</span>.log(v)); <span class="cm">// 42</span>
+
+<span class="kw">async function</span> <span class="fn">getError</span>() &#123;
+  <span class="kw">throw</span> <span class="kw">new</span> <span class="vb">Error</span>(<span class="st">'错了'</span>);
+&#125;
+
+getError(); <span class="cm">// Promise &#123;&lt;rejected&gt;: Error&#125;</span>
+
+<span class="cm">// 这意味着：</span>
+<span class="cm">// 即使 return 普通值，外部也要 await</span>
+<span class="kw">const</span> val = <span class="kw">await</span> getNumber(); <span class="cm">// val = 42（不是 Promise）</span>
+
+<span class="cm">// Vue 中典型的 async setup:</span>
+<span class="cm">// &lt;script setup async&gt;</span>
+<span class="cm">//   const data = await fetchData(); // setup 可以是 async</span>
+<span class="cm">// &lt;/script&gt;</span></code></pre>
+      </section>
+
+      <!-- ============================================================
+           第13章：ES6+ 新特性速览
+           ============================================================ -->
+      <section class="chapter" id="ch13">
+        <h2>第13章 · ES6+ 新特性</h2>
+
+        <h3 id="ch13-1">Map 和 Set</h3>
+        <pre><code><span class="cm">// Map：任意类型做 key（Object 只能用 string/symbol）</span>
+<span class="kw">const</span> map = <span class="kw">new</span> <span class="vb">Map</span>();
+map.set(<span class="st">'name'</span>, <span class="st">'张三'</span>);
+map.set(<span class="nu">1</span>, <span class="st">'数字 key'</span>);
+map.set(&#123;&#125;, <span class="st">'对象 key'</span>);  <span class="cm">// 对象可以做 key！</span>
+
+map.get(<span class="st">'name'</span>);       <span class="cm">// '张三'</span>
+map.has(<span class="st">'name'</span>);       <span class="cm">// true</span>
+map.delete(<span class="st">'name'</span>);    <span class="cm">// 删除</span>
+map.size;                  <span class="cm">// 长度</span>
+
+<span class="cm">// 遍历</span>
+map.forEach((val, key) => <span class="vb">console</span>.log(key, val));
+<span class="kw">for</span> (<span class="kw">const</span> [key, val] <span class="kw">of</span> map) &#123; ... &#125;
+
+<span class="cm">// Set：不重复的值</span>
+<span class="kw">const</span> set = <span class="kw">new</span> <span class="vb">Set</span>([<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">2</span>, <span class="nu">3</span>]);
+<span class="cm">// Set &#123; 1, 2,3 &#125;（自动去重）</span>
+
+set.add(<span class="nu">4</span>);
+set.has(<span class="nu">2</span>);     <span class="cm">// true</span>
+set.delete(<span class="nu">4</span>);
+
+<span class="cm">// 数组去重（最常用）</span>
+<span class="kw">const</span> uniq = [<span class="kw">new</span> <span class="vb">Set</span>([<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">2</span>, <span class="nu">3</span>])]; <span class="cm">// [1, 2, 3]</span></code></pre>
+
+        <h3 id="ch13-2">Proxy — 对象代理</h3>
+        <pre><code><span class="cm">// Proxy 可以拦截对象的所有操作</span>
+<span class="kw">const</span> target = &#123; name: <span class="st">'张三'</span>, age: <span class="nu">25</span> &#125;;
+
+<span class="kw">const</span> proxy = <span class="kw">new</span> <span class="vb">Proxy</span>(target, &#123;
+  <span class="fn">get</span>(obj, prop) {
+    <span class="kw">if</span> (prop <span class="kw">in</span> obj) {
+      <span class="kw">return</span> obj[prop];
+    &#125;
+    <span class="kw">throw</span> <span class="kw">new</span> <span class="vb">Error</span>(<span class="st">`属性 $&#123;prop&#125; 不存在`</span>);
+  &#125;,
+
+  <span class="fn">set</span>(obj, prop, value) {
+    <span class="kw">if</span> (prop === <span class="st">'age'</span> && value &lt; <span class="nu">0</span>) {
+      <span class="kw">throw</span> <span class="kw">new</span> <span class="vb">Error</span>(<span class="st">'年龄不能为负数'</span>);
+    &#125;
+    obj[prop] = value;
+    <span class="kw">return</span> <span class="kw">true</span>;  <span class="cm">// 表示设置成功</span>
+  &#125;
+&#125;);
+
+proxy.name;       <span class="cm">// '张三'</span>
+proxy.age = <span class="nu">30</span>;    <span class="cm">// 成功</span>
+<span class="cm">// proxy.age = -1;  // Error: 年龄不能为负数</span>
+<span class="cm">// proxy.unknown;   // Error: 属性 unknown 不存在</span></code></pre>
+
+        <div class="tip">
+          <strong>实际用途：</strong>Vue 3 的响应式系统就是用 Proxy 实现的！当数据变化时触发更新，不需要像 Vue 2 一样递归遍历所有属性。
+        </div>
+
+        <h3 id="ch13-3">Symbol、Generator、BigInt</h3>
+        <pre><code><span class="cm">// Symbol：创建唯一值（常用于私有属性）</span>
+<span class="kw">const</span> id = <span class="vb">Symbol</span>(<span class="st">'id'</span>);
+<span class="kw">const</span> user2 = &#123;
+  name: <span class="st">'张三'</span>,
+  [id]: <span class="nu">12345</span>  <span class="cm">// Symbol 做 key，不容易被意外访问</span>
+&#125;;
+
+<span class="cm">// Generator：可暂停的函数</span>
+<span class="kw">function</span>* <span class="fn">fibonacci</span>() {
+  <span class="kw">let</span> a = <span class="nu">0</span>, b = <span class="nu">1</span>;
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">yield</span> a;
+    [a, b] = [b, a + b];
+  &#125;
+&#125;
+
+<span class="kw">const</span> fib = fibonacci();
+fib.next().value; <span class="cm">// 0</span>
+fib.next().value; <span class="cm">// 1</span>
+fib.next().value; <span class="cm">// 1</span>
+fib.next().value; <span class="cm">// 2</span>
+fib.next().value; <span class="cm">// 3</span>
+
+<span class="cm">// BigInt：大整数</span>
+<span class="kw">const</span> big = <span class="nu">9007199254740991n</span>; <span class="cm">// 末尾加 n</span>
+<span class="kw">const</span> huge = <span class="vb">BigInt</span>(<span class="st">'123456789012345678901234567890'</span>);
+big + <span class="nu">1n</span>;           <span class="cm">// 9007199254740992n</span></code></pre>
+      </section>
+
+      <!-- ============================================================
+           第14章：Class 与面向对象
+           ============================================================ -->
+      <section class="chapter" id="ch14">
+        <h2>第14章 · Class 与面向对象</h2>
+
+        <pre><code><span class="cm">// ES6 Class 语法（本质是原型的语法糖）</span>
+<span class="kw">class</span> <span class="fn">Animal</span> {
+  <span class="cm">// 构造函数</span>
+  <span class="kw">constructor</span>(name) {
+    <span class="kw">this</span>.name = name;
+  &#125;
+
+  <span class="cm">// 方法自动加到 prototype 上</span>
+  speak() {
+    <span class="kw">return</span> <span class="st">`$&#123;<span class="kw">this</span>.name&#125; 发出声音`</span>;
+  &#125;
+
+  <span class="cm">// 静态方法（只能用 ClassName.method() 调用）</span>
+  <span class="kw">static</span> <span class="fn">info</span>() {
+    <span class="kw">return</span> <span class="st">'这是 Animal 类'</span>;
+  &#125;
+&#125;
+
+<span class="cm">// 实例化</span>
+<span class="kw">const</span> dog = <span class="kw">new</span> <span class="fn">Animal</span>(<span class="st">'旺财'</span>);
+dog.speak();     <span class="cm">// '旺财 发出声音'</span>
+Animal.info();   <span class="cm">// '这是 Animal 类'</span>
+
+<span class="cm">// 继承</span>
+<span class="kw">class</span> <span class="fn">Cat</span> <span class="kw">extends</span> <span class="fn">Animal</span> {
+  <span class="kw">constructor</span>(name, color) {
+    <span class="kw">super</span>(name);    <span class="cm">// 调用父类构造函数</span>
+    <span class="kw">this</span>.color = color;
+  &#125;
+
+  speak() &#123;         <span class="cm">// 重写父类方法</span>
+    <span class="kw">return</span> <span class="st">`$&#123;<span class="kw">this</span>.name&#125; 是 $&#123;<span class="kw">this</span>.color&#125; 色的，喵喵喵`</span>;
+  &#125;
+
+  <span class="cm">// getter/setter（访问器）</span>
+  <span class="kw">get</span> <span class="fn">description</span>() &#123;
+    <span class="kw">return</span> <span class="st">`$&#123;<span class="kw">this</span>.color&#125; 猫 $&#123;<span class="kw">this</span>.name&#125;`</span>;
+  &#125;
+&#125;
+
+<span class="kw">const</span> mimi = <span class="kw">new</span> <span class="fn">Cat</span>(<span class="st">'咪咪'</span>, <span class="st">'橘'</span>);
+mimi.speak();         <span class="cm">// '咪咪 是 橘 色的，喵喵喵'</span>
+mimi.description;     <span class="cm">// '橘 猫 咪咪'</span></code></pre>
+
+        <div class="tip">
+          <strong>与 Java 的差异：</strong>JS 类的底层仍然是 prototype 链，不像 Java 有真正的类。JS 的继承是"对象委托给对象"而不是"类继承类"。Vue 项目中，类用得不多（函数式 + setup 更常用），但了解 class 有助于看第三方库。
+        </div>
+      </section>
+
+      <!-- ============================================================
+           第15章：错误处理与调试
+           ============================================================ -->
+      <section class="chapter" id="ch15">
+        <h2>第15章 · 错误处理与调试</h2>
+
+        <h3>try / catch / finally</h3>
+        <pre><code><span class="kw">try</span> {
+  <span class="cm">// 可能出错的代码</span>
+  <span class="kw">const</span> data = <span class="vb">JSON</span>.parse(userInput);
+  <span class="vb">console</span>.log(data.name);
+&#125; <span class="kw">catch</span> (error) {
+
+  <span class="cm">// 捕获到错误时执行</span>
+  <span class="vb">console</span>.error(<span class="st">'解析失败：'</span>, error.message);
+  <span class="cm">// error 是 Error 对象，有 name / message / stack 属性</span>
+&#125; <span class="kw">finally</span> {
+  <span class="cm">// 无论是否出错都执行（可选）</span>
+  <span class="vb">console</span>.log(<span class="st">'清理工作'</span>);
+&#125;</code></pre>
+
+        <h3>async/await 的错误处理</h3>
+        <pre><code><span class="cm">// 方式1：try/catch</span>
+<span class="kw">try</span> {
+  <span class="kw">const</span> data = <span class="kw">await</span> fetchData();
+&#125; <span class="kw">catch</span> (error) {
+  <span class="vb">console</span>.error(<span class="st">'请求失败'</span>, error);
+&#125;
+
+<span class="cm">// 方式2：.catch()</span>
+fetchData().catch(err => <span class="vb">console</span>.error(err));</code></pre>
+
+        <h3>常用调试技巧</h3>
+        <table class="ref-table">
+          <tr><th>方法</th><th>说明</th></tr>
+          <tr><td><code>console.log(a, b, c)</code></td><td>打印</td></tr>
+          <tr><td><code>console.table(arr)</code></td><td>以表格形式打印数组/对象</td></tr>
+          <tr><td><code>console.time('label')</code> <code>console.timeEnd('label')</code></td><td>计时</td></tr>
+          <tr><td><code>debugger</code></td><td>代码中打断点（浏览器会暂停）</td></tr>
+          <tr><td><code>console.trace()</code></td><td>打印调用栈</td></tr>
+          <tr><td><code>console.error()</code> <code>console.warn()</code></td><td>错误/警告级别输出</td></tr>
+        </table>
+      </section>
+
+      <!-- ============================================================
+           第16章：BOM 与常用 Web API
+           ============================================================ -->
+      <section class="chapter" id="ch16">
+        <h2>第16章 · BOM 与常用 Web API</h2>
+
+        <h3>window 对象 &amp; 定时器</h3>
+        <pre><code><span class="cm">// 定时器</span>
+<span class="kw">const</span> timer1 = setTimeout(() => <span class="vb">console</span>.log(<span class="st">'1秒后'</span>), <span class="nu">1000</span>);
+clearTimeout(timer1);  <span class="cm">// 取消</span>
+
+<span class="cm">// 定时重复</span>
+<span class="kw">const</span> timer2 = setInterval(() => <span class="vb">console</span>.log(<span class="st">'每2秒'</span>), <span class="nu">2000</span>);
+clearInterval(timer2);
+
+<span class="cm">// location 对象</span>
+<span class="vb">window</span>.location.href;       <span class="cm">// 完整 URL</span>
+<span class="vb">window</span>.location.pathname;   <span class="cm">// 路径，如 '/users'</span>
+<span class="vb">window</span>.location.search;    <span class="cm">// 查询字符串，如 '?id=1'</span>
+
+<span class="cm">// 页面跳转</span>
+<span class="vb">window</span>.location.href = <span class="st">'/new-page'</span>;     <span class="cm">// 跳转（有历史记录）</span>
+<span class="vb">window</span>.location.replace(<span class="st">'/new-page'</span>);  <span class="cm">// 跳转（无历史记录）</span>
+
+<span class="cm">// history</span>
+history.back();          <span class="cm">// 后退</span>
+history.forward();       <span class="cm">// 前进</span></code></pre>
+
+        <h3>Storage 存储</h3>
+        <pre><code><span class="cm">// localStorage：永久存储（除非用户清除）</span>
+<span class="vb">localStorage</span>.setItem(<span class="st">'token'</span>, <span class="st">'abc123'</span>);
+<span class="vb">localStorage</span>.getItem(<span class="st">'token'</span>);    <span class="cm">// 'abc123'</span>
+<span class="vb">localStorage</span>.removeItem(<span class="st">'token'</span>);
+<span class="vb">localStorage</span>.clear();
+
+<span class="cm">// sessionStorage：关闭标签页即清除</span>
+<span class="vb">sessionStorage</span>.setItem(<span class="st">'form'</span>, <span class="st">'temp'</span>);
+
+<span class="cm">// 存储对象（自动 JSON 转换）</span>
+<span class="vb">localStorage</span>.setItem(<span class="st">'user'</span>, <span class="vb">JSON</span>.stringify(user));
+<span class="kw">const</span> saved = <span class="vb">JSON</span>.parse(<span class="vb">localStorage</span>.getItem(<span class="st">'user'</span>));</code></pre>
+
+        <h3>fetch API — 网络请求</h3>
+        <pre><code><span class="cm">// GET 请求</span>
+<span class="kw">async function</span> <span class="fn">getUsers</span>() {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="st">'/api/users'</span>);
+  <span class="kw">const</span> data = <span class="kw">await</span> res.json();
+  <span class="kw">return</span> data;
+&#125;
+
+<span class="cm">// POST 请求</span>
+<span class="kw">async function</span> <span class="fn">createUser</span>(user) {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="st">'/api/users'</span>, &#123;
+    method: <span class="st">'POST'</span>,
+    headers: &#123; <span class="st">'Content-Type'</span>: <span class="st">'application/json'</span> &#125;,
+    body: <span class="vb">JSON</span>.stringify(user)
+  &#125;);
+  <span class="kw">return</span> <span class="kw">await</span> res.json();
+&#125;
+
+<span class="cm">// 实际项目用 axios（功能更强大），底层原理一样</span>
+<span class="cm">// axios.get('/api/users').then(res => res.data)</span>
+<span class="cm">// axios.post('/api/users', user).then(res => res.data)</span></code></pre>
+      </section>
+
+      <!-- ============================================================
+           附录：速查表
+           ============================================================ -->
+      <section class="chapter" id="cheatsheet">
+        <h2>附录 · ES6+ 语法速查表</h2>
+
+        <table class="ref-table">
+          <tr><th>语法</th><th>示例</th><th>说明</th></tr>
+          <tr><td>let/const</td><td><code>const x = 1</code></td><td>块级作用域变量</td></tr>
+          <tr><td>箭头函数</td><td><code>(a, b) => a + b</code></td><td>简洁函数，this 继承</td></tr>
+          <tr><td>模板字符串</td><td><code>`Hello ${name}`</code></td><td>字符串插值</td></tr>
+          <tr><td>解构</td><td><code>const {a, b} = obj</code></td><td>对象/数组解构</td></tr>
+          <tr><td>展开</td><td><code>...arr / ...obj</code></td><td>展开/合并</td></tr>
+          <tr><td>默认参数</td><td><code>fn(a = 1, b = 2)</code></td><td>参数默认值</td></tr>
+          <tr><td>剩余参数</td><td><code>fn(...args)</code></td><td>收集为数组</td></tr>
+          <tr><td>可选链</td><td><code>obj?.a?.b</code></td><td>安全访问嵌套</td></tr>
+          <tr><td>空值合并</td><td><code>val ?? 'default'</code></td><td>null/undefined 时默认</td></tr>
+          <tr><td>Promise</td><td><code>new Promise()</code></td><td>异步容器</td></tr>
+          <tr><td>async/await</td><td><code>const x = await p</code></td><td>异步同步化</td></tr>
+          <tr><td>import/export</td><td><code>import x from 'y'</code></td><td>ES Module</td></tr>
+          <tr><td>class</td><td><code>class Foo extends Bar</code></td><td>面向对象</td></tr>
+          <tr><td>Map</td><td><code>new Map()</code></td><td>可以对象做 key</td></tr>
+          <tr><td>Set</td><td><code>new Set(arr)</code></td><td>去重</td></tr>
+          <tr><td>Proxy</td><td><code>new Proxy(target, handler)</code></td><td>拦截操作</td></tr>
+        </table>
+
+        <h3>数组方法一句话速查</h3>
+        <pre><code><span class="cm">// 不改变原数组（放心用）</span>
+  .filter(x => ...)   <span class="cm">// 过滤，返回满足条件的</span>
+  .map(x => ...)      <span class="cm">// 映射，返回变换后的</span>
+  .find(x => ...)     <span class="cm">// 找第一个，返回元素或 undefined</span>
+  .findIndex(x => ...)<span class="cm">// 找索引，返回索引或 -1</span>
+  .some(x => ...)     <span class="cm">// 是否有至少一个满足</span>
+  .every(x => ...)    <span class="cm">// 是否全部满足</span>
+  .reduce((acc, x) => ..., init)  <span class="cm">// 归约为单值</span>
+  .flat(n)            <span class="cm">// 扁平化 n 层</span>
+  .flatMap(x => ...)  <span class="cm">// map + flat(1)</span>
+  .includes(val)      <span class="cm">// 是否包含</span>
+  .join(sep)          <span class="cm">// 数组 → 字符串</span>
+
+<span class="cm">// 改变原数组（注意副作用）</span>
+  .push(x) / .pop()        <span class="cm">// 末尾添加/删除</span>
+  .unshift(x) / .shift()   <span class="cm">// 开头添加/删除</span>
+  .splice(i, n, ...items)  <span class="cm">// 万能手术刀</span>
+  .sort((a,b) => a - b)    <span class="cm">// 排序（会改变原数组！）</span>
+  .reverse()               <span class="cm">// 反转</span>
+  .fill(val)               <span class="cm">// 填充</span>
+
+<span class="cm">// ES2023 新增（不改变原数组）</span>
+  .toSorted((a,b) => a - b)  <span class="cm">// 排序，返回新数组</span>
+  .toReversed()              <span class="cm">// 反转，返回新数组</span>
+  .toSpliced(i, n, ...items) <span class="cm">// splice，返回新数组</span>
+  .with(i, val)              <span class="cm">// 修改单个元素，返回新数组</span></code></pre>
+      </section>
+
+      <!-- ============ 页脚 ============ -->
+      <footer class="site-footer">
+        <p>JavaScript 知识大全 · 整理自 <a href="https://web.qianguyihao.com" target="_blank">千古前端图文教程</a> · 配合 <code>docs/03-JavaScript基础语法.md</code> 使用</p>
+        <p>最后更新：2026 年 · 覆盖 ES2022+</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ============ 页面内联脚本：演示交互 ============ -->
+  <script>
+    // 第11章演示：按钮点击
+    (function() {
+      var btn = document.getElementById('demo-btn-11');
+      var output = document.getElementById('demo-output-11');
+      if (btn && output) {
+        btn.addEventListener('click', function() {
+          output.textContent = '点击时间：' + new Date().toLocaleTimeString();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
